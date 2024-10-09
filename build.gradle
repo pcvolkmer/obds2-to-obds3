@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+group = 'dev.pcvolkmer.onco'
+version = '0.1.0-SNAPSHOT'
+
+configurations {
+    xsd2java
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    jaxbTargetDir = file("src/generated/java")
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs jaxbTargetDir
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.0'
+    implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.17.0'
+
+    // JAXB code generation
+    xsd2java "com.sun.xml.bind:jaxb-xjc:4.0.5"
+    xsd2java "com.sun.xml.bind:jaxb-impl:4.0.5"
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core:3.26.3'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.register('xsd2java') {
+
+    doLast {
+        jaxbTargetDir.mkdirs()
+
+        ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.xsd2java.asPath)
+        ant.jaxbTargetDir = jaxbTargetDir
+
+
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'de.basisdatensatz.obds.v2',
+                schema: 'src/main/resources/schema/ADT_GEKID_v2.2.3.xsd'
+        )
+
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'de.basisdatensatz.obds.v3',
+                schema: 'src/main/resources/schema/oBDS_v3.0.3.xsd'
+        )
+
+    }
+}
+compileJava.dependsOn xsd2java
