@@ -44,6 +44,12 @@ class MeldungMapper {
         mappedMeldung.setMeldebegruendung(MeldebegruendungTyp.fromValue(source.getMeldebegruendung()));
 
         // Nicht in oBDS v2: Eigene Leistung J/N
+        // For now: Wenn Melder-ID keine "9999" enthält => "J" -> Onkostar-Konvention für "Extern"
+        if (source.getMelderID().contains("9999")) {
+            mappedMeldung.setEigeneLeistung(JNUTyp.N);
+        } else {
+            mappedMeldung.setEigeneLeistung(JNUTyp.J);
+        }
 
         var tumorzuordnung = source.getTumorzuordnung();
         if (tumorzuordnung != null) {
