@@ -24,14 +24,35 @@
 
 package dev.pcvolkmer.onko.obds2to3;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule;
 import de.basisdatensatz.obds.v2.ADTGEKID;
 import de.basisdatensatz.obds.v3.OBDS;
 
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 public class ObdsMapper {
 
-    public static OBDS map(ADTGEKID adtgekid) {
+    private final XmlMapper mapper;
+
+    public ObdsMapper() {
+        mapper = XmlMapper.builder()
+                        .defaultUseWrapper(false)
+                        .addModule(new JakartaXmlBindAnnotationModule())
+                        .addModule(new Jdk8Module())
+                        .enable(SerializationFeature.INDENT_OUTPUT)
+                        .build();
+
+        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+    }
+
+    public OBDS map(ADTGEKID adtgekid) {
         assert adtgekid != null;
 
         OBDS obds = new OBDS();
@@ -77,4 +98,16 @@ public class ObdsMapper {
 
         return obds;
     }
+
+    public <T> T readValue(String str, Class<T> clazz) throws JsonProcessingException {
+        if (clazz == ADTGEKID.class || clazz == OBDS.class) {
+            return this.mapper.readValue(str, clazz);
+        }
+        throw new IllegalArgumentException("Allowed classes are ADTGEKID and OBDS");
+    }
+
+    public String writeMappedXmlString(ADTGEKID obj) throws JsonProcessingException {
+        return this.mapper.writeValueAsString(this.map(obj));
+    }
+
 }

@@ -24,45 +24,32 @@
 
 package dev.pcvolkmer.onko.obds2to3;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule;
 import de.basisdatensatz.obds.v2.ADTGEKID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ObdsMapperTest {
 
+    private ObdsMapper mapper;
+
+    @BeforeEach
+    void setUp() {
+        mapper = new ObdsMapper();
+    }
+
     @Test
     void shouldMapObdsFile() throws IOException {
-        var obdsV2Resource = getClass().getClassLoader().getResource("testdaten/obdsv2_1.xml");
-        var obdsV3Resource = getClass().getClassLoader().getResource("testdaten/obdsv3_1.xml");
+        var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_1.xml").openStream().readAllBytes());
+        var obdsV3String = new String(getClass().getClassLoader().getResource("testdaten/obdsv3_1.xml").openStream().readAllBytes());
 
-        final var mapper =
-                XmlMapper.builder()
-                        .defaultUseWrapper(false)
-                        .addModule(new JakartaXmlBindAnnotationModule())
-                        .addModule(new Jdk8Module())
-                        .enable(SerializationFeature.INDENT_OUTPUT)
-                        .build();
-
-        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-
-        var obdsv2 = mapper.readValue(obdsV2Resource, ADTGEKID.class);
-
+        var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
         assertThat(obdsv2).isNotNull();
 
-        var actual = ObdsMapper.map(obdsv2);
-        assertThat(actual).isNotNull();
-
-        assertThat(mapper.writeValueAsString(actual)).isEqualTo(new String(obdsV3Resource.openStream().readAllBytes()));
+        assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
     }
 
 }
