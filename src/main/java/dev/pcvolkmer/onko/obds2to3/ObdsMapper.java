@@ -106,7 +106,12 @@ public class ObdsMapper {
     }
 
     public String writeMappedXmlString(ADTGEKID obj) throws JsonProcessingException {
-        return this.mapper.writeValueAsString(this.map(obj));
+        var xmlString = mapper.writeValueAsString(map(obj));
+        return String.format(
+                "<?xml version=\"1.0\" encoding=\"utf-8\" ?>%s%s",
+                System.lineSeparator(),
+                xmlString.replace("<oBDS ", "<oBDS xmlns=\"http://www.basisdatensatz.de/oBDS/XML\" ")
+        );
     }
 
 }
