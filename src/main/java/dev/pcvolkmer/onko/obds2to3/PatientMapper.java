@@ -28,6 +28,7 @@ import de.basisdatensatz.obds.v2.ADTGEKID;
 import de.basisdatensatz.obds.v3.OBDS;
 import de.basisdatensatz.obds.v3.PatientenAdresseMelderTyp;
 import de.basisdatensatz.obds.v3.PatientenStammdatenMelderTyp;
+import de.basisdatensatz.obds.v3.VersichertendatenGKVTyp;
 
 import java.util.List;
 
@@ -73,8 +74,11 @@ class PatientMapper {
         });
 
         // Stammdaten - Krankenkasse: In oBDS v2 keine Unterscheidung GKV/PKV
-        // stammdaten.getKrankenkassenNr();
-        // ...
+        // Aktuell als GKV behandelt
+        var versichertendatenGkv = new VersichertendatenGKVTyp();
+        versichertendatenGkv.setIKNR(stammdaten.getKrankenkassenNr());
+        versichertendatenGkv.setGKVVersichertennummer(stammdaten.getKrankenversichertenNr());
+        mappedStammdaten.setVersichertendatenGKV(versichertendatenGkv);
 
         // Geburtsdatum
         var geburtsdatum = MapperUtils.mapDateString(stammdaten.getPatientenGeburtsdatum());
