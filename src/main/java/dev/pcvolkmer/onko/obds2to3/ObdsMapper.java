@@ -42,14 +42,13 @@ public class ObdsMapper {
 
     public ObdsMapper() {
         mapper = XmlMapper.builder()
-                        .defaultUseWrapper(false)
-                        .addModule(new JakartaXmlBindAnnotationModule())
-                        .addModule(new Jdk8Module())
-                        .enable(SerializationFeature.INDENT_OUTPUT)
-                        .build();
-
-        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+                .defaultUseWrapper(false)
+                .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd"))
+                .addModule(new JakartaXmlBindAnnotationModule())
+                .addModule(new Jdk8Module())
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .serializationInclusion(JsonInclude.Include.NON_EMPTY)
+                .build();
     }
 
     public OBDS map(ADTGEKID adtgekid) {

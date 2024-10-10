@@ -28,8 +28,6 @@ import de.basisdatensatz.obds.v2.ADTGEKID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ObdsMapperTest {
@@ -42,7 +40,7 @@ class ObdsMapperTest {
     }
 
     @Test
-    void shouldMapObdsFile() throws IOException {
+    void shouldMapObdsFile() throws Exception {
         var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_1.xml").openStream().readAllBytes());
         var obdsV3String = new String(getClass().getClassLoader().getResource("testdaten/obdsv3_1.xml").openStream().readAllBytes());
 
