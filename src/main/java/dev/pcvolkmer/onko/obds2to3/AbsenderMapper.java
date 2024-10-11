@@ -30,6 +30,10 @@ import de.basisdatensatz.obds.v3.AbsenderTyp;
 class AbsenderMapper {
 
     public static AbsenderTyp map(ADTGEKID.Absender source) {
+        if (null == source) {
+            throw new IllegalArgumentException("Source cannot be null");
+        }
+
         var absender = new AbsenderTyp();
         absender.setAbsenderID(source.getAbsenderID());
         absender.setAnschrift(source.getAbsenderAnschrift());
