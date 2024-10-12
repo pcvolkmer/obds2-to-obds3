@@ -29,6 +29,7 @@ import de.basisdatensatz.obds.v3.DatumTagOderMonatOderJahrOderNichtGenauTyp;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -56,17 +57,17 @@ class MapperUtils {
             var calendar = new GregorianCalendar();
             calendar.clear();
 
-            calendar.set(GregorianCalendar.YEAR, year);
+            calendar.set(Calendar.YEAR, year);
             result.setDatumsgenauigkeit("M");
 
             if (month > 0) {
                 // Starts with month "0"
-                calendar.set(GregorianCalendar.MONTH, month - 1);
+                calendar.set(Calendar.MONTH, month - 1);
                 result.setDatumsgenauigkeit("T");
             }
 
             if (day > 0) {
-                calendar.set(GregorianCalendar.DAY_OF_MONTH, day);
+                calendar.set(Calendar.DAY_OF_MONTH, day);
                 result.setDatumsgenauigkeit("E");
             }
 
@@ -101,16 +102,16 @@ class MapperUtils {
             var calendar = new GregorianCalendar();
             calendar.clear();
 
-            calendar.set(GregorianCalendar.YEAR, year);
+            calendar.set(Calendar.YEAR, year);
 
             if (month > 0) {
                 // Starts with month "0"
-                calendar.set(GregorianCalendar.MONTH, month - 1);
+                calendar.set(Calendar.MONTH, month - 1);
                 result.setDatumsgenauigkeit("T");
             }
 
             if (day > 0) {
-                calendar.set(GregorianCalendar.DAY_OF_MONTH, day);
+                calendar.set(Calendar.DAY_OF_MONTH, day);
                 result.setDatumsgenauigkeit("E");
             }
 
