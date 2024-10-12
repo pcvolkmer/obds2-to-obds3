@@ -33,6 +33,8 @@ import java.util.Optional;
 
 class MeldungMapper {
 
+    private MeldungMapper() {}
+
     public static Meldung map(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
         if (null == source) {
             throw new IllegalArgumentException("Source cannot be null");

@@ -34,6 +34,8 @@ import java.util.List;
 
 class PatientMapper {
 
+    private PatientMapper() {}
+
     public static OBDS.MengePatient.Patient map(ADTGEKID.MengePatient.Patient source) {
         if (null == source) {
             throw new IllegalArgumentException("Source cannot be null");

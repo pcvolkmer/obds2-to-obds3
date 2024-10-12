@@ -35,6 +35,8 @@ import java.util.regex.Pattern;
 
 class MapperUtils {
 
+    private MapperUtils() {}
+
     /** Wandelt oBDS v2 Datumsstring in oBDS v3 "nicht genau" Datum um.
      *
      * @link <a href="https://plattform65c.atlassian.net/wiki/spaces/UMK/pages/15532303/Datum_Tag_oder_Monat_oder_Jahr_oder_nicht_genau_Typ">Spezifikation</a>
