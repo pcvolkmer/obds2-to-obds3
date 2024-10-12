@@ -30,7 +30,9 @@ import de.basisdatensatz.obds.v3.MelderTyp;
 class MelderMapper {
 
     public static MelderTyp map(de.basisdatensatz.obds.v2.MelderTyp source) {
-        assert source != null;
+        if (null == source) {
+            throw new IllegalArgumentException("Source cannot be null");
+        }
 
         var mappedMelder = new MelderTyp();
         mappedMelder.setID(source.getMelderID());

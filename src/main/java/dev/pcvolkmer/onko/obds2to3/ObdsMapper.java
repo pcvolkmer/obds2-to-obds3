@@ -52,7 +52,9 @@ public class ObdsMapper {
     }
 
     public OBDS map(ADTGEKID adtgekid) {
-        assert adtgekid != null;
+        if (null == adtgekid) {
+            throw new IllegalArgumentException("ADT_GEKID source cannot be null");
+        }
 
         OBDS obds = new OBDS();
         obds.setSchemaVersion("3.0.3");

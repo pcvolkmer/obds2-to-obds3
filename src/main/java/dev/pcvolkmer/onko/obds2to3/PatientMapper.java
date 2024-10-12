@@ -35,7 +35,9 @@ import java.util.List;
 class PatientMapper {
 
     public static OBDS.MengePatient.Patient map(ADTGEKID.MengePatient.Patient source) {
-        assert source != null;
+        if (null == source) {
+            throw new IllegalArgumentException("Source cannot be null");
+        }
 
         var stammdaten = source.getPatientenStammdaten();
         assert stammdaten != null;

@@ -34,7 +34,9 @@ import java.util.Optional;
 class MeldungMapper {
 
     public static Meldung map(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
-        assert source != null;
+        if (null == source) {
+            throw new IllegalArgumentException("Source cannot be null");
+        }
 
         var mappedMeldung = new Meldung();
         mappedMeldung.setMeldungID(source.getMeldungID());
