@@ -53,6 +53,7 @@ class PatientMapper {
         // Meldungen
         var mappedMeldungen = source.getMengeMeldung().getMeldung().stream()
                 .map(MeldungMapper::map)
+                .flatMap(List::stream)
                 .toList();
 
         patient.setMengeMeldung(new OBDS.MengePatient.Patient.MengeMeldung());

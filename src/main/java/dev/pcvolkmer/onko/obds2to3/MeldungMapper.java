@@ -29,19 +29,103 @@ import de.basisdatensatz.obds.v3.*;
 import de.basisdatensatz.obds.v3.DiagnoseTyp.MengeFruehereTumorerkrankung.FruehereTumorerkrankung;
 import de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 class MeldungMapper {
 
     private MeldungMapper() {}
 
-    public static Meldung map(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+    /** Mappe eine ADT_GEKID oBDS v2 Meldung in eine Liste von oBDS v3 Meldungen
+     *
+     * @param source
+     * @return
+     */
+    public static List<Meldung> map(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+        var result = new ArrayList<Meldung>();
+        result.add(getMeldungDiagnose(source));
+
+        // Nicht direkt Mappbar: Meldeanlass -> Untertypen
+        // TODO other items: Pathologie, OP, ST, SYST, Verlauf, Tod, Tumorkonferenz, Menge_Zusatzitem
+
+        return result;
+    }
+
+    private static Meldung getMeldungDiagnose(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+        var diagnose = source.getDiagnose();
+        if (null == diagnose) {
+            throw new IllegalArgumentException("ADT_GEKID diagnose should not be null at this point");
+        }
+
+        var mappedDiagnose = new DiagnoseTyp();
+        mappedDiagnose.setPrimaertumorDiagnosetext(diagnose.getPrimaertumorDiagnosetext());
+        //mappedDiagnose.setPrimaertumorTopographieICDO(..);
+        // Nicht in oBDS v2 ?
+        //mappedDiagnose.setPrimaertumorTopographieFreitext(..);
+        // oBDS v3 kennt auch 7.1, 7.2 ... als Untertyp von 7 für Diagnosesicherung
+        mappedDiagnose.setDiagnosesicherung(diagnose.getDiagnosesicherung());
+
+        if (diagnose.getMengeFruehereTumorerkrankung() != null) {
+            mappedDiagnose.getMengeFruehereTumorerkrankung().getFruehereTumorerkrankung().addAll(
+                    diagnose.getMengeFruehereTumorerkrankung().getFruehereTumorerkrankung().stream()
+                            .map(MeldungMapper::mapFruehereTumorerkrankung)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .toList()
+            );
+        }
+
+        // Menge Histologie lässt sich nicht direkt auf einen Wert mappen in oBDS v3
+        //mappedDiagnose.setHistologie(..);
+
+        // Fernmetastasen
+        if (diagnose.getMengeFM() != null) {
+            mappedDiagnose.getMengeFM().getFernmetastase().addAll(
+                    diagnose.getMengeFM().getFernmetastase().stream()
+                            .map(MeldungMapper::mapFernmetastase)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .toList()
+            );
+        }
+
+        // cTNPM
+        mapTnmType(diagnose.getCTNM()).ifPresent(mappedDiagnose::setCTNM);
+
+        // pTNPM
+        mapTnmType(diagnose.getPTNM()).ifPresent(mappedDiagnose::setPTNM);
+
+        // Weitere Klassifikationen
+        if (diagnose.getMengeWeitereKlassifikation() != null) {
+            mappedDiagnose.getMengeWeitereKlassifikation().getWeitereKlassifikation().addAll(
+                    diagnose.getMengeWeitereKlassifikation().getWeitereKlassifikation().stream()
+                            .map(MeldungMapper::mapWeitereKlassifikation)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .toList()
+            );
+        }
+
+        // Nicht in oBDS v2 ?
+        // mappedDiagnose.setMengeGenetik(..);
+
+        // Direkt übernommen
+        // Beide nutzen {'0'|'1'|'2'|'3'|'4'|'U'|'10%'|'20%'|'30%'|'40%'|'50%'|'60%'|'70%'|'80%'|'90%'|'100%'}
+        mappedDiagnose.setAllgemeinerLeistungszustand(diagnose.getAllgemeinerLeistungszustand());
+
+        var mappedMeldung = getMeldungsRumpf(source);
+        mappedMeldung.setMeldungID(source.getMeldungID());
+        mappedMeldung.setDiagnose(mappedDiagnose);
+        return mappedMeldung;
+    }
+
+    private static Meldung getMeldungsRumpf(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
         if (null == source) {
             throw new IllegalArgumentException("Source cannot be null");
         }
 
         var mappedMeldung = new Meldung();
-        mappedMeldung.setMeldungID(source.getMeldungID());
         mappedMeldung.setMelderID(source.getMelderID());
         mappedMeldung.setAnmerkung(source.getAnmerkung());
 
@@ -55,6 +139,7 @@ class MeldungMapper {
             mappedMeldung.setEigeneLeistung(JNUTyp.J);
         }
 
+        // In jeder (Unter-)Meldung
         var tumorzuordnung = source.getTumorzuordnung();
         if (tumorzuordnung != null) {
             var mappedTumorzuordnung = new TumorzuordnungTyp();
@@ -72,73 +157,6 @@ class MeldungMapper {
 
             mappedMeldung.setTumorzuordnung(mappedTumorzuordnung);
         }
-
-        var diagnose = source.getDiagnose();
-        if (diagnose != null) {
-            var mappedDiagnose = new DiagnoseTyp();
-            mappedDiagnose.setPrimaertumorDiagnosetext(diagnose.getPrimaertumorDiagnosetext());
-            //mappedDiagnose.setPrimaertumorTopographieICDO(..);
-            // Nicht in oBDS v2 ?
-            //mappedDiagnose.setPrimaertumorTopographieFreitext(..);
-            // oBDS v3 kennt auch 7.1, 7.2 ... als Untertyp von 7 für Diagnosesicherung
-            mappedDiagnose.setDiagnosesicherung(diagnose.getDiagnosesicherung());
-
-            if (diagnose.getMengeFruehereTumorerkrankung() != null) {
-                mappedDiagnose.getMengeFruehereTumorerkrankung().getFruehereTumorerkrankung().addAll(
-                        diagnose.getMengeFruehereTumorerkrankung().getFruehereTumorerkrankung().stream()
-                                .map(MeldungMapper::mapFruehereTumorerkrankung)
-                                .filter(Optional::isPresent)
-                                .map(Optional::get)
-                                .toList()
-                );
-            }
-
-            // Menge Histologie lässt sich nicht direkt auf einen Wert mappen in oBDS v3
-            //mappedDiagnose.setHistologie(..);
-
-            // Fernmetastasen
-            if (diagnose.getMengeFM() != null) {
-                mappedDiagnose.getMengeFM().getFernmetastase().addAll(
-                        diagnose.getMengeFM().getFernmetastase().stream()
-                                .map(MeldungMapper::mapFernmetastase)
-                                .filter(Optional::isPresent)
-                                .map(Optional::get)
-                                .toList()
-                );
-            }
-
-            // cTNPM
-            mapTnmType(diagnose.getCTNM()).ifPresent(mappedDiagnose::setCTNM);
-
-            // pTNPM
-            mapTnmType(diagnose.getPTNM()).ifPresent(mappedDiagnose::setPTNM);
-
-            // Weitere Klassifikationen
-            if (diagnose.getMengeWeitereKlassifikation() != null) {
-                mappedDiagnose.getMengeWeitereKlassifikation().getWeitereKlassifikation().addAll(
-                        diagnose.getMengeWeitereKlassifikation().getWeitereKlassifikation().stream()
-                                .map(MeldungMapper::mapWeitereKlassifikation)
-                                .filter(Optional::isPresent)
-                                .map(Optional::get)
-                                .toList()
-                );
-            }
-
-            // Nicht in oBDS v2 ?
-            // mappedDiagnose.setMengeGenetik(..);
-
-            // Direkt übernommen
-            // Beide nutzen {'0'|'1'|'2'|'3'|'4'|'U'|'10%'|'20%'|'30%'|'40%'|'50%'|'60%'|'70%'|'80%'|'90%'|'100%'}
-            mappedDiagnose.setAllgemeinerLeistungszustand(diagnose.getAllgemeinerLeistungszustand());
-
-            // TODO weitere Diagnose-Module: Allgemein, Mamma, Darm, Prostata, Malignes Melanom
-            // Modul DKKR nicht in oDBS v2 ?
-
-            mappedMeldung.setDiagnose(mappedDiagnose);
-        }
-
-        // Nicht direkt Mappbar: Meldeanlass -> Untertypen
-        // TODO other items: Pathologie, OP, ST, SYST, Verlauf, Tod, Tumorkonferenz, Menge_Zusatzitem
 
         return mappedMeldung;
     }
