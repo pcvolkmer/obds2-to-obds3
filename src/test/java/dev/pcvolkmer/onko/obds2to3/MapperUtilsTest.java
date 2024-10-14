@@ -71,4 +71,17 @@ class MapperUtilsTest {
         assertThat(actual).isNotPresent();
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "01.01.2024,2024-01-01",
+            "04.02.1978,1978-02-04",
+            "00.10.2024,2024-10-01",
+            "00.00.2024,2024-01-01",
+    })
+    void shouldMapToLocalDate(String obdsv2DateString, String expectedDateString) {
+        var actual = MapperUtils.mapDateString(obdsv2DateString);
+        assertThat(actual).isPresent();
+        assertThat(actual.get().getValue().toString()).startsWith(expectedDateString);
+    }
+
 }

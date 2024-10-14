@@ -29,6 +29,7 @@ import de.basisdatensatz.obds.v3.DatumTagOderMonatOderJahrOderNichtGenauTyp;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Optional;
@@ -127,4 +128,20 @@ class MapperUtils {
         return Optional.empty();
     }
 
+    public static Optional<LocalDate> parseDate(String dateString) {
+        if (null == dateString || dateString.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var obdsV2datePattern = Pattern.compile("(?<day>([0-2]\\d)|(3[01]))\\.(?<month>(0\\d)|(1[0-2]))\\.(?<year>(18|19|20)\\d\\d)");
+        var matcher = obdsV2datePattern.matcher(dateString);
+        if (matcher.matches()) {
+            var day = Integer.parseInt(matcher.group("day"));
+            var month = Integer.parseInt(matcher.group("month"));
+            var year = Integer.parseInt(matcher.group("year"));
+
+            return Optional.of(LocalDate.of(year, month, day));
+        }
+        return Optional.empty();
+    }
 }

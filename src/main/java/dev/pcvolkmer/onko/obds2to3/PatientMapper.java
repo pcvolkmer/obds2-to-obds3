@@ -30,11 +30,14 @@ import de.basisdatensatz.obds.v3.PatientenAdresseMelderTyp;
 import de.basisdatensatz.obds.v3.PatientenStammdatenMelderTyp;
 import de.basisdatensatz.obds.v3.VersichertendatenGKVTyp;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 class PatientMapper {
 
-    private PatientMapper() {}
+    private PatientMapper() {
+    }
 
     public static OBDS.MengePatient.Patient map(ADTGEKID.MengePatient.Patient source) {
         if (null == source) {
@@ -58,25 +61,59 @@ class PatientMapper {
 
         patient.setMengeMeldung(new OBDS.MengePatient.Patient.MengeMeldung());
         patient.getMengeMeldung().getMeldung().addAll(mappedMeldungen);
-        
+
         return patient;
+    }
+
+    /** If
+     *
+     */
+    static boolean aktuellGueltigeAdresse(ADTGEKID.MengePatient.Patient.PatientenStammdaten.MengeAdresse.Adresse adresse) {
+        if (null == adresse) {
+            throw new IllegalArgumentException("Address should not be null at this point");
+        }
+
+        var start = MapperUtils.parseDate(adresse.getGueltigVon());
+        var end = MapperUtils.parseDate(adresse.getGueltigBis());
+
+        // Keine Angabe über Gültigkeit - Adresse unbegrenzt gültig
+        if (adresse.getGueltigVon() == null && adresse.getGueltigBis() == null) {
+            return true;
+        }
+        // Adresse gültig bis
+        else if (adresse.getGueltigVon() == null && adresse.getGueltigBis() != null) {
+            return end.isPresent() && end.get().isAfter(LocalDate.now());
+        }
+        // Adresse gültig ab
+        else if (adresse.getGueltigVon() != null && adresse.getGueltigBis() == null) {
+            return start.isPresent() && start.get().isBefore(LocalDate.now());
+        }
+        // Adresse gültig von bis
+        else if (adresse.getGueltigVon() != null && adresse.getGueltigBis() != null) {
+            return start.isPresent() && start.get().isBefore(LocalDate.now())
+                    && end.isPresent() && end.get().isAfter(LocalDate.now());
+        }
+
+        return false;
     }
 
     private static PatientenStammdatenMelderTyp getMappedStammdaten(ADTGEKID.MengePatient.Patient.PatientenStammdaten stammdaten) {
         // Stammdaten
         var mappedStammdaten = new PatientenStammdatenMelderTyp();
 
-        // Adresse
-        // TODO Aktuell gültige Adresse verwenden
-        stammdaten.getMengeAdresse().getAdresse().stream().findFirst().ifPresent(adresse -> {
-            var mappedAdresse = new PatientenAdresseMelderTyp();
-            mappedAdresse.setHausnummer(adresse.getPatientenHausnummer());
-            mappedAdresse.setStrasse(adresse.getPatientenStrasse());
-            mappedAdresse.setPLZ(adresse.getPatientenPLZ());
-            mappedAdresse.setOrt(adresse.getPatientenOrt());
-            mappedAdresse.setLand(adresse.getPatientenLand());
-            mappedStammdaten.setAdresse(mappedAdresse);
-        });
+        // Erste aktuell gültige Adresse
+        stammdaten.getMengeAdresse().getAdresse().stream()
+                .filter(Objects::nonNull)
+                .filter(PatientMapper::aktuellGueltigeAdresse)
+                .findFirst().ifPresent(adresse -> {
+                    var mappedAdresse = new PatientenAdresseMelderTyp();
+                    mappedAdresse.setHausnummer(adresse.getPatientenHausnummer());
+                    mappedAdresse.setStrasse(adresse.getPatientenStrasse());
+                    mappedAdresse.setPLZ(adresse.getPatientenPLZ());
+                    mappedAdresse.setOrt(adresse.getPatientenOrt());
+                    mappedAdresse.setLand(adresse.getPatientenLand());
+                    mappedStammdaten.setAdresse(mappedAdresse);
+                });
 
         // Stammdaten - Krankenkasse: In oBDS v2 keine Unterscheidung GKV/PKV
         // Aktuell als GKV behandelt
