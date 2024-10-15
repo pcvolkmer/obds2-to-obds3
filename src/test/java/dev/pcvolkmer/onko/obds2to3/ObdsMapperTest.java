@@ -61,4 +61,15 @@ class ObdsMapperTest {
         assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
     }
 
+    @Test
+    void shouldMapObdsFileWithVerlauf() throws Exception {
+        var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_verlauf.xml").openStream().readAllBytes());
+        var obdsV3String = new String(getClass().getClassLoader().getResource("testdaten/obdsv3_verlauf.xml").openStream().readAllBytes());
+
+        var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
+        assertThat(obdsv2).isNotNull();
+
+        assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
+    }
+
 }

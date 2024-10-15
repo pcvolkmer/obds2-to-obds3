@@ -32,12 +32,14 @@ import de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 class MeldungMapper {
 
     private MeldungMapper() {}
 
-    /** Mappe eine ADT_GEKID oBDS v2 Meldung in eine Liste von oBDS v3 Meldungen
+    /**
+     * Mappe eine ADT_GEKID oBDS v2 Meldung in eine Liste von oBDS v3 Meldungen
      *
      * @param source
      * @return
@@ -45,11 +47,50 @@ class MeldungMapper {
     public static List<Meldung> map(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
         var result = new ArrayList<Meldung>();
         result.add(getMeldungDiagnose(source));
+        result.addAll(getMappedVerlauf(source));
 
         // Nicht direkt Mappbar: Meldeanlass -> Untertypen
-        // TODO other items: Pathologie, OP, ST, SYST, Verlauf, Tod, Tumorkonferenz, Menge_Zusatzitem
+        // TODO other items: Pathologie, OP, ST, SYST, Tod, Tumorkonferenz, Menge_Zusatzitem
 
         return result;
+    }
+
+    private static List<Meldung> getMappedVerlauf(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+        if (null == source) {
+            throw new IllegalArgumentException("ADT_GEKID must not be null at this point");
+        }
+
+        var mengeVerlauf = source.getMengeVerlauf();
+        if (null == mengeVerlauf || mengeVerlauf.getVerlauf().isEmpty()) {
+            return List.of();
+        }
+
+        return mengeVerlauf.getVerlauf().stream()
+                .map(verlauf -> {
+                    var mappedId = String.format("%s_%s", source.getMeldungID(), verlauf.getVerlaufID());
+
+                    var mappedVerlauf = new VerlaufTyp();
+                    mappedVerlauf.setVerlaufID(mappedId);
+                    mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
+                    mappedVerlauf.setAllgemeinerLeistungszustand(verlauf.getAllgemeinerLeistungszustand());
+                    // oBDS v2 Meldung->Meldeanlass wird in oBDS v3 für Verlauf verwendet
+                    mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
+                    // TODO
+                    // mappedVerlauf.setHistologie();
+                    // Nur verwendet, wenn Datumstring mappbar
+                    MapperUtils.mapDateString(verlauf.getUntersuchungsdatumVerlauf()).ifPresent(datum -> mappedVerlauf.setUntersuchungsdatumVerlauf(datum.getValue()));
+                    mappedVerlauf.setGesamtbeurteilungTumorstatus(verlauf.getGesamtbeurteilungTumorstatus());
+
+                    // TODO Weitere Inhalte: TNM, FM, ...
+                    return mappedVerlauf;
+                })
+                .map(mappedVerlauf -> {
+                    var meldung = getMeldungsRumpf(source);
+                    meldung.setMeldungID(mappedVerlauf.getVerlaufID());
+                    meldung.setVerlauf(mappedVerlauf);
+                    return meldung;
+                })
+                .collect(Collectors.toList());
     }
 
     private static Meldung getMeldungDiagnose(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
