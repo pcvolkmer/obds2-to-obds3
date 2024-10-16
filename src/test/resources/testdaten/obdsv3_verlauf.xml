@@ -56,7 +56,7 @@
             <Diagnosedatum Datumsgenauigkeit="E">2024-06-10</Diagnosedatum>
             <Seitenlokalisation>T</Seitenlokalisation>
           </Tumorzuordnung>
-          <Verlauf Verlauf_ID="TEST1727528_V0001">
+          <Verlauf Verlauf_ID="V0001">
             <Meldeanlass>statusaenderung</Meldeanlass>
             <Untersuchungsdatum_Verlauf>2024-10-14</Untersuchungsdatum_Verlauf>
             <Gesamtbeurteilung_Tumorstatus>B</Gesamtbeurteilung_Tumorstatus>
@@ -74,7 +74,7 @@
             <Diagnosedatum Datumsgenauigkeit="E">2024-06-10</Diagnosedatum>
             <Seitenlokalisation>T</Seitenlokalisation>
           </Tumorzuordnung>
-          <Verlauf Verlauf_ID="TEST1727528_V0002">
+          <Verlauf Verlauf_ID="V0002">
             <Meldeanlass>statusaenderung</Meldeanlass>
             <Untersuchungsdatum_Verlauf>2024-10-15</Untersuchungsdatum_Verlauf>
             <Gesamtbeurteilung_Tumorstatus>B</Gesamtbeurteilung_Tumorstatus>

@@ -67,10 +67,8 @@ class MeldungMapper {
 
         return mengeVerlauf.getVerlauf().stream()
                 .map(verlauf -> {
-                    var mappedId = String.format("%s_%s", source.getMeldungID(), verlauf.getVerlaufID());
-
                     var mappedVerlauf = new VerlaufTyp();
-                    mappedVerlauf.setVerlaufID(mappedId);
+                    mappedVerlauf.setVerlaufID(verlauf.getVerlaufID());
                     mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
                     mappedVerlauf.setAllgemeinerLeistungszustand(verlauf.getAllgemeinerLeistungszustand());
                     // oBDS v2 Meldung->Meldeanlass wird in oBDS v3 für Verlauf verwendet
@@ -86,7 +84,7 @@ class MeldungMapper {
                 })
                 .map(mappedVerlauf -> {
                     var meldung = getMeldungsRumpf(source);
-                    meldung.setMeldungID(mappedVerlauf.getVerlaufID());
+                    meldung.setMeldungID(String.format("%s_%s", source.getMeldungID(), mappedVerlauf.getVerlaufID()));
                     meldung.setVerlauf(mappedVerlauf);
                     return meldung;
                 })
