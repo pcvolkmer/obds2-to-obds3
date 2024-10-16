@@ -32,7 +32,6 @@ import de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 class MeldungMapper {
 
@@ -73,13 +72,34 @@ class MeldungMapper {
                     mappedVerlauf.setAllgemeinerLeistungszustand(verlauf.getAllgemeinerLeistungszustand());
                     // oBDS v2 Meldung->Meldeanlass wird in oBDS v3 für Verlauf verwendet
                     mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
-                    // TODO
-                    // mappedVerlauf.setHistologie();
+                    mappedVerlauf.setVerlaufLokalerTumorstatus(verlauf.getVerlaufLokalerTumorstatus());
+                    mappedVerlauf.setVerlaufTumorstatusFernmetastasen(verlauf.getVerlaufTumorstatusFernmetastasen());
+                    mappedVerlauf.setVerlaufTumorstatusLymphknoten(verlauf.getVerlaufTumorstatusLymphknoten());
+
+                    // TODO mappedVerlauf.setHistologie();
+
                     // Nur verwendet, wenn Datumstring mappbar
                     MapperUtils.mapDateString(verlauf.getUntersuchungsdatumVerlauf()).ifPresent(datum -> mappedVerlauf.setUntersuchungsdatumVerlauf(datum.getValue()));
                     mappedVerlauf.setGesamtbeurteilungTumorstatus(verlauf.getGesamtbeurteilungTumorstatus());
 
-                    // TODO Weitere Inhalte: TNM, FM, ...
+                    // Fernmetastasen
+                    if (verlauf.getMengeFM() != null) {
+                        mappedVerlauf.getMengeFM().getFernmetastase().addAll(
+                                verlauf.getMengeFM().getFernmetastase().stream()
+                                        .map(MeldungMapper::mapFernmetastase)
+                                        .filter(Optional::isPresent)
+                                        .map(Optional::get)
+                                        .toList()
+                        );
+                    }
+
+                    // TNPM
+                    mapTnmType(verlauf.getTNM()).ifPresent(mappedVerlauf::setTNM);
+
+                    // Nicht in oBDS v2 enthalten ?
+                    //mappedVerlauf.setMengeGenetik(..);
+
+                    // TODO Weitere Module ...
                     return mappedVerlauf;
                 })
                 .map(mappedVerlauf -> {
@@ -88,7 +108,7 @@ class MeldungMapper {
                     meldung.setVerlauf(mappedVerlauf);
                     return meldung;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static Meldung getMeldungDiagnose(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
@@ -115,8 +135,8 @@ class MeldungMapper {
             );
         }
 
-        // Menge Histologie lässt sich nicht direkt auf einen Wert mappen in oBDS v3
-        //mappedDiagnose.setHistologie(..);
+        // Menge Histologie lässt sich nicht direkt auf einen Wert mappen in oBDS v3 - mehrere Diagnose-Meldungen?
+        // mappedDiagnose.setHistologie(..);
 
         // Fernmetastasen
         if (diagnose.getMengeFM() != null) {
