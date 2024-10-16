@@ -57,6 +57,16 @@
               <Allgemeiner_Leistungszustand>1</Allgemeiner_Leistungszustand>
               <Anmerkung>Verlaufsanmerkung 2</Anmerkung>
             </Verlauf>
+            <Verlauf Verlauf_ID="V0003">
+              <Tod>
+                <Sterbedatum>16.10.2024</Sterbedatum>
+                <Tod_tumorbedingt>J</Tod_tumorbedingt>
+                <Menge_Todesursache>
+                  <Todesursache_ICD>C00.00</Todesursache_ICD>
+                  <Todesursache_ICD_Version>10 2023 GM</Todesursache_ICD_Version>
+                </Menge_Todesursache>
+              </Tod>
+            </Verlauf>
           </Menge_Verlauf>
         </Meldung>
       </Menge_Meldung>

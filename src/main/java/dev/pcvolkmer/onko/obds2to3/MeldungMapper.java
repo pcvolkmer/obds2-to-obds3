@@ -31,6 +31,7 @@ import de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 class MeldungMapper {
@@ -46,12 +47,69 @@ class MeldungMapper {
     public static List<Meldung> map(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
         var result = new ArrayList<Meldung>();
         result.add(getMeldungDiagnose(source));
+        // Ohne: oOBDS v2 Verlauf - Tod
         result.addAll(getMappedVerlauf(source));
+        // Hier: oBDS v2 Verlauf - Tod
+        getMeldungTod(source).ifPresent(result::add);
 
         // Nicht direkt Mappbar: Meldeanlass -> Untertypen
-        // TODO other items: Pathologie, OP, ST, SYST, Tod, Tumorkonferenz, Menge_Zusatzitem
+        // TODO other items: Pathologie, OP, ST, SYST, Tumorkonferenz, Menge_Zusatzitem
 
         return result;
+    }
+
+    /** Liefert eine Meldung mit Item "tod", wenn im oBDS v2-Verlauf eine Meldung "tod" enthalten ist
+     * Die ID der Meldung hat den Suffix "__D"
+     *
+     * @param source
+     * @return
+     */
+    private static Optional<Meldung> getMeldungTod(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+        if (null == source) {
+            throw new IllegalArgumentException("ADT_GEKID must not be null at this point");
+        }
+
+        var meldung = getMeldungsRumpf(source);
+        meldung.setMeldungID(String.format("%s__D", source.getMeldungID()));
+
+        var mengeVerlauf = source.getMengeVerlauf();
+        if (null == mengeVerlauf || mengeVerlauf.getVerlauf().isEmpty()) {
+            return Optional.empty();
+        }
+
+        mengeVerlauf.getVerlauf().stream()
+                .map(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeVerlauf.Verlauf::getTod)
+                .filter(Objects::nonNull)
+                .map(verlaufTod -> {
+                    var tod = new TodTyp();
+                    // Nicht in oBDS v2?
+                    //tod.setAbschlussID();
+                    tod.setTodTumorbedingt(JNUTyp.fromValue(verlaufTod.getTodTumorbedingt().value()));
+                    // Sterbedatum
+                    MapperUtils.mapDateString(verlaufTod.getSterbedatum()).ifPresent(datum -> tod.setSterbedatum(datum.getValue()));
+                    // Nicht in oBDS v2?
+                    //tod.setModulDKKR(..);
+                    if (null != verlaufTod.getMengeTodesursache() && null != verlaufTod.getMengeTodesursache().getTodesursacheICD()) {
+                        var mengeTodesursachen = new TodTyp.MengeTodesursachen();
+                        mengeTodesursachen.getTodesursacheICD().addAll(
+                                verlaufTod.getMengeTodesursache().getTodesursacheICD().stream().map(icd10 -> {
+                                    var result = new AllgemeinICDTyp();
+                                    result.setCode(icd10);
+                                    result.setVersion(verlaufTod.getMengeTodesursache().getTodesursacheICDVersion());
+                                    return result;
+                                }).toList()
+                        );
+                        tod.setMengeTodesursachen(mengeTodesursachen);
+                    }
+                    return tod;
+                })
+                .findFirst()
+                .ifPresent(meldung::setTod);
+
+        if (null != meldung.getTod()) {
+            return Optional.of(meldung);
+        }
+        return Optional.empty();
     }
 
     private static List<Meldung> getMappedVerlauf(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
@@ -65,6 +123,8 @@ class MeldungMapper {
         }
 
         return mengeVerlauf.getVerlauf().stream()
+                // Ohne Verlauf - Tod!
+                .filter(verlauf -> verlauf.getTod() == null)
                 .map(verlauf -> {
                     var mappedVerlauf = new VerlaufTyp();
                     mappedVerlauf.setVerlaufID(verlauf.getVerlaufID());

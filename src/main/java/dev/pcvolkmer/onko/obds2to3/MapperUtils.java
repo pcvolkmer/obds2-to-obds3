@@ -46,6 +46,10 @@ class MapperUtils {
      * @return
      */
     public static Optional<DatumTagOderMonatOderJahrOderNichtGenauTyp> mapDateString(String date) {
+        if (null == date) {
+            return Optional.empty();
+        }
+
         var result = new DatumTagOderMonatOderJahrOderNichtGenauTyp();
 
         var obdsV2datePattern = Pattern.compile("(?<day>([0-2]\\d)|(3[01]))\\.(?<month>(0\\d)|(1[0-2]))\\.(?<year>(18|19|20)\\d\\d)");
@@ -91,6 +95,10 @@ class MapperUtils {
      * @return
      */
     public static Optional<DatumTagOderMonatGenauTyp> mapDateStringGenau(String date) {
+        if (null == date) {
+            return Optional.empty();
+        }
+
         var result = new DatumTagOderMonatGenauTyp();
 
         var obdsV2datePattern = Pattern.compile("(?<day>([0-2]\\d)|(3[01]))\\.(?<month>(0\\d)|(1[0-2]))\\.(?<year>(18|19|20)\\d\\d)");
