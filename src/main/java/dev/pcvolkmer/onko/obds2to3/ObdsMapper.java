@@ -101,6 +101,12 @@ public class ObdsMapper {
     }
 
     public <T> T readValue(String str, Class<T> clazz) throws JsonProcessingException {
+        if (ADTGEKID.class == clazz) {
+            SchemaValidator.isValid(str, SchemaValidator.SchemaVersion.ADT_GEKID_2_2_3);
+        } else if (OBDS.class == clazz) {
+            SchemaValidator.isValid(str, SchemaValidator.SchemaVersion.OBDS_3_0_3);
+        }
+
         if (clazz == ADTGEKID.class || clazz == OBDS.class) {
             return this.mapper.readValue(str, clazz);
         }
