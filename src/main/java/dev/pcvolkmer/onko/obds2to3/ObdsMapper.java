@@ -33,10 +33,6 @@ import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModu
 import de.basisdatensatz.obds.v2.ADTGEKID;
 import de.basisdatensatz.obds.v3.OBDS;
 
-import javax.xml.XMLConstants;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.SchemaFactory;
-import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
 
@@ -119,16 +115,11 @@ public class ObdsMapper {
                 xmlString.replace("<oBDS ", "<oBDS xmlns=\"http://www.basisdatensatz.de/oBDS/XML\" ")
         );
 
-        try {
-            var factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            var schemaFile = new StreamSource(getClass().getClassLoader().getResource("schema/oBDS_v3.0.3.xsd").openStream());
-            var validator = factory.newSchema(schemaFile).newValidator();
-            validator.validate(new StreamSource(new StringReader(result)));
-        } catch (Exception e) {
-            throw new RuntimeException("Cannot validate result using oBDS schema", e);
+        if (SchemaValidator.isValid(result, SchemaValidator.SchemaVersion.OBDS_3_0_3)) {
+            return result;
         }
 
-        return result;
+        throw new RuntimeException("Cannot validate result using oBDS schema");
     }
 
 }
