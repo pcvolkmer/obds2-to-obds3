@@ -29,6 +29,7 @@ import de.basisdatensatz.obds.v3.*;
 import de.basisdatensatz.obds.v3.DiagnoseTyp.MengeFruehereTumorerkrankung.FruehereTumorerkrankung;
 import de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -46,19 +47,23 @@ class MeldungMapper {
      */
     public static List<Meldung> map(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
         var result = new ArrayList<Meldung>();
+        // Diagnose als einzelne Meldung
         result.add(getMeldungDiagnose(source));
-        // Ohne: oOBDS v2 Verlauf - Tod
+        // Tumorkonferenzen als einzelne Meldung
+        result.addAll(getMappedTumorkonferenzen(source));
+        // Verlauf - Ohne: oOBDS v2 Verlauf - Tod
         result.addAll(getMappedVerlauf(source));
-        // Hier: oBDS v2 Verlauf - Tod
+        // verlauf - Hier: oBDS v2 Verlauf - Tod
         getMeldungTod(source).ifPresent(result::add);
 
         // Nicht direkt Mappbar: Meldeanlass -> Untertypen
-        // TODO other items: Pathologie, OP, ST, SYST, Tumorkonferenz, Menge_Zusatzitem
+        // TODO other items: Pathologie, OP, ST, SYST, Menge_Zusatzitem
 
         return result;
     }
 
-    /** Liefert eine Meldung mit Item "tod", wenn im oBDS v2-Verlauf eine Meldung "tod" enthalten ist
+    /**
+     * Liefert eine Meldung mit Item "tod", wenn im oBDS v2-Verlauf eine Meldung "tod" enthalten ist
      * Die ID der Meldung hat den Suffix "__D"
      *
      * @param source
@@ -110,6 +115,43 @@ class MeldungMapper {
             return Optional.of(meldung);
         }
         return Optional.empty();
+    }
+
+    private static List<Meldung> getMappedTumorkonferenzen(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+        if (null == source) {
+            throw new IllegalArgumentException("ADT_GEKID must not be null at this point");
+        }
+
+        var mengeTumorkonferenz = source.getMengeTumorkonferenz();
+        if (null == mengeTumorkonferenz || mengeTumorkonferenz.getTumorkonferenz().isEmpty()) {
+            return List.of();
+        }
+
+        return mengeTumorkonferenz.getTumorkonferenz().stream()
+                .map(tumorkonferenz -> {
+                    var mappedTumorkonferenz = new TumorkonferenzTyp();
+                    MapperUtils.mapDateString(tumorkonferenz.getTumorkonferenzDatum()).ifPresent(datum -> {
+                        mappedTumorkonferenz.setDatum(datum);
+                        // oBDS v2 Meldung-Meldeanlass ist Quelle!
+                        mappedTumorkonferenz.setMeldeanlass(source.getMeldeanlass());
+                        mappedTumorkonferenz.setTumorkonferenzID(tumorkonferenz.getTumorkonferenzID());
+                        mappedTumorkonferenz.setTyp(tumorkonferenz.getTumorkonferenzTyp());
+                        // Therapieempfehlung nicht in oBDS v2?
+                        //mappedTumorkonferenz.setTherapieempfehlung();
+                    });
+                    return new AbstractMap.SimpleEntry<String, TumorkonferenzTyp>(tumorkonferenz.getAnmerkung(), mappedTumorkonferenz);
+                })
+                .map(anmerkungAndMappedTumorkonferenz -> {
+                    var anmerkung = anmerkungAndMappedTumorkonferenz.getKey();
+                    var mappedTumorkonferenz = anmerkungAndMappedTumorkonferenz.getValue();
+                    var meldung = getMeldungsRumpf(source);
+                    meldung.setMeldungID(String.format("%s_%s", source.getMeldungID(), mappedTumorkonferenz.getTumorkonferenzID()));
+                    meldung.setTumorkonferenz(mappedTumorkonferenz);
+                    // Anmerkung übernommen aus oBDS v2 -> Meldung-Tumorkonferenz
+                    meldung.setAnmerkung(anmerkung);
+                    return meldung;
+                })
+                .toList();
     }
 
     private static List<Meldung> getMappedVerlauf(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
