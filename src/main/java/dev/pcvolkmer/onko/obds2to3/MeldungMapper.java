@@ -268,10 +268,15 @@ class MeldungMapper {
             );
         }
 
+        // Modul Prostata
+        if (diagnose.getModulProstata() != null) {
+            mappedDiagnose.setModulProstata(ModulMapper.map(diagnose.getModulProstata()));
+        }
+
         // Nicht in oBDS v2 ?
         // mappedDiagnose.setMengeGenetik(..);
 
-        // Direkt übernommen
+        // Direkt übernommen - sofern vorhanden, sonst 'U'
         // Beide nutzen {'0'|'1'|'2'|'3'|'4'|'U'|'10%'|'20%'|'30%'|'40%'|'50%'|'60%'|'70%'|'80%'|'90%'|'100%'}
         if (diagnose.getAllgemeinerLeistungszustand() != null) {
             mappedDiagnose.setAllgemeinerLeistungszustand(diagnose.getAllgemeinerLeistungszustand());
