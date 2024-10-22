@@ -273,7 +273,11 @@ class MeldungMapper {
 
         // Direkt übernommen
         // Beide nutzen {'0'|'1'|'2'|'3'|'4'|'U'|'10%'|'20%'|'30%'|'40%'|'50%'|'60%'|'70%'|'80%'|'90%'|'100%'}
-        mappedDiagnose.setAllgemeinerLeistungszustand(diagnose.getAllgemeinerLeistungszustand());
+        if (diagnose.getAllgemeinerLeistungszustand() != null) {
+            mappedDiagnose.setAllgemeinerLeistungszustand(diagnose.getAllgemeinerLeistungszustand());
+        } else {
+            mappedDiagnose.setAllgemeinerLeistungszustand("U");
+        }
 
         var mappedMeldung = getMeldungsRumpf(source);
         mappedMeldung.setMeldungID(source.getMeldungID());
