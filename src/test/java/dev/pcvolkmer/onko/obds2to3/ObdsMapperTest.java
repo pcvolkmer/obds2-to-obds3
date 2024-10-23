@@ -26,7 +26,8 @@ package dev.pcvolkmer.onko.obds2to3;
 
 import de.basisdatensatz.obds.v2.ADTGEKID;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,54 +40,17 @@ class ObdsMapperTest {
         mapper = new ObdsMapper();
     }
 
-    @Test
-    void shouldMapObdsFile() throws Exception {
-        var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_1.xml").openStream().readAllBytes());
-        var obdsV3String = new String(getClass().getClassLoader().getResource("testdaten/obdsv3_1.xml").openStream().readAllBytes());
-
-        var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
-        assertThat(obdsv2).isNotNull();
-
-        assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
-    }
-
-    @Test
-    void shouldMapObdsFileWithCurrentValidAddress() throws Exception {
-        var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_gueltige-adresse.xml").openStream().readAllBytes());
-        var obdsV3String = new String(getClass().getClassLoader().getResource("testdaten/obdsv3_1.xml").openStream().readAllBytes());
-
-        var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
-        assertThat(obdsv2).isNotNull();
-
-        assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
-    }
-
-    @Test
-    void shouldMapObdsFileWithVerlauf() throws Exception {
-        var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_verlauf.xml").openStream().readAllBytes());
-        var obdsV3String = new String(getClass().getClassLoader().getResource("testdaten/obdsv3_verlauf.xml").openStream().readAllBytes());
-
-        var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
-        assertThat(obdsv2).isNotNull();
-
-        assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
-    }
-
-    @Test
-    void shouldMapObdsFileWithTumorkonferenz() throws Exception {
-        var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_tumorkonferenz.xml").openStream().readAllBytes());
-        var obdsV3String = new String(getClass().getClassLoader().getResource("testdaten/obdsv3_tumorkonferenz.xml").openStream().readAllBytes());
-
-        var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
-        assertThat(obdsv2).isNotNull();
-
-        assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
-    }
-
-    @Test
-    void shouldMapObdsFileWithModulProstata() throws Exception {
-        var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_modul_prostata.xml").openStream().readAllBytes());
-        var obdsV3String = new String(getClass().getClassLoader().getResource("testdaten/obdsv3_modul_prostata.xml").openStream().readAllBytes());
+    @ParameterizedTest
+    @CsvSource({
+            "testdaten/obdsv2_1.xml,testdaten/obdsv3_1.xml",
+            "testdaten/obdsv2_gueltige-adresse.xml,testdaten/obdsv3_1.xml",
+            "testdaten/obdsv2_verlauf.xml,testdaten/obdsv3_verlauf.xml",
+            "testdaten/obdsv2_tumorkonferenz.xml,testdaten/obdsv3_tumorkonferenz.xml",
+            "testdaten/obdsv2_modul_prostata.xml,testdaten/obdsv3_modul_prostata.xml",
+    })
+    void shouldMapObdsFile(String obdsV2File, String obdsV3File) throws Exception {
+        var obdsV2String = new String(getClass().getClassLoader().getResource(obdsV2File).openStream().readAllBytes());
+        var obdsV3String = new String(getClass().getClassLoader().getResource(obdsV3File).openStream().readAllBytes());
 
         var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
         assertThat(obdsv2).isNotNull();
