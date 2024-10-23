@@ -37,7 +37,11 @@ import java.util.regex.Pattern;
 
 class MapperUtils {
 
+    public static final String OBDS2_DATE_REGEX = "(?<day>([0-2]\\d)|(3[01]))\\.(?<month>(0\\d)|(1[0-2]))\\.(?<year>(18|19|20)\\d\\d)";
+
     private MapperUtils() {}
+
+
 
     /** Wandelt oBDS v2 Datumsstring in oBDS v3 "nicht genau" Datum um.
      *
@@ -52,7 +56,7 @@ class MapperUtils {
 
         var result = new DatumTagOderMonatOderJahrOderNichtGenauTyp();
 
-        var obdsV2datePattern = Pattern.compile("(?<day>([0-2]\\d)|(3[01]))\\.(?<month>(0\\d)|(1[0-2]))\\.(?<year>(18|19|20)\\d\\d)");
+        var obdsV2datePattern = Pattern.compile(OBDS2_DATE_REGEX);
         var matcher = obdsV2datePattern.matcher(date);
         if (matcher.matches()) {
             var day = Integer.parseInt(matcher.group("day"));
@@ -101,7 +105,7 @@ class MapperUtils {
 
         var result = new DatumTagOderMonatGenauTyp();
 
-        var obdsV2datePattern = Pattern.compile("(?<day>([0-2]\\d)|(3[01]))\\.(?<month>(0\\d)|(1[0-2]))\\.(?<year>(18|19|20)\\d\\d)");
+        var obdsV2datePattern = Pattern.compile(OBDS2_DATE_REGEX);
         var matcher = obdsV2datePattern.matcher(date);
         if (matcher.matches()) {
             var day = Integer.parseInt(matcher.group("day"));
@@ -141,7 +145,7 @@ class MapperUtils {
             return Optional.empty();
         }
 
-        var obdsV2datePattern = Pattern.compile("(?<day>([0-2]\\d)|(3[01]))\\.(?<month>(0\\d)|(1[0-2]))\\.(?<year>(18|19|20)\\d\\d)");
+        var obdsV2datePattern = Pattern.compile(OBDS2_DATE_REGEX);
         var matcher = obdsV2datePattern.matcher(dateString);
         if (matcher.matches()) {
             var day = Integer.parseInt(matcher.group("day"));
