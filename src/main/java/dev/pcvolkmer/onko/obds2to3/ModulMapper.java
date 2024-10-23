@@ -28,7 +28,7 @@ import de.basisdatensatz.obds.v3.*;
 
 class ModulMapper {
 
-    ModulMapper() {}
+    private ModulMapper() {}
 
     public static ModulProstataTyp map(de.basisdatensatz.obds.v2.ModulProstataTyp source) {
         if (null == source) {
