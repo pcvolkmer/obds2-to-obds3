@@ -131,9 +131,9 @@ class PatientMapper {
         // oBDS v2 kennt noch "S", oBDS v3 jedoch "D" und "X" - daher "U" für unbekannt
         var geschlecht = stammdaten.getPatientenGeschlecht();
         if (geschlecht != null && List.of("M", "W").contains(geschlecht)) {
-            mappedStammdaten.setGeschlecht(geschlecht);
+            mappedStammdaten.setGeschlecht(PatientenStammdatenMelderTyp.Geschlecht.fromValue(geschlecht));
         } else {
-            mappedStammdaten.setGeschlecht("U");
+            mappedStammdaten.setGeschlecht(PatientenStammdatenMelderTyp.Geschlecht.U);
         }
 
         // Name(n)
