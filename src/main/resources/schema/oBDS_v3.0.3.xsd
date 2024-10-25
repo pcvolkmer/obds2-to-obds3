@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="xs3p.xsl"?>
 <xs:schema xmlns="http://www.basisdatensatz.de/oBDS/XML" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.basisdatensatz.de/oBDS/XML" targetNamespace="http://www.basisdatensatz.de/oBDS/XML" elementFormDefault="qualified" attributeFormDefault="unqualified" version="3.0.3 vom 04.09.2024">
 	<xs:element name="oBDS">
 		<xs:annotation>
