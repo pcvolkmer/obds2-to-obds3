@@ -278,6 +278,25 @@ class MeldungMapper {
 
         // Menge Histologie lässt sich nicht direkt auf einen Wert mappen in oBDS v3 - mehrere Diagnose-Meldungen?
         // mappedDiagnose.setHistologie(..);
+        // Aktuell: Immer nur erste Histologie verwendet!
+        if (diagnose.getMengeHistologie() != null) {
+            diagnose.getMengeHistologie().getHistologie().stream().findFirst().map(firstHisto -> {
+                        var mappedHisto = new HistologieTyp();
+                        mappedHisto.setGrading(firstHisto.getGrading());
+                        mappedHisto.setHistologieID(firstHisto.getHistologieID());
+                        mappedHisto.setHistologieEinsendeNr(firstHisto.getHistologieEinsendeNr());
+                        mappedHisto.setLKBefallen(firstHisto.getLKBefallen());
+                        mappedHisto.setLKUntersucht(firstHisto.getLKUntersucht());
+                        mappedHisto.setMorphologieFreitext(firstHisto.getMorphologieFreitext());
+                        mappedHisto.setSentinelLKBefallen(firstHisto.getSentinelLKBefallen());
+                        mappedHisto.setSentinelLKUntersucht(firstHisto.getSentinelLKUntersucht());
+                        // Nur wenn vorhanden und mappbar
+                        MapperUtils.mapDateString(firstHisto.getTumorHistologiedatum()).ifPresent(mappedHisto::setTumorHistologiedatum);
+                        return mappedHisto;
+                    })
+                    // Wenn Histo vorhanden - erste Histo
+                    .ifPresent(mappedDiagnose::setHistologie);
+        }
 
         // Fernmetastasen
         if (diagnose.getMengeFM() != null) {
