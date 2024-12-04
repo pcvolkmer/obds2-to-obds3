@@ -48,18 +48,57 @@ class MeldungMapper {
     public static List<Meldung> map(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
         var result = new ArrayList<Meldung>();
         // Diagnose als einzelne Meldung
-        result.add(getMeldungDiagnose(source));
+        var diagnosemeldung = getMeldungDiagnose(source);
+        // Füge Zusatzitems zur Diagnosemeldung hinzu, wenn vorhanden
+        getMengeZusatzitemTyp(source).ifPresent(diagnosemeldung::setMengeZusatzitem);
+        result.add(diagnosemeldung);
         // Tumorkonferenzen als einzelne Meldung
         result.addAll(getMappedTumorkonferenzen(source));
         // Verlauf - Ohne: oOBDS v2 Verlauf - Tod
         result.addAll(getMappedVerlauf(source));
-        // verlauf - Hier: oBDS v2 Verlauf - Tod
+        // Verlauf - Hier: oBDS v2 Verlauf - Tod
         getMeldungTod(source).ifPresent(result::add);
 
         // Nicht direkt Mappbar: Meldeanlass -> Untertypen
         // TODO other items: Pathologie, OP, ST, SYST, Menge_Zusatzitem
 
         return result;
+    }
+
+    /**
+     * Liefert ein Optional mit MengeZusatzitems, wenn im oBDS v2 enthalten und nicht leer
+     *
+     * @param source
+     * @return
+     */
+    private static Optional<MengeZusatzitemTyp> getMengeZusatzitemTyp(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+        if (null == source) {
+            throw new IllegalArgumentException("ADT_GEKID must not be null at this point");
+        }
+
+        var mengeZusatzitem = source.getMengeZusatzitem();
+        if (null == mengeZusatzitem) {
+            return Optional.empty();
+        }
+
+        var mappedZusatzitems = mengeZusatzitem.getZusatzitem().stream()
+                .map(zusatzitem -> {
+            var mappedZusatzitem = new MengeZusatzitemTyp.Zusatzitem();
+            mappedZusatzitem.setArt(zusatzitem.getArt());
+            // Nur, wenn in oBDSv2 vorhanden und mappbar
+            MapperUtils.mapDateString(zusatzitem.getDatum()).ifPresent(mappedZusatzitem::setDatum);
+            mappedZusatzitem.setBemerkung(zusatzitem.getBemerkung());
+            mappedZusatzitem.setWert(zusatzitem.getWert());
+            return mappedZusatzitem;
+        }).toList();
+
+        if (mappedZusatzitems.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var result = new MengeZusatzitemTyp();
+        result.getZusatzitem().addAll(mappedZusatzitems);
+        return Optional.of(result);
     }
 
     /**
