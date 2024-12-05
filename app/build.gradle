@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group = 'dev.pcvolkmer.onco'
+version = '0.1.0-SNAPSHOT'
+archivesBaseName = 'obds2-to-obds3-app'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':lib')
+    implementation 'commons-cli:commons-cli:1.9.0'
+    implementation 'commons-io:commons-io:2.18.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'dev.pcvolkmer.onco.obds2toobds3.Application'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}

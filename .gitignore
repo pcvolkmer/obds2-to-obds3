@@ -39,4 +39,4 @@ bin/
 .DS_Store
 
 # generated code
-src/generated/
+**/src/generated/

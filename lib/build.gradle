@@ -5,6 +5,7 @@ plugins {
 
 group = 'dev.pcvolkmer.onco'
 version = '0.1.0-SNAPSHOT'
+archivesBaseName = 'obds2-to-obds3'
 
 configurations {
     xsd2java
