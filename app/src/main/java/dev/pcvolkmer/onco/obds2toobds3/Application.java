@@ -8,6 +8,7 @@ import de.basisdatensatz.obds.v2.ADTGEKID;
 import dev.pcvolkmer.onko.obds2to3.ObdsMapper;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 
 public class Application {
@@ -29,7 +30,7 @@ public class Application {
             var mapper = new ObdsMapper();
             var bomInputStream = BOMInputStream.builder().setInputStream(Files.newInputStream(input)).get();
 
-            var inputObj = mapper.readValue(IOUtils.toString(bomInputStream), ADTGEKID.class);
+            var inputObj = mapper.readValue(IOUtils.toString(bomInputStream, StandardCharsets.UTF_8), ADTGEKID.class);
             var mappedString = mapper.writeMappedXmlString(inputObj);
 
             Files.writeString(output, mappedString);
