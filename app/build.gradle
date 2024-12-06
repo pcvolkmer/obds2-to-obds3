@@ -31,3 +31,5 @@ jar {
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+jar.dependsOn ':lib:build'
