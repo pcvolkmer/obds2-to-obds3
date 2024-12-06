@@ -19,11 +19,13 @@ public class Application {
         options.addOption(
                 Option.builder("o").argName("output").hasArg().desc("Output file").converter(File::new).build());
         options.addOption(
-                Option.builder("v").desc("Show exceptions and stack traces").build());
+                Option.builder("v").desc("Show errors").build());
+        options.addOption(
+                Option.builder("vv").desc("Show exceptions and stack traces").build());
 
         final var parsedCliArgs = DefaultParser.builder().build().parse(options, args);
 
-        if (parsedCliArgs.hasOption("h") || !parsedCliArgs.hasOption("input") || !parsedCliArgs.hasOption("output")) {
+        if (parsedCliArgs.hasOption("h") || !parsedCliArgs.hasOption("i") || !parsedCliArgs.hasOption("o")) {
             new HelpFormatter().printHelp("obds2toobds3 --input <input file> --output <output file>", options);
         } else {
             try {
@@ -41,6 +43,9 @@ public class Application {
             } catch (Exception e) {
                 System.err.println("Konvertierung fehlgeschlagen");
                 if (parsedCliArgs.hasOption("v")) {
+                    System.err.println(e.getLocalizedMessage());
+                    System.err.println(e.getCause().getLocalizedMessage());
+                } else if (parsedCliArgs.hasOption("vv")) {
                     throw e;
                 }
             }
