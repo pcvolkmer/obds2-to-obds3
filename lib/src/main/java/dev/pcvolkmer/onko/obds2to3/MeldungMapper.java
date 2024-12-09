@@ -37,6 +37,9 @@ import java.util.Optional;
 
 class MeldungMapper {
 
+    private static final String MUST_NOT_BE_NULL = "ADT_GEKID must not be null at this point";
+    private static final String DIAGNOSE_SHOULD_NOT_BE_NULL = "ADT_GEKID diagnose should not be null at this point";
+
     private MeldungMapper() {}
 
     /**
@@ -73,7 +76,7 @@ class MeldungMapper {
      */
     private static Optional<MengeZusatzitemTyp> getMengeZusatzitemTyp(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
         if (null == source) {
-            throw new IllegalArgumentException("ADT_GEKID must not be null at this point");
+            throw new IllegalArgumentException(MUST_NOT_BE_NULL);
         }
 
         var mengeZusatzitem = source.getMengeZusatzitem();
@@ -110,7 +113,7 @@ class MeldungMapper {
      */
     private static Optional<Meldung> getMeldungTod(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
         if (null == source) {
-            throw new IllegalArgumentException("ADT_GEKID must not be null at this point");
+            throw new IllegalArgumentException(MUST_NOT_BE_NULL);
         }
 
         var meldung = getMeldungsRumpf(source);
@@ -158,7 +161,7 @@ class MeldungMapper {
 
     private static List<Meldung> getMappedTumorkonferenzen(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
         if (null == source) {
-            throw new IllegalArgumentException("ADT_GEKID must not be null at this point");
+            throw new IllegalArgumentException(MUST_NOT_BE_NULL);
         }
 
         var mengeTumorkonferenz = source.getMengeTumorkonferenz();
@@ -195,7 +198,7 @@ class MeldungMapper {
 
     private static List<Meldung> getMappedVerlauf(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
         if (null == source) {
-            throw new IllegalArgumentException("ADT_GEKID must not be null at this point");
+            throw new IllegalArgumentException(MUST_NOT_BE_NULL);
         }
 
         var mengeVerlauf = source.getMengeVerlauf();
@@ -255,7 +258,7 @@ class MeldungMapper {
     private static Meldung getMeldungDiagnose(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
         var diagnose = source.getDiagnose();
         if (null == diagnose) {
-            throw new IllegalArgumentException("ADT_GEKID diagnose should not be null at this point");
+            throw new IllegalArgumentException(DIAGNOSE_SHOULD_NOT_BE_NULL);
         }
 
         var mappedDiagnose = new DiagnoseTyp();
