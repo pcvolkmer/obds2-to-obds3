@@ -125,7 +125,7 @@ public class ObdsMapper {
             return result;
         }
 
-        throw new RuntimeException("Cannot validate result using oBDS schema");
+        throw new SchemaValidatorException("Cannot validate result using oBDS schema");
     }
 
 }

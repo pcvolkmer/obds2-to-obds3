@@ -49,7 +49,7 @@ class SchemaValidatorTest {
         var xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<ADT_GEKID xmlns=\"http://www.gekid.de/namespace\" Schema_Version=\"2.2.3\"></ADT_GEKID>";
 
-        var cause = assertThrows(SchemaValidator.SchemaValidatorException.class, () -> {
+        var cause = assertThrows(SchemaValidatorException.class, () -> {
             SchemaValidator.isValid(xmlString, SchemaValidator.SchemaVersion.ADT_GEKID_2_2_3);
         }).getCause();
 
@@ -71,7 +71,7 @@ class SchemaValidatorTest {
         var xmlString = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
                 "<oBDS xmlns=\"http://www.basisdatensatz.de/oBDS/XML\" Schema_Version=\"3.0.3\"></oBDS>";
 
-        var cause = assertThrows(SchemaValidator.SchemaValidatorException.class, () -> {
+        var cause = assertThrows(SchemaValidatorException.class, () -> {
             SchemaValidator.isValid(xmlString, SchemaValidator.SchemaVersion.OBDS_3_0_3);
         }).getCause();
 
