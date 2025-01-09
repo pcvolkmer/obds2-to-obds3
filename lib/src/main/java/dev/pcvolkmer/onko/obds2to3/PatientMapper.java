@@ -152,8 +152,8 @@ class PatientMapper {
         var mappedFruehereNamen = new PatientenStammdatenMelderTyp.MengeFruehererName();
         if (stammdaten.getMengeFruehererName() != null) {
             mappedFruehereNamen.getFruehererName().addAll(stammdaten.getMengeFruehererName().getPatientenFruehererName());
+            mappedStammdaten.setMengeFruehererName(mappedFruehereNamen);
         }
-        mappedStammdaten.setMengeFruehererName(mappedFruehereNamen);
 
         return mappedStammdaten;
     }
