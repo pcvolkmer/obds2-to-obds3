@@ -102,18 +102,23 @@ class PatientMapper {
         var mappedStammdaten = new PatientenStammdatenMelderTyp();
 
         // Erste aktuell gültige Adresse
-        stammdaten.getMengeAdresse().getAdresse().stream()
-                .filter(Objects::nonNull)
-                .filter(PatientMapper::aktuellGueltigeAdresse)
-                .findFirst().ifPresent(adresse -> {
-                    var mappedAdresse = new PatientenAdresseMelderTyp();
-                    mappedAdresse.setHausnummer(adresse.getPatientenHausnummer());
-                    mappedAdresse.setStrasse(adresse.getPatientenStrasse());
-                    mappedAdresse.setPLZ(adresse.getPatientenPLZ());
-                    mappedAdresse.setOrt(adresse.getPatientenOrt());
-                    mappedAdresse.setLand(adresse.getPatientenLand());
-                    mappedStammdaten.setAdresse(mappedAdresse);
-                });
+        if (null != stammdaten.getMengeAdresse()) {
+            stammdaten.getMengeAdresse().getAdresse().stream()
+                    .filter(Objects::nonNull)
+                    .filter(PatientMapper::aktuellGueltigeAdresse)
+                    .findFirst().ifPresent(adresse -> {
+                        var mappedAdresse = new PatientenAdresseMelderTyp();
+                        mappedAdresse.setHausnummer(adresse.getPatientenHausnummer());
+                        mappedAdresse.setStrasse(adresse.getPatientenStrasse());
+                        mappedAdresse.setPLZ(adresse.getPatientenPLZ());
+                        mappedAdresse.setOrt(adresse.getPatientenOrt());
+                        mappedAdresse.setLand(adresse.getPatientenLand());
+                        mappedStammdaten.setAdresse(mappedAdresse);
+                    });
+        } else {
+            // Use empty address, if no address available in V2
+            mappedStammdaten.setAdresse(new PatientenAdresseMelderTyp());
+        }
 
         // Stammdaten - Krankenkasse: In oBDS v2 keine Unterscheidung GKV/PKV
         // Aktuell als GKV behandelt

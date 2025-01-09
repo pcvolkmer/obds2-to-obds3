@@ -49,6 +49,7 @@ class ObdsMapperTest {
             "testdaten/obdsv2_modul_prostata.xml,testdaten/obdsv3_modul_prostata.xml",
             "testdaten/obdsv2_zusatzitems.xml,testdaten/obdsv3_zusatzitems.xml",
             "testdaten/obdsv2_histologie.xml,testdaten/obdsv3_histologie.xml",
+            "testdaten/obdsv2_ohne-adresse.xml,testdaten/obdsv3_ohne-adresse.xml",
     })
     void shouldMapObdsFile(String obdsV2File, String obdsV3File) throws Exception {
         var obdsV2String = new String(getClass().getClassLoader().getResource(obdsV2File).openStream().readAllBytes());
