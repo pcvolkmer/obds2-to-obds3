@@ -19,7 +19,7 @@ public class Application {
         options.addOption(
                 Option.builder("o").argName("output").hasArg().desc("Output file").converter(File::new).build());
         options.addOption(
-                Option.builder("ignore-unmappable-messages").desc("Ugnore unmappable messages").build());
+                Option.builder("ignore-unmappable-messages").desc("Ignore unmappable messages").build());
         options.addOption(
                 Option.builder("v").desc("Show errors").build());
         options.addOption(
