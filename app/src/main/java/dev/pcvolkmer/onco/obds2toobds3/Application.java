@@ -19,6 +19,8 @@ public class Application {
         options.addOption(
                 Option.builder("o").argName("output").hasArg().desc("Output file").converter(File::new).build());
         options.addOption(
+                Option.builder("ignore-unmappable-messages").desc("Ugnore unmappable messages").build());
+        options.addOption(
                 Option.builder("v").desc("Show errors").build());
         options.addOption(
                 Option.builder("vv").desc("Show exceptions and stack traces").build());
@@ -32,7 +34,9 @@ public class Application {
                 var input = Paths.get(parsedCliArgs.getOptionValue("i"));
                 var output = Paths.get(parsedCliArgs.getOptionValue("o"));
 
-                var mapper = new ObdsMapper();
+                var mapper = ObdsMapper.builder()
+                        .ignoreUnmappableMessages(parsedCliArgs.hasOption("ignore-unmappable-messages"))
+                        .build();
                 var bomInputStream = BOMInputStream.builder().setInputStream(Files.newInputStream(input)).get();
 
                 var inputObj = mapper.readValue(IOUtils.toString(bomInputStream, StandardCharsets.UTF_8),

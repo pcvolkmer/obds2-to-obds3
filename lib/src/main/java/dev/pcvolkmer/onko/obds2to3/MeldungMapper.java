@@ -29,26 +29,38 @@ import de.basisdatensatz.obds.v3.*;
 import de.basisdatensatz.obds.v3.DiagnoseTyp.MengeFruehereTumorerkrankung.FruehereTumorerkrankung;
 import de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 class MeldungMapper {
 
     private static final String MUST_NOT_BE_NULL = "ADT_GEKID must not be null at this point";
     private static final String DIAGNOSE_SHOULD_NOT_BE_NULL = "ADT_GEKID diagnose should not be null at this point";
+    private static final String TUMORZUORDUNG_SHOULD_NOT_BE_NULL = "ADT_GEKID tumorzuordung should not be null at this point - required for oBDS v3";
 
-    private MeldungMapper() {}
+    private final boolean ignoreUnmappableMessages;
+
+    MeldungMapper(boolean ignoreUnmappableMessages) {
+        this.ignoreUnmappableMessages = ignoreUnmappableMessages;
+    }
 
     /**
      * Mappe eine ADT_GEKID oBDS v2 Meldung in eine Liste von oBDS v3 Meldungen
      *
-     * @param source
+     * @param source The source message
      * @return
      */
-    public static List<Meldung> map(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+    public List<Meldung> map(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+        if (null == source) {
+            throw new IllegalArgumentException(MUST_NOT_BE_NULL);
+        }
+
+        if (null == source.getTumorzuordnung()) {
+            if (ignoreUnmappableMessages) {
+                return new ArrayList<>();
+            }
+            throw new UnmappableItemException(TUMORZUORDUNG_SHOULD_NOT_BE_NULL);
+        }
+
         var result = new ArrayList<Meldung>();
         // Diagnose als einzelne Meldung
         var diagnosemeldung = getMeldungDiagnose(source);

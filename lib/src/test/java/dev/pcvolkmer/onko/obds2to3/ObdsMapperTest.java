@@ -26,10 +26,12 @@ package dev.pcvolkmer.onko.obds2to3;
 
 import de.basisdatensatz.obds.v2.ADTGEKID;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ObdsMapperTest {
 
@@ -37,7 +39,7 @@ class ObdsMapperTest {
 
     @BeforeEach
     void setUp() {
-        mapper = new ObdsMapper();
+        mapper = ObdsMapper.builder().build();
     }
 
     @ParameterizedTest
@@ -50,11 +52,34 @@ class ObdsMapperTest {
             "testdaten/obdsv2_zusatzitems.xml,testdaten/obdsv3_zusatzitems.xml",
             "testdaten/obdsv2_histologie.xml,testdaten/obdsv3_histologie.xml",
             "testdaten/obdsv2_ohne-adresse.xml,testdaten/obdsv3_ohne-adresse.xml",
-            "testdaten/obdsv2_keine-fruehere-namen.xml,testdaten/obdsv3_keine-fruehere-namen.xml",
+            "testdaten/obdsv2_keine-fruehere-namen.xml,testdaten/obdsv3_keine-fruehere-namen.xml"
     })
     void shouldMapObdsFile(String obdsV2File, String obdsV3File) throws Exception {
         var obdsV2String = new String(getClass().getClassLoader().getResource(obdsV2File).openStream().readAllBytes());
         var obdsV3String = new String(getClass().getClassLoader().getResource(obdsV3File).openStream().readAllBytes());
+
+        var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
+        assertThat(obdsv2).isNotNull();
+
+        assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
+    }
+
+    @Test
+    void shouldNotMapObdsFileWithUnmappableMessages() throws Exception {
+        var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_keine-tumorzuordung.xml").openStream().readAllBytes());
+
+        var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
+        assertThat(obdsv2).isNotNull();
+
+        assertThrows(UnmappableItemException.class, () -> mapper.writeMappedXmlString(obdsv2));
+    }
+
+    @Test
+    void shouldMapObdsFileIgnoringUnmappableMessages() throws Exception {
+        mapper = ObdsMapper.builder().ignoreUnmappableMessages(true).build();
+
+        var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_keine-tumorzuordung.xml").openStream().readAllBytes());
+        var obdsV3String = new String(getClass().getClassLoader().getResource("testdaten/obdsv3_keine-tumorzuordung.xml").openStream().readAllBytes());
 
         var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
         assertThat(obdsv2).isNotNull();
