@@ -36,10 +36,13 @@ import java.util.Objects;
 
 class PatientMapper {
 
-    private PatientMapper() {
+    private final MeldungMapper meldungMapper;
+
+    PatientMapper(boolean ignoreUnmappableMessages) {
+        this.meldungMapper = new MeldungMapper(ignoreUnmappableMessages);
     }
 
-    public static OBDS.MengePatient.Patient map(ADTGEKID.MengePatient.Patient source) {
+    public OBDS.MengePatient.Patient map(ADTGEKID.MengePatient.Patient source) {
         if (null == source) {
             throw new IllegalArgumentException("Source cannot be null");
         }
@@ -55,7 +58,7 @@ class PatientMapper {
 
         // Meldungen
         var mappedMeldungen = source.getMengeMeldung().getMeldung().stream()
-                .map(MeldungMapper::map)
+                .map(meldungMapper::map)
                 .flatMap(List::stream)
                 .toList();
 

@@ -39,8 +39,9 @@ import java.util.Optional;
 public class ObdsMapper {
 
     private final XmlMapper mapper;
+    private final PatientMapper patientMapper;
 
-    public ObdsMapper() {
+    private ObdsMapper(boolean ignoreUnmappableMessages) {
         mapper = XmlMapper.builder()
                 .defaultUseWrapper(false)
                 .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd"))
@@ -49,6 +50,11 @@ public class ObdsMapper {
                 .enable(SerializationFeature.INDENT_OUTPUT)
                 .serializationInclusion(JsonInclude.Include.NON_EMPTY)
                 .build();
+        patientMapper = new PatientMapper(ignoreUnmappableMessages);
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public OBDS map(ADTGEKID adtgekid) {
@@ -84,7 +90,7 @@ public class ObdsMapper {
         assert mengePatient != null;
 
         var mappedMengePatient = new OBDS.MengePatient();
-        mappedMengePatient.getPatient().addAll(mengePatient.getPatient().stream().map(PatientMapper::map).toList());
+        mappedMengePatient.getPatient().addAll(mengePatient.getPatient().stream().map(patientMapper::map).toList());
         obds.setMengePatient(mappedMengePatient);
 
         // Menge Melder
@@ -128,4 +134,16 @@ public class ObdsMapper {
         throw new SchemaValidatorException("Cannot validate result using oBDS schema");
     }
 
+    public static class Builder {
+        private boolean ignoreUnmappableMessages;
+
+        public Builder ignoreUnmappableMessages(boolean ignoreUnmappableMessages) {
+            this.ignoreUnmappableMessages = ignoreUnmappableMessages;
+            return this;
+        }
+
+        public ObdsMapper build() {
+            return new ObdsMapper(ignoreUnmappableMessages);
+        }
+    }
 }
