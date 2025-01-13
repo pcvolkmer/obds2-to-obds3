@@ -15,13 +15,13 @@ public class Application {
     public static void main(String[] args) throws Exception {
         final var options = new Options();
         options.addOption(
-                Option.builder("i").argName("input").hasArg().desc("Input file").converter(File::new).build());
+                Option.builder("i").longOpt("input").argName("input").hasArg().desc("Input file").converter(File::new).build());
         options.addOption(
-                Option.builder("o").argName("output").hasArg().desc("Output file").converter(File::new).build());
+                Option.builder("o").longOpt("output").argName("output").hasArg().desc("Output file").converter(File::new).build());
         options.addOption(
-                Option.builder("ignore-unmappable-messages").desc("Ignore unmappable messages").build());
+                Option.builder().longOpt("ignore-unmappable-messages").desc("Ignore unmappable messages").build());
         options.addOption(
-                Option.builder("ignore-unmappable-patients").desc("Ignore unmappable patients. This also enables '--ignore-unmappable-messages'").build());
+                Option.builder().longOpt("ignore-unmappable-patients").desc("Ignore unmappable patients. This also enables '--ignore-unmappable-messages'").build());
         options.addOption(
                 Option.builder("v").desc("Show errors").build());
         options.addOption(
