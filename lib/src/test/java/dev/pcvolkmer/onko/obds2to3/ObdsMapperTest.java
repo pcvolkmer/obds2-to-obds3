@@ -87,4 +87,29 @@ class ObdsMapperTest {
         assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
     }
 
+    @Test
+    void shouldMapObdsFileIgnoringUnmappablePatient() throws Exception {
+        mapper = ObdsMapper.builder()
+                .ignoreUnmappablePatients(true)
+                .build();
+
+        var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_nicht-mappbarer-patient.xml").openStream().readAllBytes());
+        var obdsV3String = new String(getClass().getClassLoader().getResource("testdaten/obdsv3_nicht-mappbarer-patient.xml").openStream().readAllBytes());
+
+        var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
+        assertThat(obdsv2).isNotNull();
+
+        assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
+    }
+
+    @Test
+    void shouldNotMapObdsFileWithUnmappablePatient() throws Exception {
+        var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_nicht-mappbarer-patient.xml").openStream().readAllBytes());
+
+        var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
+        assertThat(obdsv2).isNotNull();
+
+        assertThrows(UnmappableItemException.class, () -> mapper.writeMappedXmlString(obdsv2));
+    }
+
 }
