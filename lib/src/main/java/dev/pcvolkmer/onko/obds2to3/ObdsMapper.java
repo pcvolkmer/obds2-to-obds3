@@ -41,7 +41,9 @@ public class ObdsMapper {
     private final XmlMapper mapper;
     private final PatientMapper patientMapper;
 
-    private ObdsMapper(boolean ignoreUnmappableMessages) {
+    private final boolean ignoreEmptyPatients;
+
+    private ObdsMapper(boolean ignoreUnmappableMessages, boolean ignoreEmptyPatients) {
         mapper = XmlMapper.builder()
                 .defaultUseWrapper(false)
                 .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd"))
@@ -50,6 +52,7 @@ public class ObdsMapper {
                 .enable(SerializationFeature.INDENT_OUTPUT)
                 .serializationInclusion(JsonInclude.Include.NON_EMPTY)
                 .build();
+        this.ignoreEmptyPatients = ignoreEmptyPatients;
         patientMapper = new PatientMapper(ignoreUnmappableMessages);
     }
 
@@ -90,7 +93,12 @@ public class ObdsMapper {
         assert mengePatient != null;
 
         var mappedMengePatient = new OBDS.MengePatient();
-        mappedMengePatient.getPatient().addAll(mengePatient.getPatient().stream().map(patientMapper::map).toList());
+        mappedMengePatient.getPatient().addAll(
+                mengePatient.getPatient().stream()
+                        .map(patientMapper::map)
+                        .filter(patient -> !ignoreEmptyPatients || (null != patient.getMengeMeldung() && !patient.getMengeMeldung().getMeldung().isEmpty()))
+                        .toList()
+        );
         obds.setMengePatient(mappedMengePatient);
 
         // Menge Melder
@@ -136,14 +144,27 @@ public class ObdsMapper {
 
     public static class Builder {
         private boolean ignoreUnmappableMessages;
+        private boolean ignoreUnmappablePatients;
 
         public Builder ignoreUnmappableMessages(boolean ignoreUnmappableMessages) {
             this.ignoreUnmappableMessages = ignoreUnmappableMessages;
             return this;
         }
 
+        /**
+         * Sets <code>ignoreUnmappablePatients</code>.
+         * If set to <code>true</code>, <code>ignoreUnmappableMessages</code> is set to <code>true</code>, too.
+         * @param ignoreUnmappablePatients
+         * @return Builder
+         */
+        public Builder ignoreUnmappablePatients(boolean ignoreUnmappablePatients) {
+            this.ignoreUnmappablePatients = ignoreUnmappablePatients;
+            this.ignoreUnmappableMessages = this.ignoreUnmappableMessages || ignoreUnmappablePatients;
+            return this;
+        }
+
         public ObdsMapper build() {
-            return new ObdsMapper(ignoreUnmappableMessages);
+            return new ObdsMapper(ignoreUnmappableMessages, ignoreUnmappablePatients);
         }
     }
 }
