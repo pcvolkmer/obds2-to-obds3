@@ -46,6 +46,19 @@ public class Application {
                         ADTGEKID.class);
                 var mappedString = mapper.writeMappedXmlString(inputObj);
 
+                if (parsedCliArgs.hasOption("v") || parsedCliArgs.hasOption("vv")) {
+                    var outputObj = mapper.map(inputObj);
+                    var inPatientsCount = inputObj.getMengePatient().getPatient().size();
+                    var inMessagesCount = inputObj.getMengePatient().getPatient().stream()
+                            .mapToLong(patient -> patient.getMengeMeldung().getMeldung().size()).sum();
+                    var outPatientsCount = outputObj.getMengePatient().getPatient().size();
+                    var outMessageCount = outputObj.getMengePatient().getPatient().stream()
+                            .mapToLong(patient -> patient.getMengeMeldung().getMeldung().size()).sum();
+
+                    System.err.println(String.format("Patienten >  In: %d, Out: %d ", inPatientsCount, outPatientsCount));
+                    System.err.println(String.format("Meldungen >  In: %d, Out: %d ", inMessagesCount, outMessageCount));
+                }
+
                 Files.writeString(output, mappedString);
             } catch (Exception e) {
                 System.err.println("Konvertierung fehlgeschlagen");
