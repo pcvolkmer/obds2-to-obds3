@@ -76,7 +76,7 @@ class ObdsMapperTest {
 
     @Test
     void shouldMapObdsFileIgnoringUnmappableMessages() throws Exception {
-        mapper = ObdsMapper.builder().ignoreUnmappableMessages(true).build();
+        mapper = ObdsMapper.builder().ignoreUnmappable(true).build();
 
         var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_keine-tumorzuordung.xml").openStream().readAllBytes());
         var obdsV3String = new String(getClass().getClassLoader().getResource("testdaten/obdsv3_keine-tumorzuordung.xml").openStream().readAllBytes());
@@ -90,7 +90,7 @@ class ObdsMapperTest {
     @Test
     void shouldMapObdsFileIgnoringUnmappablePatient() throws Exception {
         mapper = ObdsMapper.builder()
-                .ignoreUnmappablePatients(true)
+                .ignoreUnmappable(true)
                 .build();
 
         var obdsV2String = new String(getClass().getClassLoader().getResource("testdaten/obdsv2_nicht-mappbarer-patient.xml").openStream().readAllBytes());
