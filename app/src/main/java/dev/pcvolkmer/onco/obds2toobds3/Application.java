@@ -19,9 +19,7 @@ public class Application {
         options.addOption(
                 Option.builder("o").longOpt("output").argName("output").hasArg().desc("Output file").converter(File::new).build());
         options.addOption(
-                Option.builder().longOpt("ignore-unmappable-messages").desc("Ignore unmappable messages").build());
-        options.addOption(
-                Option.builder().longOpt("ignore-unmappable-patients").desc("Ignore unmappable patients. This also enables '--ignore-unmappable-messages'").build());
+                Option.builder().longOpt("ignore-unmappable").desc("Ignore unmappable messages and patients").build());
         options.addOption(
                 Option.builder("v").desc("Show errors").build());
         options.addOption(
@@ -37,8 +35,7 @@ public class Application {
                 var output = Paths.get(parsedCliArgs.getOptionValue("o"));
 
                 var mapper = ObdsMapper.builder()
-                        .ignoreUnmappableMessages(parsedCliArgs.hasOption("ignore-unmappable-messages"))
-                        .ignoreUnmappablePatients(parsedCliArgs.hasOption("ignore-unmappable-patients"))
+                        .ignoreUnmappable(parsedCliArgs.hasOption("ignore-unmappable"))
                         .build();
                 var bomInputStream = BOMInputStream.builder().setInputStream(Files.newInputStream(input)).get();
 
