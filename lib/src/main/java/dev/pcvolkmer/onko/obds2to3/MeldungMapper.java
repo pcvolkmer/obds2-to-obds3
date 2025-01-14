@@ -54,7 +54,10 @@ class MeldungMapper {
             throw new IllegalArgumentException(MUST_NOT_BE_NULL);
         }
 
-        if (null == source.getTumorzuordnung()) {
+        if (
+                null == source.getTumorzuordnung()
+                        && (null == source.getDiagnose() || null == source.getDiagnose().getPrimaertumorICDCode() || null == source.getDiagnose().getPrimaertumorICDVersion())
+        ) {
             if (ignoreUnmappableMessages) {
                 return new ArrayList<>();
             }
@@ -74,10 +77,44 @@ class MeldungMapper {
         // Verlauf - Hier: oBDS v2 Verlauf - Tod
         getMeldungTod(source).ifPresent(result::add);
 
+        // Für jede Meldung: Ergänze Tumorzuordnung aus Diagnose, wenn möglich und noch nicht vorhanden
+        result.forEach(meldung -> {
+            if (null == meldung.getTumorzuordnung()) {
+                getMappedTumorzuordung(source.getDiagnose()).ifPresent(
+                        meldung::setTumorzuordnung
+                );
+            }
+        });
+
         // Nicht direkt Mappbar: Meldeanlass -> Untertypen
         // TODO other items: Pathologie, OP, ST, SYST, Menge_Zusatzitem
 
-        return result;
+        return result.stream()
+                .filter(meldung -> !ignoreUnmappableMessages || (null != meldung.getTumorzuordnung() && null != meldung.getTumorzuordnung().getTumorID()))
+                .toList();
+    }
+
+    private static Optional<TumorzuordnungTyp> getMappedTumorzuordung(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.Diagnose source) {
+        if (null == source || null == source.getDiagnosedatum() || null == source.getPrimaertumorICDCode() || null == source.getPrimaertumorICDVersion()) {
+            return Optional.empty();
+        }
+
+        var mappedTumorzuordnung = new TumorzuordnungTyp();
+        mappedTumorzuordnung.setTumorID(source.getTumorID());
+        // Datum
+        MapperUtils.mapDateString(source.getDiagnosedatum()).ifPresent(mappedTumorzuordnung::setDiagnosedatum);
+        // ICD10
+        var icd10 = new TumorICDTyp();
+        icd10.setCode(source.getPrimaertumorICDCode());
+        icd10.setVersion(source.getPrimaertumorICDVersion());
+        mappedTumorzuordnung.setPrimaertumorICD(icd10);
+        // Morphologie nicht in oBDS v2 ?
+        // Seitenlokalisation: mapping über Enum - beide {'L'|'R'|'B'|'M'|'U'|'T'}
+        if (null != source.getSeitenlokalisation()) {
+            mappedTumorzuordnung.setSeitenlokalisation(SeitenlokalisationTyp.fromValue(source.getSeitenlokalisation().value()));
+        }
+
+        return Optional.of(mappedTumorzuordnung);
     }
 
     /**
