@@ -28,7 +28,7 @@ public class Application {
         final var parsedCliArgs = DefaultParser.builder().build().parse(options, args);
 
         if (parsedCliArgs.hasOption("h") || !parsedCliArgs.hasOption("i") || !parsedCliArgs.hasOption("o")) {
-            new HelpFormatter().printHelp("obds2toobds3 --input <input file> --output <output file>", options);
+            new HelpFormatter().printHelp("java -jar obds2-to-obds3-app.jar --input <input file> --output <output file>", options);
         } else {
             try {
                 var input = Paths.get(parsedCliArgs.getOptionValue("i"));
