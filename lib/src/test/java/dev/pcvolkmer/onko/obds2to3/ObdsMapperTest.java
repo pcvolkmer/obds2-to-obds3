@@ -65,15 +65,21 @@ class ObdsMapperTest {
         assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
     }
 
-    @Test
-    void shouldNotMapObdsFileWithUnmappableMessages() throws Exception {
+    @ParameterizedTest
+    @CsvSource({
+            "testdaten/obdsv2_keine-tumorzuordung.xml,ADT_GEKID tumorzuordung should not be null at this point - required for oBDS v3",
+            "testdaten/obdsv2_nicht-mappbarer-patient.xml,ADT_GEKID tumorzuordung should not be null at this point - required for oBDS v3",
+            "testdaten/obdsv2_diagnose-zu-tumorzuordung-keinetumorid.xml,ADT_GEKID attribute 'Tumor_ID' must not be null at this point - required for oBDS v3"
+    })
+    void shouldNotMapObdsFileAndThrowUnmappableItemException(String obdsV2File, String message) throws Exception {
         var obdsV2String = new String(getClass().getClassLoader()
-                .getResource("testdaten/obdsv2_keine-tumorzuordung.xml").openStream().readAllBytes());
+                .getResource(obdsV2File).openStream().readAllBytes());
 
         var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
         assertThat(obdsv2).isNotNull();
 
-        assertThrows(UnmappableItemException.class, () -> mapper.writeMappedXmlString(obdsv2));
+        var exception = assertThrows(UnmappableItemException.class, () -> mapper.writeMappedXmlString(obdsv2));
+        assertThat(exception).hasMessage(message);
     }
 
     @Test
@@ -109,35 +115,15 @@ class ObdsMapperTest {
     }
 
     @Test
-    void shouldNotMapObdsFileWithUnmappablePatient() throws Exception {
-        var obdsV2String = new String(getClass().getClassLoader()
-                .getResource("testdaten/obdsv2_nicht-mappbarer-patient.xml").openStream().readAllBytes());
-
-        var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
-        assertThat(obdsv2).isNotNull();
-
-        assertThrows(UnmappableItemException.class, () -> mapper.writeMappedXmlString(obdsv2));
-    }
-
-    @Test
-    void shouldNotMapObdsFileWithoutRequiredTumorId() throws Exception {
-        var obdsV2String = new String(getClass().getClassLoader()
-                .getResource("testdaten/obdsv2_diagnose-zu-tumorzuordung-keinetumorid.xml").openStream().readAllBytes());
-
-        var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
-        assertThat(obdsv2).isNotNull();
-
-        assertThrows(UnmappableItemException.class, () -> mapper.writeMappedXmlString(obdsv2));
-    }
-
-    @Test
     void shouldMapObdsFileWithGeneratedTumorId() throws Exception {
         mapper = ObdsMapper.builder().fixMissingId(true).build();
 
         var obdsV2String = new String(getClass().getClassLoader()
-                .getResource("testdaten/obdsv2_diagnose-zu-tumorzuordung-keinetumorid.xml").openStream().readAllBytes());
+                .getResource("testdaten/obdsv2_diagnose-zu-tumorzuordung-keinetumorid.xml").openStream()
+                .readAllBytes());
         var obdsV3String = new String(getClass().getClassLoader()
-                .getResource("testdaten/obdsv3_diagnose-zu-tumorzuordung-keinetumorid.xml").openStream().readAllBytes());
+                .getResource("testdaten/obdsv3_diagnose-zu-tumorzuordung-keinetumorid.xml").openStream()
+                .readAllBytes());
 
         var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
         assertThat(obdsv2).isNotNull();
