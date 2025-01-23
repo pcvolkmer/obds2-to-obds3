@@ -15,11 +15,15 @@ public class Application {
     public static void main(String[] args) throws Exception {
         final var options = new Options();
         options.addOption(
-                Option.builder("i").longOpt("input").argName("input").hasArg().desc("Input file").converter(File::new).build());
+                Option.builder("i").longOpt("input").argName("input").hasArg().desc("Input file").converter(File::new)
+                        .build());
         options.addOption(
-                Option.builder("o").longOpt("output").argName("output").hasArg().desc("Output file").converter(File::new).build());
+                Option.builder("o").longOpt("output").argName("output").hasArg().desc("Output file")
+                        .converter(File::new).build());
         options.addOption(
                 Option.builder().longOpt("ignore-unmappable").desc("Ignore unmappable messages and patients").build());
+        options.addOption(
+                Option.builder().longOpt("fix-missing-id").desc("Fix missing IDs by generating hash values").build());
         options.addOption(
                 Option.builder("v").desc("Show errors").build());
         options.addOption(
@@ -28,7 +32,8 @@ public class Application {
         final var parsedCliArgs = DefaultParser.builder().build().parse(options, args);
 
         if (parsedCliArgs.hasOption("h") || !parsedCliArgs.hasOption("i") || !parsedCliArgs.hasOption("o")) {
-            new HelpFormatter().printHelp("java -jar obds2-to-obds3-app.jar --input <input file> --output <output file>", options);
+            new HelpFormatter()
+                    .printHelp("java -jar obds2-to-obds3-app.jar --input <input file> --output <output file>", options);
         } else {
             try {
                 var input = Paths.get(parsedCliArgs.getOptionValue("i"));
@@ -36,6 +41,7 @@ public class Application {
 
                 var mapper = ObdsMapper.builder()
                         .ignoreUnmappable(parsedCliArgs.hasOption("ignore-unmappable"))
+                        .fixMissingId(parsedCliArgs.hasOption("fix-missing-id"))
                         .build();
                 var bomInputStream = BOMInputStream.builder().setInputStream(Files.newInputStream(input)).get();
 
@@ -52,8 +58,10 @@ public class Application {
                     var outMessageCount = outputObj.getMengePatient().getPatient().stream()
                             .mapToLong(patient -> patient.getMengeMeldung().getMeldung().size()).sum();
 
-                    System.err.println(String.format("Patienten >  In: %d, Out: %d ", inPatientsCount, outPatientsCount));
-                    System.err.println(String.format("Meldungen >  In: %d, Out: %d ", inMessagesCount, outMessageCount));
+                    System.err
+                            .println(String.format("Patienten >  In: %d, Out: %d ", inPatientsCount, outPatientsCount));
+                    System.err
+                            .println(String.format("Meldungen >  In: %d, Out: %d ", inMessagesCount, outMessageCount));
                 }
 
                 Files.writeString(output, mappedString);

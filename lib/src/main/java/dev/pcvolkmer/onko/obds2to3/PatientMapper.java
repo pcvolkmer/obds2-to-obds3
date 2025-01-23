@@ -38,8 +38,8 @@ class PatientMapper {
 
     private final MeldungMapper meldungMapper;
 
-    PatientMapper(boolean ignoreUnmappableMessages) {
-        this.meldungMapper = new MeldungMapper(ignoreUnmappableMessages);
+    PatientMapper(boolean ignoreUnmappableMessages, boolean fixMissingId) {
+        this.meldungMapper = new MeldungMapper(ignoreUnmappableMessages, fixMissingId);
     }
 
     public OBDS.MengePatient.Patient map(ADTGEKID.MengePatient.Patient source) {
@@ -68,10 +68,12 @@ class PatientMapper {
         return patient;
     }
 
-    /** If
+    /**
+     * If
      *
      */
-    static boolean aktuellGueltigeAdresse(ADTGEKID.MengePatient.Patient.PatientenStammdaten.MengeAdresse.Adresse adresse) {
+    static boolean aktuellGueltigeAdresse(
+            ADTGEKID.MengePatient.Patient.PatientenStammdaten.MengeAdresse.Adresse adresse) {
         if (null == adresse) {
             throw new IllegalArgumentException("Address should not be null at this point");
         }
@@ -100,7 +102,8 @@ class PatientMapper {
         return false;
     }
 
-    private static PatientenStammdatenMelderTyp getMappedStammdaten(ADTGEKID.MengePatient.Patient.PatientenStammdaten stammdaten) {
+    private static PatientenStammdatenMelderTyp getMappedStammdaten(
+            ADTGEKID.MengePatient.Patient.PatientenStammdaten stammdaten) {
         // Stammdaten
         var mappedStammdaten = new PatientenStammdatenMelderTyp();
 
@@ -154,7 +157,8 @@ class PatientMapper {
         // Frühere Namen
         var mappedFruehereNamen = new PatientenStammdatenMelderTyp.MengeFruehererName();
         if (stammdaten.getMengeFruehererName() != null) {
-            mappedFruehereNamen.getFruehererName().addAll(stammdaten.getMengeFruehererName().getPatientenFruehererName());
+            mappedFruehereNamen.getFruehererName()
+                    .addAll(stammdaten.getMengeFruehererName().getPatientenFruehererName());
             mappedStammdaten.setMengeFruehererName(mappedFruehereNamen);
         }
 

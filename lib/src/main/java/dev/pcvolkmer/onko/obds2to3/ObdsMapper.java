@@ -43,7 +43,7 @@ public class ObdsMapper {
 
     private final boolean ignoreUnmappable;
 
-    private ObdsMapper(boolean ignoreUnmappable) {
+    private ObdsMapper(boolean ignoreUnmappable, boolean fixMissingId) {
         mapper = XmlMapper.builder()
                 .defaultUseWrapper(false)
                 .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd"))
@@ -53,7 +53,7 @@ public class ObdsMapper {
                 .serializationInclusion(JsonInclude.Include.NON_EMPTY)
                 .build();
         this.ignoreUnmappable = ignoreUnmappable;
-        patientMapper = new PatientMapper(ignoreUnmappable);
+        patientMapper = new PatientMapper(ignoreUnmappable, fixMissingId);
     }
 
     public static Builder builder() {
@@ -76,12 +76,12 @@ public class ObdsMapper {
                         .map(MapperUtils::mapDateString)
                         .filter(Optional::isPresent)
                         .map(Optional::get)
-                        .findFirst()
-                )
+                        .findFirst())
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findFirst()
-                .ifPresent(datumTagOderMonatOderJahrOderNichtGenauTyp -> obds.setMeldedatum(datumTagOderMonatOderJahrOderNichtGenauTyp.getValue()));
+                .ifPresent(datumTagOderMonatOderJahrOderNichtGenauTyp -> obds
+                        .setMeldedatum(datumTagOderMonatOderJahrOderNichtGenauTyp.getValue()));
 
         // Absender der Meldung
         var absender = adtgekid.getAbsender();
@@ -96,9 +96,9 @@ public class ObdsMapper {
         mappedMengePatient.getPatient().addAll(
                 mengePatient.getPatient().stream()
                         .map(patientMapper::map)
-                        .filter(patient -> !ignoreUnmappable || (null != patient.getMengeMeldung() && !patient.getMengeMeldung().getMeldung().isEmpty()))
-                        .toList()
-        );
+                        .filter(patient -> !ignoreUnmappable || (null != patient.getMengeMeldung()
+                                && !patient.getMengeMeldung().getMeldung().isEmpty()))
+                        .toList());
         obds.setMengePatient(mappedMengePatient);
 
         // Menge Melder
@@ -107,8 +107,7 @@ public class ObdsMapper {
 
         var mappedMengeMelder = new OBDS.MengeMelder();
         mappedMengeMelder.getMelder().addAll(
-                mengeMelder.getMelder().stream().map(MelderMapper::map).toList()
-        );
+                mengeMelder.getMelder().stream().map(MelderMapper::map).toList());
         obds.setMengeMelder(mappedMengeMelder);
 
         return obds;
@@ -132,8 +131,7 @@ public class ObdsMapper {
         var result = String.format(
                 "<?xml version=\"1.0\" encoding=\"utf-8\" ?>%s%s",
                 System.lineSeparator(),
-                xmlString.replace("<oBDS ", "<oBDS xmlns=\"http://www.basisdatensatz.de/oBDS/XML\" ")
-        );
+                xmlString.replace("<oBDS ", "<oBDS xmlns=\"http://www.basisdatensatz.de/oBDS/XML\" "));
 
         if (SchemaValidator.isValid(result, SchemaValidator.SchemaVersion.OBDS_3_0_3)) {
             return result;
@@ -144,14 +142,20 @@ public class ObdsMapper {
 
     public static class Builder {
         private boolean ignoreUnmappable;
+        private boolean fixMissingId;
 
         public Builder ignoreUnmappable(boolean ignoreUnmappable) {
             this.ignoreUnmappable = ignoreUnmappable;
             return this;
         }
 
+        public Builder fixMissingId(boolean fixMissingId) {
+            this.fixMissingId = fixMissingId;
+            return this;
+        }
+
         public ObdsMapper build() {
-            return new ObdsMapper(ignoreUnmappable);
+            return new ObdsMapper(ignoreUnmappable, fixMissingId);
         }
     }
 }
