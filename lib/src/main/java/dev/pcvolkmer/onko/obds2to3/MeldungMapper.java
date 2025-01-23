@@ -31,6 +31,8 @@ import de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung;
 
 import java.util.*;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 class MeldungMapper {
 
     private static final String MUST_NOT_BE_NULL = "ADT_GEKID must not be null at this point";
@@ -80,7 +82,7 @@ class MeldungMapper {
         // Für jede Meldung: Ergänze Tumorzuordnung aus Diagnose, wenn möglich und noch nicht vorhanden
         result.forEach(meldung -> {
             if (null == meldung.getTumorzuordnung()) {
-                getMappedTumorzuordung(source.getDiagnose()).ifPresent(
+                getMappedTumorzuordung(source).ifPresent(
                         meldung::setTumorzuordnung
                 );
             }
@@ -94,13 +96,32 @@ class MeldungMapper {
                 .toList();
     }
 
-    private static Optional<TumorzuordnungTyp> getMappedTumorzuordung(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.Diagnose source) {
+    private static Optional<TumorzuordnungTyp> getMappedTumorzuordung(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung meldung) {
+        if (null == meldung) {
+            return Optional.empty();
+        }
+
+        var source = meldung.getDiagnose();
+
         if (null == source || null == source.getDiagnosedatum() || null == source.getPrimaertumorICDCode() || null == source.getPrimaertumorICDVersion()) {
             return Optional.empty();
         }
 
         var mappedTumorzuordnung = new TumorzuordnungTyp();
-        mappedTumorzuordnung.setTumorID(source.getTumorID());
+        // Übernehme Tumor-ID, wenn vorhanden
+        if (
+            null == source.getTumorID()
+            && null != source.getDiagnosedatum()
+            && null != source.getPrimaertumorICDCode()
+            && null != meldung.getMeldungID()
+        ) {
+            var generatedTumorId = DigestUtils.sha1Hex(
+                String.format("%s_%s_%s", source.getDiagnosedatum(), source.getPrimaertumorICDCode(), meldung.getMeldungID())
+            ).subSequence(0, 16);
+            mappedTumorzuordnung.setTumorID(String.format("TID_%s", generatedTumorId));
+        } else {
+            mappedTumorzuordnung.setTumorID(source.getTumorID());
+        }
         // Datum
         MapperUtils.mapDateString(source.getDiagnosedatum()).ifPresent(mappedTumorzuordnung::setDiagnosedatum);
         // ICD10
@@ -423,7 +444,20 @@ class MeldungMapper {
         var tumorzuordnung = source.getTumorzuordnung();
         if (tumorzuordnung != null) {
             var mappedTumorzuordnung = new TumorzuordnungTyp();
-            mappedTumorzuordnung.setTumorID(tumorzuordnung.getTumorID());
+        // Übernehme Tumor-ID, wenn vorhanden
+            if (
+                null == tumorzuordnung.getTumorID()
+                && null != tumorzuordnung.getDiagnosedatum()
+                && null != tumorzuordnung.getPrimaertumorICDCode()
+                && null != source.getMeldungID()
+            ) {
+                var generatedTumorId = DigestUtils.sha1Hex(
+                    String.format("%s_%s_%s", tumorzuordnung.getDiagnosedatum(), tumorzuordnung.getPrimaertumorICDCode(), source.getMeldungID())
+                ).subSequence(0, 16);
+                mappedTumorzuordnung.setTumorID(String.format("TID_%s", generatedTumorId));
+            } else {
+                mappedTumorzuordnung.setTumorID(tumorzuordnung.getTumorID());
+            }            
             // Datum
             MapperUtils.mapDateString(tumorzuordnung.getDiagnosedatum()).ifPresent(mappedTumorzuordnung::setDiagnosedatum);
             // ICD10
