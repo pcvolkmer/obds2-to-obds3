@@ -69,11 +69,17 @@ class MeldungMapper {
         }
 
         var result = new ArrayList<Meldung>();
-        // Diagnose als einzelne Meldung
-        var diagnosemeldung = getMeldungDiagnose(source);
-        // Füge Zusatzitems zur Diagnosemeldung hinzu, wenn vorhanden
-        getMengeZusatzitemTyp(source).ifPresent(diagnosemeldung::setMengeZusatzitem);
-        result.add(diagnosemeldung);
+        try {
+            // Diagnose als einzelne Meldung
+            var diagnosemeldung = getMeldungDiagnose(source);
+            // Füge Zusatzitems zur Diagnosemeldung hinzu, wenn vorhanden
+            getMengeZusatzitemTyp(source).ifPresent(diagnosemeldung::setMengeZusatzitem);
+            result.add(diagnosemeldung);
+        } catch (UnmappableItemException e) {
+            if (!ignoreUnmappableMessages) {
+                throw e;
+            }
+        }
         // Tumorkonferenzen als einzelne Meldung
         result.addAll(getMappedTumorkonferenzen(source));
         // Verlauf - Ohne: oOBDS v2 Verlauf - Tod
@@ -85,8 +91,14 @@ class MeldungMapper {
         // nicht vorhanden
         result.forEach(meldung -> {
             if (null == meldung.getTumorzuordnung()) {
-                getMappedTumorzuordung(source).ifPresent(
-                        meldung::setTumorzuordnung);
+                try {
+                    getMappedTumorzuordung(source).ifPresent(
+                            meldung::setTumorzuordnung);
+                } catch (UnmappableItemException e) {
+                    if (!ignoreUnmappableMessages) {
+                        throw e;
+                    }
+                }
             }
         });
 
