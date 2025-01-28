@@ -130,12 +130,19 @@ class PatientMapper {
             versichertendaten.setIKNR(stammdaten.getKrankenkassenNr());
             versichertendaten.setErsatzkode(stammdaten.getKrankenversichertenNr());
             mappedStammdaten.setVersichertendatenSonstige(versichertendaten);
-        } else {
+        } else if (null != stammdaten.getKrankenversichertenNr() && !stammdaten.getKrankenversichertenNr().isBlank() && null != stammdaten.getKrankenkassenNr() && stammdaten.getKrankenkassenNr().matches("16\\d{7}|950\\d{6}")) {
+            var versichertendaten = new VersichertendatenPKVTyp();
+            versichertendaten.setIKNR(stammdaten.getKrankenkassenNr());
+            versichertendaten.setPKVVersichertennummer(stammdaten.getKrankenversichertenNr());
+            mappedStammdaten.setVersichertendatenPKV(versichertendaten);
+        } else if (null != stammdaten.getKrankenversichertenNr() && stammdaten.getKrankenversichertenNr().matches("[A-Z]\\d{9}") && null != stammdaten.getKrankenkassenNr() && stammdaten.getKrankenkassenNr().matches("10\\d{7}")) {
             // Andere Werte: Aktuell als GKV behandelt
             var versichertendatenGkv = new VersichertendatenGKVTyp();
             versichertendatenGkv.setIKNR(stammdaten.getKrankenkassenNr());
             versichertendatenGkv.setGKVVersichertennummer(stammdaten.getKrankenversichertenNr());
             mappedStammdaten.setVersichertendatenGKV(versichertendatenGkv);
+        } else {
+            throw new UnmappableItemException("Unmappable 'Versichertendaten'");
         }
 
         // Geburtsdatum

@@ -34,6 +34,7 @@ import de.basisdatensatz.obds.v2.ADTGEKID;
 import de.basisdatensatz.obds.v3.OBDS;
 
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ObdsMapper {
@@ -95,7 +96,17 @@ public class ObdsMapper {
         var mappedMengePatient = new OBDS.MengePatient();
         mappedMengePatient.getPatient().addAll(
                 mengePatient.getPatient().stream()
-                        .map(patientMapper::map)
+                        .map(patient -> {
+                            try {
+                                return patientMapper.map(patient);
+                            } catch (UnmappableItemException e) {
+                                if (!ignoreUnmappable) {
+                                    throw e;
+                                }
+                                return null;
+                            }
+                        })
+                        .filter(Objects::nonNull)
                         .filter(patient -> !ignoreUnmappable || (null != patient.getMengeMeldung()
                                 && !patient.getMengeMeldung().getMeldung().isEmpty()))
                         .toList());
