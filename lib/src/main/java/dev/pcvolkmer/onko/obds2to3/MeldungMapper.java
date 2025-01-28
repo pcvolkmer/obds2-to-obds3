@@ -179,11 +179,11 @@ class MeldungMapper {
         var mappedZusatzitems = mengeZusatzitem.getZusatzitem().stream()
                 .map(zusatzitem -> {
                     var mappedZusatzitem = new MengeZusatzitemTyp.Zusatzitem();
-                    mappedZusatzitem.setArt(zusatzitem.getArt());
+                    mappedZusatzitem.setArt(null != zusatzitem.getArt() ? zusatzitem.getArt().trim() : null);
                     // Nur, wenn in oBDSv2 vorhanden und mappbar
                     MapperUtils.mapDateString(zusatzitem.getDatum()).ifPresent(mappedZusatzitem::setDatum);
-                    mappedZusatzitem.setBemerkung(zusatzitem.getBemerkung());
-                    mappedZusatzitem.setWert(zusatzitem.getWert());
+                    mappedZusatzitem.setBemerkung(null != zusatzitem.getBemerkung() ? zusatzitem.getBemerkung().trim() : null);
+                    mappedZusatzitem.setWert(null != zusatzitem.getWert() ? zusatzitem.getWert().trim() : null);
                     return mappedZusatzitem;
                 }).toList();
 

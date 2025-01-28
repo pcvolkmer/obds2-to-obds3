@@ -50,8 +50,8 @@
               <Wert>Testwert1</Wert>
             </Zusatzitem>
             <Zusatzitem>
-              <Art>Einsender_Klinik_Abteilung_Praxis</Art>
-              <Wert>Testklinik1</Wert>
+              <Art> Einsender_Klinik_Abteilung_Praxis</Art>
+              <Wert> Testklinik1</Wert>
             </Zusatzitem>
           </Menge_Zusatzitem>
         </Meldung>
