@@ -25,10 +25,7 @@
 package dev.pcvolkmer.onko.obds2to3;
 
 import de.basisdatensatz.obds.v2.ADTGEKID;
-import de.basisdatensatz.obds.v3.OBDS;
-import de.basisdatensatz.obds.v3.PatientenAdresseMelderTyp;
-import de.basisdatensatz.obds.v3.PatientenStammdatenMelderTyp;
-import de.basisdatensatz.obds.v3.VersichertendatenGKVTyp;
+import de.basisdatensatz.obds.v3.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -127,11 +124,19 @@ class PatientMapper {
         }
 
         // Stammdaten - Krankenkasse: In oBDS v2 keine Unterscheidung GKV/PKV
-        // Aktuell als GKV behandelt
-        var versichertendatenGkv = new VersichertendatenGKVTyp();
-        versichertendatenGkv.setIKNR(stammdaten.getKrankenkassenNr());
-        versichertendatenGkv.setGKVVersichertennummer(stammdaten.getKrankenversichertenNr());
-        mappedStammdaten.setVersichertendatenGKV(versichertendatenGkv);
+        // See: https://www.krebsregister-sh.de/wp-content/uploads/2023/02/son_2023-02-01_KRSH_Ersatzkodes_Krankenkassennummer.pdf
+        if (List.of("970000011", "970001001", "970100001", "970000022", "970000099").contains(stammdaten.getKrankenkassenNr())) {
+            var versichertendaten = new VersichertendatenSonstigeTyp();
+            versichertendaten.setIKNR(stammdaten.getKrankenkassenNr());
+            versichertendaten.setErsatzkode(stammdaten.getKrankenversichertenNr());
+            mappedStammdaten.setVersichertendatenSonstige(versichertendaten);
+        } else {
+            // Andere Werte: Aktuell als GKV behandelt
+            var versichertendatenGkv = new VersichertendatenGKVTyp();
+            versichertendatenGkv.setIKNR(stammdaten.getKrankenkassenNr());
+            versichertendatenGkv.setGKVVersichertennummer(stammdaten.getKrankenversichertenNr());
+            mappedStammdaten.setVersichertendatenGKV(versichertendatenGkv);
+        }
 
         // Geburtsdatum
         var geburtsdatum = MapperUtils.mapDateString(stammdaten.getPatientenGeburtsdatum());
