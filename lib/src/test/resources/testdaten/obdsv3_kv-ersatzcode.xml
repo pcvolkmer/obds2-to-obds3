@@ -9,7 +9,7 @@
     <Patient Patient_ID="20001234">
       <Patienten_Stammdaten>
         <Versichertendaten_Sonstige>
-          <IKNR>970000099</IKNR>
+          <Ersatzkode>970000099</Ersatzkode>
         </Versichertendaten_Sonstige>
         <Nachname>Tester</Nachname>
         <Vornamen>Patrick</Vornamen>

@@ -127,8 +127,7 @@ class PatientMapper {
         // See: https://www.krebsregister-sh.de/wp-content/uploads/2023/02/son_2023-02-01_KRSH_Ersatzkodes_Krankenkassennummer.pdf
         if (List.of("970000011", "970001001", "970100001", "970000022", "970000099").contains(stammdaten.getKrankenkassenNr())) {
             var versichertendaten = new VersichertendatenSonstigeTyp();
-            versichertendaten.setIKNR(stammdaten.getKrankenkassenNr());
-            versichertendaten.setErsatzkode(stammdaten.getKrankenversichertenNr());
+            versichertendaten.setErsatzkode(stammdaten.getKrankenkassenNr());
             mappedStammdaten.setVersichertendatenSonstige(versichertendaten);
         } else if (null != stammdaten.getKrankenversichertenNr() && !stammdaten.getKrankenversichertenNr().isBlank() && null != stammdaten.getKrankenkassenNr() && stammdaten.getKrankenkassenNr().matches("16\\d{7}|950\\d{6}")) {
             var versichertendaten = new VersichertendatenPKVTyp();
