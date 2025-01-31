@@ -33,7 +33,7 @@ dependencies {
     api 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
     api 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations'
     api 'jakarta.validation:jakarta.validation-api:3.1.0'
-    api 'commons-codec:commons-codec:1.17.2'
+    api 'commons-codec:commons-codec:1.18.0'
 
     // JAXB code generation
     xsd2java "com.sun.xml.bind:jaxb-xjc:4.0.5"
@@ -41,7 +41,7 @@ dependencies {
 
     testImplementation platform('org.junit:junit-bom:5.11.4')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.assertj:assertj-core:3.27.0'
+    testImplementation 'org.assertj:assertj-core:3.27.3'
 }
 
 test {
