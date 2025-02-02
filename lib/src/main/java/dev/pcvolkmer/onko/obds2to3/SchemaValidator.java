@@ -24,21 +24,33 @@
 
 package dev.pcvolkmer.onko.obds2to3;
 
+import org.xml.sax.SAXException;
+
 import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.IOException;
 import java.io.StringReader;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
-/** Validator for ADT_GEKID or oBDS files
+/**
+ * Validator for ADT_GEKID or oBDS files
  *
  * @author Paul-Christian Volkmer
  * @since 0.1.0
  */
 public class SchemaValidator {
 
-    /** Validates xml string using given schema version
+    /**
+     * Validates xml string using given schema version
      *
-     * @param xmlString The xml string to be validated
+     * @param xmlString     The xml string to be validated
      * @param schemaVersion The schema version to be used
      * @return true, if xml string is valid
      * @throws SchemaValidatorException if xmlString is not valid
@@ -53,6 +65,27 @@ public class SchemaValidator {
             throw new SchemaValidatorException("Cannot validate result using oBDS schema", e);
         }
         return true;
+    }
+
+    /**
+     * Returns regexp pattern of string based datatypes defined in given schema
+     *
+     * @param name          The name of the datatype
+     * @param schemaVersion The schema version
+     * @return returns valid <code>Pattern</code> or empty <code>Optional</code>
+     */
+    public static Optional<Pattern> regexpPattern(String name, SchemaValidator.SchemaVersion schemaVersion) {
+        try {
+            final var documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            final var schemaFile = new StreamSource(SchemaValidator.class.getClassLoader().getResource(schemaVersion.getSchemaFile()).openStream());
+            final var doc = documentBuilder.parse(schemaFile.getInputStream());
+
+            final var expr = XPathFactory.newInstance().newXPath().compile(String.format("//*[local-name()='simpleType'][@name='%s']/*[local-name()='restriction']/*[local-name()='pattern']/@value", name));
+
+            return Optional.of(Pattern.compile(expr.evaluate(doc, XPathConstants.STRING).toString()));
+        } catch (XPathExpressionException | ParserConfigurationException | IOException | SAXException e) {
+            return Optional.empty();
+        }
     }
 
     public enum SchemaVersion {

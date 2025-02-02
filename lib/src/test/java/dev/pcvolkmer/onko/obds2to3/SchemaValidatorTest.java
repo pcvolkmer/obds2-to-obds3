@@ -78,4 +78,9 @@ class SchemaValidatorTest {
         assertThat(cause).hasMessageContaining("oBDS");
     }
 
+    @Test
+    void shouldReturnRegExpPattern() {
+        var x = SchemaValidator.regexpPattern("datatypeCtrimmed", SchemaValidator.SchemaVersion.OBDS_3_0_3);
+        assertThat(x).isPresent();
+    }
 }
