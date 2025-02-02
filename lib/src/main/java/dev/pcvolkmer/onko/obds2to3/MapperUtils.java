@@ -42,12 +42,12 @@ class MapperUtils {
     private MapperUtils() {}
 
 
-
-    /** Wandelt oBDS v2 Datumsstring in oBDS v3 "nicht genau" Datum um.
+    /**
+     * Wandelt oBDS v2 Datumsstring in oBDS v3 "nicht genau" Datum um.
      *
-     * @link <a href="https://plattform65c.atlassian.net/wiki/spaces/UMK/pages/15532303/Datum_Tag_oder_Monat_oder_Jahr_oder_nicht_genau_Typ">Spezifikation</a>
      * @param date
      * @return
+     * @link <a href="https://plattform65c.atlassian.net/wiki/spaces/UMK/pages/15532303/Datum_Tag_oder_Monat_oder_Jahr_oder_nicht_genau_Typ">Spezifikation</a>
      */
     public static Optional<DatumTagOderMonatOderJahrOderNichtGenauTyp> mapDateString(String date) {
         if (null == date) {
@@ -92,11 +92,12 @@ class MapperUtils {
         return Optional.empty();
     }
 
-    /** Wandelt oBDS v2 Datumsstring in oBDS v3 "genau" Datum um.
+    /**
+     * Wandelt oBDS v2 Datumsstring in oBDS v3 "genau" Datum um.
      *
-     * @link <a href="https://plattform65c.atlassian.net/wiki/spaces/UMK/pages/15532315/Datum_Tag_oder_Monat_genau_Typ">Spezifikation</a>
      * @param date
      * @return
+     * @link <a href="https://plattform65c.atlassian.net/wiki/spaces/UMK/pages/15532315/Datum_Tag_oder_Monat_genau_Typ">Spezifikation</a>
      */
     public static Optional<DatumTagOderMonatGenauTyp> mapDateStringGenau(String date) {
         if (null == date) {
@@ -155,5 +156,18 @@ class MapperUtils {
             return Optional.of(LocalDate.of(year, month, day));
         }
         return Optional.empty();
+    }
+
+    /**
+     * Entferne alle nicht erlaubten Zeichen aus String
+     *
+     * @param datatypeName Name des Datentyps gemäß oBDS 3 Schema
+     * @param string       Eingabestring
+     * @return String mit entfernten unerlaubten Zeichen oder empty Optional
+     */
+    public static Optional<String> trimToMatchDatatype(String datatypeName, String string) {
+        return SchemaValidator
+                .regexpPattern(datatypeName, SchemaValidator.SchemaVersion.OBDS_3_0_3)
+                .map(pattern -> string.replaceAll(String.format("[^%s]", pattern.pattern()), ""));
     }
 }
