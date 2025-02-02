@@ -28,6 +28,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MapperUtilsTest {
@@ -82,6 +84,12 @@ class MapperUtilsTest {
         var actual = MapperUtils.mapDateString(obdsv2DateString);
         assertThat(actual).isPresent();
         assertThat(actual.get().getValue().toString()).startsWith(expectedDateString);
+    }
+
+    @Test
+    void shouldRemoveAllInvalidChars() {
+        var actual = MapperUtils.trimToMatchDatatype("datatypeBtrimmed", "Das ist ein パウルTest");
+        assertThat(actual).isPresent().isEqualTo(Optional.of("Das ist ein Test"));
     }
 
 }
