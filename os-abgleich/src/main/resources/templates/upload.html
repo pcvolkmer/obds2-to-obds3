@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>oBDS OS-Abgleich</title>
-</head>
-<body>
-
-</body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <form th:if="${error != null}" method="post" hx-encoding="multipart/form-data" hx-post="/">
+        <div>[[ ${error} ]]</div>
+        <input type="file" name="file" />
+        <button type="submit">Hochladen</button>
+    </form>
+    <a th:if="${id != null}" th:href="@{/obds/{id}(id=${id})}">Anfrage [[ ${id} ]] herunterladen</a>
 </html>

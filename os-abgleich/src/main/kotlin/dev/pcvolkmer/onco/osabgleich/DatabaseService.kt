@@ -2,45 +2,65 @@ package dev.pcvolkmer.onco.osabgleich
 
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
-import java.time.Instant
+import java.sql.ResultSet
 
 @Service
 class DatabaseService(
     private val jdbcTemplate: JdbcTemplate,
 ) {
 
-    fun findByEinsendenummer(einsendenummer: String) {
+    fun findByEinsendenummer(einsendenummer: String): DatabaseResult? {
         val sql = """
-            SELECT * FROM (
-                  SELECT
-                        einsendenummer,
-                        patienten_id,
-                        tumoridentifikator,
-                        erkrankung.diagnosedatum,
-                        erkrankung.icd10_code,
-                        property_catalogue_version.lkr_code,
-                        COUNT(*) AS count
-                  FROM dk_pathologie
-                        JOIN prozedur ON (prozedur.id = dk_pathologie.id)
-                        JOIN erkrankung_prozedur ON (erkrankung_prozedur.prozedur_id = prozedur.id)
-                        JOIN erkrankung ON (erkrankung.id = erkrankung_prozedur.erkrankung_id)
-                        JOIN patient ON (patient.id = erkrankung.patient_id)
-                        JOIN property_catalogue_version ON (property_catalogue_version.id = erkrankung.icd10_version)
-                  WHERE
-                        einsendenummer IS NOT NULL
-                        AND einsendenummer <> ''
-                        AND einsendenummer NOT LIKE '%+%'
-                        AND einsendenummer NOT LIKE '% %'
-                        AND durchfuehrendeoe_fachabteilung = 19
-                  GROUP BY einsendenummer, patienten_id, tumoridentifikator
-            ) sub
-                  WHERE COUNT > 0
-                  ORDER BY einsendenummer;
+            SELECT einsendenummer, tumor_id, diagnosedatum, icd10_code, icd10_version, seite, diagnosesicherung FROM (
+                   SELECT
+                       einsendenummer,
+                       tumoridentifikator AS tumor_id,
+                       erkrankung.diagnosedatum,
+                       erkrankung.icd10_code,
+                       property_catalogue_version.lkr_code AS icd10_version,
+                       erkrankung.seite,
+                       dk_diagnose.diagnosesicherung,
+                       COUNT(*) AS count
+                   FROM dk_pathologie
+                            JOIN prozedur ON (prozedur.id = dk_pathologie.id)
+                            JOIN erkrankung_prozedur ON (erkrankung_prozedur.prozedur_id = prozedur.id)
+                            JOIN erkrankung ON (erkrankung.id = erkrankung_prozedur.erkrankung_id)
+                            JOIN erkrankung_prozedur ep2 ON (ep2.erkrankung_id = erkrankung.id)
+                            JOIN dk_diagnose ON (dk_diagnose.id = ep2.prozedur_id)
+                            JOIN patient ON (patient.id = erkrankung.patient_id)
+                            JOIN property_catalogue_version ON (property_catalogue_version.id = erkrankung.icd10_version)
+                   WHERE
+                       einsendenummer IS NOT NULL
+                     AND einsendenummer <> ''
+                     AND einsendenummer NOT LIKE '%+%'
+                     AND einsendenummer NOT LIKE '% %'
+                   GROUP BY einsendenummer, patienten_id, tumoridentifikator
+               ) sub
+            WHERE COUNT = 1 AND einsendenummer = ?
+            ORDER BY einsendenummer
         """.trimIndent()
 
-        jdbcTemplate.queryForObject(sql, DatabaseResult::class.java)
+        return jdbcTemplate.queryForObject(sql, arrayOf(einsendenummer)) { rs: ResultSet, _: Int ->
+            return@queryForObject DatabaseResult(
+                rs.getString("einsendenummer"),
+                rs.getString("tumor_id"),
+                rs.getString("diagnosedatum"),
+                rs.getString("icd10_code"),
+                rs.getString("icd10_version"),
+                rs.getString("seite"),
+                rs.getString("diagnosesicherung"),
+            )
+        }
     }
 
 }
 
-data class DatabaseResult(val einsendenummer: String, val tumorId: String, val diagnosedatum: Instant, val icd10Code: String, val icd10Version: String)
+data class DatabaseResult(
+    val einsendenummer: String,
+    val tumorId: String,
+    val diagnosedatum: String,
+    val icd10Code: String,
+    val icd10Version: String,
+    val seite: String,
+    val diagnosesicherung: String,
+)

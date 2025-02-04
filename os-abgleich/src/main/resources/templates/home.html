@@ -5,6 +5,10 @@
     <title>oBDS OS-Abgleich</title>
 </head>
 <body>
-
+    <form method="post" hx-encoding="multipart/form-data" hx-post="/">
+        <input type="file" name="file" />
+        <button type="submit">Hochladen</button>
+    </form>
+    <script th:src="@{/htmx.min.js}"></script>
 </body>
 </html>
