@@ -497,8 +497,12 @@ class MeldungMapper {
             mappedTumorzuordnung.setPrimaertumorICD(icd10);
             // Morphologie nicht in oBDS v2 ?
             // Seitenlokalisation: mapping über Enum - beide {'L'|'R'|'B'|'M'|'U'|'T'}
-            mappedTumorzuordnung.setSeitenlokalisation(
-                    SeitenlokalisationTyp.fromValue(tumorzuordnung.getSeitenlokalisation().value()));
+            if (null != tumorzuordnung.getSeitenlokalisation()) {
+                mappedTumorzuordnung.setSeitenlokalisation(
+                        SeitenlokalisationTyp.fromValue(tumorzuordnung.getSeitenlokalisation().value()));
+            } else {
+                mappedTumorzuordnung.setSeitenlokalisation(SeitenlokalisationTyp.U);
+            }
 
             mappedMeldung.setTumorzuordnung(mappedTumorzuordnung);
         }
