@@ -41,7 +41,7 @@ class DatabaseService(
         """.trimIndent()
 
         try {
-            return jdbcTemplate.queryForObject(sql, arrayOf(einsendenummer)) { rs: ResultSet, _: Int ->
+            return jdbcTemplate.queryForObject(sql, { rs: ResultSet, _: Int ->
                 return@queryForObject DatabaseResult(
                     rs.getString("einsendenummer"),
                     rs.getString("tumor_id"),
@@ -51,7 +51,7 @@ class DatabaseService(
                     rs.getString("seite"),
                     rs.getString("diagnosesicherung"),
                 )
-            }
+            }, einsendenummer)
         } catch (_: Exception) {
             return null
         }
