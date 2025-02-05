@@ -6,7 +6,6 @@ import de.basisdatensatz.obds.v2.SeitenlokalisationTyp
 import dev.pcvolkmer.onko.obds2to3.ObdsMapper
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
-import org.springframework.web.multipart.MultipartFile
 import java.time.Instant
 import java.util.*
 import java.util.regex.Pattern
@@ -20,10 +19,9 @@ class MappingService(
 
     private val cache: MutableMap<String, CacheObject> = mutableMapOf()
 
-    fun map(adtFile: MultipartFile): String {
-        val inputString = String(adtFile.bytes)
-        val cacheId = DigestUtils.sha256Hex(inputString)
-        val adt = mapper.readValue<ADTGEKID>(inputString, ADTGEKID::class.java)
+    fun map(adtString: String): String {
+        val cacheId = DigestUtils.sha256Hex(adtString)
+        val adt = mapper.readValue<ADTGEKID>(adtString, ADTGEKID::class.java)
 
         adt.mengePatient.patient.onEach { patient ->
             patient.mengeMeldung.meldung.onEach { meldung ->
@@ -36,8 +34,11 @@ class MappingService(
                     diagnose.tumorID = diagnose.tumorID ?: result.tumorId
                     diagnose.primaertumorICDCode = diagnose.primaertumorICDCode ?: result.icd10Code
                     diagnose.primaertumorICDVersion = diagnose.primaertumorICDVersion ?: result.icd10Version
-                    diagnose.seitenlokalisation =
+                    diagnose.seitenlokalisation = try {
                         diagnose.seitenlokalisation ?: SeitenlokalisationTyp.fromValue(result.seite)
+                    } catch (_: Exception) {
+                        SeitenlokalisationTyp.U
+                    }
                     diagnose.diagnosesicherung = result.diagnosesicherung
                     meldung.diagnose = diagnose
                 }

@@ -23,7 +23,7 @@ class HomeController(
     @PostMapping("/")
     fun upload(@RequestParam("file") file: MultipartFile, model: Model): String {
         try {
-            val id = mappingService.map(file)
+            val id = mappingService.map(file.bytes.decodeToString())
             model.addAttribute("id", id)
             return "upload"
         } catch (e: Exception) {
