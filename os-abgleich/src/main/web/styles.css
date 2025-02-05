@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply bg-slate-50
+}
+
+main {
+    @apply bg-white container mx-auto p-4 min-h-screen
+}
+
+h1 {
+    @apply text-center mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-xl lg:text-2xl dark:text-white
+}
+
+.abstract {
+    @apply text-center mb-4 font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400
+}
+
+input[type=file] {
+    @apply hidden
+}
+
+.file-upload {
+    @apply flex flex-col items-center justify-center w-full h-32 my-12 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600
+}
+
+.file-upload > span {
+    @apply mb-2 text-sm text-gray-500 dark:text-gray-400
+}
+
+#responses {
+    @apply flex flex-col w-full mt-4
+}
+
+#responses a {
+    @apply text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm p-4 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800
+}
+
+#responses div.error {
+    @apply p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 border border-red-800
+}
+
+#responses div.error span:first-child {
+    @apply bg-red-600 text-white text-sm font-medium me-2 px-2.5 py-0.5 rounded-sm
+}

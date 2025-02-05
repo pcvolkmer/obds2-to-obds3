@@ -1,0 +1,2 @@
+<a th:if="${id != null}" th:href="@{/obds/{id}(id=${id})}">Ergebnis <code>[[ ${id} ]]</code> herunterladen</a>
+<div class="error" th:if="${error != null}"><span>Fehler</span>&nbsp;<span>[[ ${error} ]]</span></div>

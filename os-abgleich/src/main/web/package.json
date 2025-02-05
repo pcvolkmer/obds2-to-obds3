@@ -1,0 +1,19 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "buildCss": "tailwindcss -i ./styles.css -o ../resources/static/main.css",
+    "watchCss": "tailwindcss --watch -i ./styles.css -o ../resources/static/main.css",
+    "buildJs": "rspack build",
+    "watchJs": "rspack build --watch"
+  },
+  "dependencies": {
+    "htmx.org": "^1.9.12"
+  },
+  "devDependencies": {
+    "@rspack/core": "^1.2.2",
+    "@rspack/cli": "^1.2.2",
+    "tailwindcss": "^3.4.17"
+  }
+}

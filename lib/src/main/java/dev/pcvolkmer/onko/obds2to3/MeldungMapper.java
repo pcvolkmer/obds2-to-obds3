@@ -37,6 +37,7 @@ class MeldungMapper {
 
     private static final String MUST_NOT_BE_NULL = "ADT_GEKID must not be null at this point";
     private static final String DIAGNOSE_SHOULD_NOT_BE_NULL = "ADT_GEKID diagnose should not be null at this point";
+    private static final String DIAGNOSESICHERUNG_MUST_NOT_BE_NULL = "ADT_GEKID diagnosesicherung must not be null at this point";
     private static final String TUMORZUORDUNG_SHOULD_NOT_BE_NULL = "ADT_GEKID tumorzuordung should not be null at this point - required for oBDS v3";
     private static final String TUMORID_MUST_NOT_BE_NULL = "ADT_GEKID attribute 'Tumor_ID' must not be null at this point - required for oBDS v3";
 
@@ -363,7 +364,11 @@ class MeldungMapper {
         // Nicht in oBDS v2 ?
         // mappedDiagnose.setPrimaertumorTopographieFreitext(..);
         // oBDS v3 kennt auch 7.1, 7.2 ... als Untertyp von 7 für Diagnosesicherung
-        mappedDiagnose.setDiagnosesicherung(diagnose.getDiagnosesicherung());
+        if (diagnose.getDiagnosesicherung() != null && !diagnose.getDiagnosesicherung().isBlank()) {
+            mappedDiagnose.setDiagnosesicherung(diagnose.getDiagnosesicherung());
+        } else {
+            throw new UnmappableItemException(DIAGNOSESICHERUNG_MUST_NOT_BE_NULL);
+        }
 
         if (diagnose.getMengeFruehereTumorerkrankung() != null) {
             mappedDiagnose.getMengeFruehereTumorerkrankung().getFruehereTumorerkrankung().addAll(
