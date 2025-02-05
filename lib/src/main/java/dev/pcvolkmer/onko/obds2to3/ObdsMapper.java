@@ -138,7 +138,11 @@ public class ObdsMapper {
     }
 
     public String writeMappedXmlString(ADTGEKID obj) throws JsonProcessingException {
-        var xmlString = mapper.writeValueAsString(map(obj));
+        return writeXmlString(map(obj));
+    }
+
+    public String writeXmlString(OBDS obj) throws JsonProcessingException {
+        var xmlString = mapper.writeValueAsString(obj);
         var result = String.format(
                 "<?xml version=\"1.0\" encoding=\"utf-8\" ?>%s%s",
                 System.lineSeparator(),
