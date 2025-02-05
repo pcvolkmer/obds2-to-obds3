@@ -27,6 +27,7 @@ class HomeController(
             model.addAttribute("id", id)
             return "upload"
         } catch (e: Exception) {
+            e.printStackTrace()
             model.addAttribute("error", e.message)
             return "upload"
         }

@@ -40,3 +40,4 @@ bin/
 
 # generated code
 **/src/generated/
+/os-abgleich/src/main/web/node_modules/

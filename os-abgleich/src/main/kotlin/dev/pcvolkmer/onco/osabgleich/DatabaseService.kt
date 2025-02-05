@@ -40,16 +40,20 @@ class DatabaseService(
             ORDER BY einsendenummer
         """.trimIndent()
 
-        return jdbcTemplate.queryForObject(sql, arrayOf(einsendenummer)) { rs: ResultSet, _: Int ->
-            return@queryForObject DatabaseResult(
-                rs.getString("einsendenummer"),
-                rs.getString("tumor_id"),
-                rs.getString("diagnosedatum"),
-                rs.getString("icd10_code"),
-                rs.getString("icd10_version"),
-                rs.getString("seite"),
-                rs.getString("diagnosesicherung"),
-            )
+        try {
+            return jdbcTemplate.queryForObject(sql, arrayOf(einsendenummer)) { rs: ResultSet, _: Int ->
+                return@queryForObject DatabaseResult(
+                    rs.getString("einsendenummer"),
+                    rs.getString("tumor_id"),
+                    rs.getString("diagnosedatum"),
+                    rs.getString("icd10_code"),
+                    rs.getString("icd10_version"),
+                    rs.getString("seite"),
+                    rs.getString("diagnosesicherung"),
+                )
+            }
+        } catch (_: Exception) {
+            return null
         }
     }
 
