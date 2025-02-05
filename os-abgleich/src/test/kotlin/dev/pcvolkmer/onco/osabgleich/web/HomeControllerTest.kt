@@ -68,7 +68,7 @@ class HomeControllerTest {
             status { isOk() }
             content {
                 contentTypeCompatibleWith(MediaType.TEXT_HTML)
-                string(containsString("<a href=\"/obds/1234567890\">Anfrage 1234567890 herunterladen</a>"))
+                string(containsString("<a href=\"/obds/1234567890\">Ergebnis <code>1234567890</code> herunterladen</a>"))
             }
         }
     }
@@ -91,7 +91,7 @@ class HomeControllerTest {
             status { isOk() }
             content {
                 contentTypeCompatibleWith(MediaType.TEXT_HTML)
-                string(containsString("<div>Test exception</div>"))
+                string(containsString("<div class=\"error\"><span>Fehler</span>&nbsp;<span>Test exception</span></div>"))
             }
         }
     }
