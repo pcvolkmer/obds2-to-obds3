@@ -1,5 +1,6 @@
 package dev.pcvolkmer.onco.osabgleich.web
 
+import dev.pcvolkmer.onco.osabgleich.MappingResult
 import dev.pcvolkmer.onco.osabgleich.MappingService
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.BeforeEach
@@ -51,7 +52,7 @@ class HomeControllerTest {
     @Test
     fun testShouldUploadWithResponse() {
         doAnswer {
-            "1234567890"
+            MappingResult("1234567890", 1, 1, 2, 2)
         }.whenever(mappingService).map(any())
 
         val file = MockMultipartFile(

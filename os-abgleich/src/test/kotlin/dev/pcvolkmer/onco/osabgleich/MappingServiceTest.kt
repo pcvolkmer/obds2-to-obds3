@@ -45,9 +45,9 @@ class MappingServiceTest {
             ?.readAllBytes()
             ?.toString(Charset.defaultCharset())
 
-        val id = this.mappingService.map(obds2Content!!)
+        val result = this.mappingService.map(obds2Content!!)
 
-        assertThat(this.mappingService.get(id)).isEqualTo(obds3Content)
+        assertThat(this.mappingService.get(result.id)).isEqualTo(obds3Content)
     }
 
     @Test
@@ -70,9 +70,9 @@ class MappingServiceTest {
             ?.readAllBytes()
             ?.toString(Charset.defaultCharset())
 
-        val id = this.mappingService.map(obds2Content!!)
+        val result = this.mappingService.map(obds2Content!!)
 
-        assertThat(this.mappingService.get(id)).isEqualTo(obds3Content)
+        assertThat(this.mappingService.get(result.id)).isEqualTo(obds3Content)
     }
 
 }
