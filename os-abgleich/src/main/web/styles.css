@@ -14,6 +14,10 @@ h1 {
     @apply text-center mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-xl lg:text-2xl dark:text-white
 }
 
+h2 {
+    @apply mb-4 text-3xl font-extrabold leading-none tracking-tight text-gray-900 md:text-xl lg:text-xl dark:text-white
+}
+
 .abstract {
     @apply text-center mb-4 font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400
 }
@@ -31,11 +35,23 @@ input[type=file] {
 }
 
 #responses {
-    @apply flex flex-col w-full mt-4
+    @apply w-full mt-4
 }
 
-#responses a {
-    @apply text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm p-4 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800
+#responses div.success {
+    @apply p-4 text-sm rounded-lg bg-green-50 dark:bg-gray-800 border border-green-800
+}
+
+#responses div.success a {
+    @apply block text-center mt-2 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm p-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800
+}
+
+#responses div.warning {
+    @apply p-4 text-sm rounded-lg bg-yellow-50 dark:bg-gray-800 border border-yellow-800
+}
+
+#responses div.warning a {
+    @apply block text-center mt-2 text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm p-2 dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800
 }
 
 #responses div.error {

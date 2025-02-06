@@ -19,7 +19,7 @@ class MappingService(
 
     private val cache: MutableMap<String, CacheObject> = mutableMapOf()
 
-    fun map(adtString: String): String {
+    fun map(adtString: String): MappingResult {
         val cacheId = DigestUtils.sha256Hex(adtString)
         val adt = mapper.readValue<ADTGEKID>(adtString, ADTGEKID::class.java)
 
@@ -45,8 +45,16 @@ class MappingService(
             }
         }
 
-        cache[cacheId] = CacheObject(Instant.now(), mapper.writeMappedXmlString(adt))
-        return cacheId
+        val obds = mapper.map(adt)
+        cache[cacheId] = CacheObject(Instant.now(), mapper.writeXmlString(obds))
+
+        return MappingResult(
+            cacheId,
+            adt.mengePatient.patient.size,
+            obds.mengePatient.patient.size,
+            adt.mengePatient.patient.flatMap { it.mengeMeldung.meldung }.size,
+            obds.mengePatient.patient.flatMap { it.mengeMeldung.meldung }.size,
+        )
     }
 
     fun get(id: String): String? {
@@ -64,4 +72,18 @@ class MappingService(
 
 }
 
+@JvmRecord
 private data class CacheObject(val timestamp: Instant, val data: String)
+
+@JvmRecord
+data class MappingResult(
+    val id: String,
+    val patientsIn: Int,
+    val patientsOut: Int,
+    val messagesIn: Int,
+    val messagesOut: Int
+) {
+
+    fun hasWarning() = patientsIn != patientsOut || messagesIn != messagesOut
+
+}

@@ -1,2 +1,19 @@
-<a th:if="${id != null}" th:href="@{/obds/{id}(id=${id})}">Ergebnis <code>[[ ${id} ]]</code> herunterladen</a>
+<div th:class="${result.hasWarning() ? 'warning' : 'success'}" th:if="${result != null}">
+    <h2>Ergebnis der Konvertierung</h2>
+    <table>
+        <tr>
+            <td><strong>Patienten:</strong></td>
+            <td><code>[[ ${result.patientsIn} ]]</code></td>
+            <td>&rarr;</td>
+            <td><code>[[ ${result.patientsOut} ]]</code></td>
+        </tr>
+        <tr>
+            <td><strong>Meldungen:</strong></td>
+            <td><code>[[ ${result.messagesIn} ]]</code></td>
+            <td>&rarr;</td>
+            <td><code>[[ ${result.messagesOut} ]]</code></td>
+        </tr>
+    </table>
+    <a th:href="@{/obds/{id}(id=${result.id})}">Ergebnis <code>[[ ${result.id} ]]</code> herunterladen</a>
+</div>
 <div class="error" th:if="${error != null}"><span>Fehler</span>&nbsp;<span>[[ ${error} ]]</span></div>
