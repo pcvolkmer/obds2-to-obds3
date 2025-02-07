@@ -62,7 +62,7 @@ class DatabaseService(
     }
 
     fun findByEinsendenummer(einsendenummer: String): DatabaseResult? {
-        return this.items.firstOrNull { it.einsendenummer == einsendenummer }
+        return this.items.firstOrNull { Einsendenummer.from(it.einsendenummer) == Einsendenummer.from(einsendenummer) }
     }
 
 }
