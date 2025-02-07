@@ -1,5 +1,6 @@
 package dev.pcvolkmer.onco.osabgleich
 
+import jakarta.annotation.PostConstruct
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
 import java.sql.ResultSet
@@ -9,7 +10,10 @@ class DatabaseService(
     private val jdbcTemplate: JdbcTemplate,
 ) {
 
-    fun findByEinsendenummer(einsendenummer: String): DatabaseResult? {
+    private var items = emptyList<DatabaseResult>()
+
+    @PostConstruct
+    fun update() {
         val sql = """
             SELECT einsendenummer, tumor_id, diagnosedatum, icd10_code, icd10_version, seite, diagnosesicherung FROM (
                    SELECT
@@ -36,13 +40,13 @@ class DatabaseService(
                      AND einsendenummer NOT LIKE '% %'
                    GROUP BY einsendenummer, patienten_id, tumoridentifikator
                ) sub
-            WHERE COUNT = 1 AND einsendenummer = ?
+            WHERE COUNT = 1
             ORDER BY einsendenummer
         """.trimIndent()
 
         try {
-            return jdbcTemplate.queryForObject(sql, { rs: ResultSet, _: Int ->
-                return@queryForObject DatabaseResult(
+            this.items = jdbcTemplate.query(sql, { rs: ResultSet, _: Int ->
+                return@query DatabaseResult(
                     rs.getString("einsendenummer"),
                     rs.getString("tumor_id"),
                     rs.getString("diagnosedatum"),
@@ -51,10 +55,14 @@ class DatabaseService(
                     rs.getString("seite"),
                     rs.getString("diagnosesicherung"),
                 )
-            }, einsendenummer)
+            })
         } catch (_: Exception) {
-            return null
+            // Nop
         }
+    }
+
+    fun findByEinsendenummer(einsendenummer: String): DatabaseResult? {
+        return this.items.firstOrNull { it.einsendenummer == einsendenummer }
     }
 
 }
