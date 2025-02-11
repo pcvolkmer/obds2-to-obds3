@@ -1,6 +1,7 @@
 package dev.pcvolkmer.onco.osabgleich
 
 import jakarta.annotation.PostConstruct
+import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
 import java.sql.ResultSet
@@ -9,6 +10,8 @@ import java.sql.ResultSet
 class DatabaseService(
     private val jdbcTemplate: JdbcTemplate,
 ) {
+
+    private val LOGGER = LoggerFactory.getLogger(DatabaseService::class.java)
 
     private var items = emptyList<DatabaseResult>()
 
@@ -47,17 +50,21 @@ class DatabaseService(
         try {
             this.items = jdbcTemplate.query(sql, { rs: ResultSet, _: Int ->
                 return@query DatabaseResult(
-                    rs.getString("einsendenummer"),
-                    rs.getString("tumor_id"),
-                    rs.getString("diagnosedatum"),
-                    rs.getString("icd10_code"),
-                    rs.getString("icd10_version"),
-                    rs.getString("seite"),
-                    rs.getString("diagnosesicherung"),
+                    rs.getString("einsendenummer") ?: "",
+                    rs.getString("tumor_id") ?: "",
+                    rs.getString("diagnosedatum") ?: "",
+                    rs.getString("icd10_code") ?: "",
+                    rs.getString("icd10_version") ?: "",
+                    rs.getString("seite") ?: "",
+                    rs.getString("diagnosesicherung") ?: "",
                 )
-            })
-        } catch (_: Exception) {
-            // Nop
+            }).filter {
+                Einsendenummer.from(it.einsendenummer).isValid()
+            }
+
+            LOGGER.info("Fetched {} items from database", this.items.size)
+        } catch (e: Exception) {
+            throw e
         }
     }
 

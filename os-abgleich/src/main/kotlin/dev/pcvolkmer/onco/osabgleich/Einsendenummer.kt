@@ -2,8 +2,12 @@ package dev.pcvolkmer.onco.osabgleich
 
 class Einsendenummer private constructor(private val value: String) {
 
+    fun isValid(): Boolean {
+        return this.value.isNotBlank()
+    }
+
     override fun equals(other: Any?): Boolean {
-        return other is Einsendenummer && other.value == value
+        return this.isValid() && other is Einsendenummer && other.value == value
     }
 
     override fun hashCode(): Int {
@@ -16,19 +20,19 @@ class Einsendenummer private constructor(private val value: String) {
 
     companion object {
         fun from(value: String): Einsendenummer {
-            var result = Einsendenummer(value)
+            var result = Einsendenummer("")
 
-            "^([A-Za-z])/20(\\d{2})/(\\d+)(\\.\\d+)?$".toRegex().find(value)?.let { matchResult ->
+            "^([A-Za-z])/20(\\d{2})/(\\d+)(\\.\\d+)?$".toRegex().find(value.trim())?.let { matchResult ->
                 val (letter, year, number, _) = matchResult.destructured
                 result = Einsendenummer("$letter/20$year/${number.padStart(6, '0')}")
             }
 
-            "^([A-Za-z])/(\\d{2})/(\\d+)(\\.\\d+)?$".toRegex().find(value)?.let { matchResult ->
+            "^([A-Za-z])/(\\d{2})/(\\d+)(\\.\\d+)?$".toRegex().find(value.trim())?.let { matchResult ->
                 val (letter, year, number, _) = matchResult.destructured
                 result = Einsendenummer("$letter/20$year/${number.padStart(6, '0')}")
             }
 
-            "^([A-Za-z])(\\d{2})/(\\d+)(\\.\\d+)?$".toRegex().find(value)?.let { matchResult ->
+            "^([A-Za-z])(\\d{2})/(\\d+)(\\.\\d+)?$".toRegex().find(value.trim())?.let { matchResult ->
                 val (letter, year, number, _) = matchResult.destructured
                 result = Einsendenummer("$letter/20$year/${number.padStart(6, '0')}")
             }
