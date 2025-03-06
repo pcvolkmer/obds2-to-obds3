@@ -142,12 +142,12 @@ class MapperUtils {
     }
 
     public static Optional<LocalDate> parseDate(String dateString) {
-        if (null == dateString || dateString.isEmpty()) {
+        if (null == dateString || dateString.trim().isEmpty()) {
             return Optional.empty();
         }
 
         var obdsV2datePattern = Pattern.compile(OBDS2_DATE_REGEX);
-        var matcher = obdsV2datePattern.matcher(dateString);
+        var matcher = obdsV2datePattern.matcher(dateString.trim());
         if (matcher.matches()) {
             var day = Integer.parseInt(matcher.group("day"));
             var month = Integer.parseInt(matcher.group("month"));
