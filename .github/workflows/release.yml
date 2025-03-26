@@ -18,7 +18,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Build
-        run: ./gradlew build
+        run: ./gradlew build -Pdnpm_dev_token=${{ secrets.DNPM_DEV_TOKEN }}
+
+      - name: Publish Maven
+        run: ./gradlew publish -Pdnpm_dev_token=${{ secrets.DNPM_DEV_TOKEN }}
 
       - name: Release
         uses: softprops/action-gh-release@v2
