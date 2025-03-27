@@ -148,4 +148,29 @@ class ObdsMapperTest {
         }
     }
 
+    @Nested
+    class DisabledSchemaValidationObdsMapperTest {
+        private ObdsMapper mapper;
+
+        @BeforeEach
+        void setUp() {
+            mapper = ObdsMapper.builder().disableSchemaValidation().build();
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+                "testdaten/obdsv2_invalid-schema.xml,testdaten/obdsv3_invalid-schema.xml"
+        })
+        void shouldMapObdsFileWithoutSchemaValidation(String obdsV2File, String obdsV3File) throws Exception {
+            var obdsV2String = new String(
+                    getClass().getClassLoader().getResource(obdsV2File).openStream().readAllBytes());
+            var obdsV3String = new String(
+                    getClass().getClassLoader().getResource(obdsV3File).openStream().readAllBytes());
+
+            var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
+            assertThat(obdsv2).isNotNull();
+
+            assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
+        }
+    }
 }

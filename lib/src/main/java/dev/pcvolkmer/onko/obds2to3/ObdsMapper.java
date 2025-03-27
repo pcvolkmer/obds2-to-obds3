@@ -43,8 +43,9 @@ public class ObdsMapper {
     private final PatientMapper patientMapper;
 
     private final boolean ignoreUnmappable;
+    private final boolean disableSchemaValidation;
 
-    private ObdsMapper(boolean ignoreUnmappable, boolean fixMissingId) {
+    private ObdsMapper(boolean ignoreUnmappable, boolean fixMissingId, boolean disableSchemaValidation) {
         mapper = XmlMapper.builder()
                 .defaultUseWrapper(false)
                 .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd"))
@@ -54,6 +55,7 @@ public class ObdsMapper {
                 .serializationInclusion(JsonInclude.Include.NON_EMPTY)
                 .build();
         this.ignoreUnmappable = ignoreUnmappable;
+        this.disableSchemaValidation = disableSchemaValidation;
         patientMapper = new PatientMapper(ignoreUnmappable, fixMissingId);
     }
 
@@ -125,9 +127,9 @@ public class ObdsMapper {
     }
 
     public <T> T readValue(String str, Class<T> clazz) throws JsonProcessingException {
-        if (ADTGEKID.class == clazz) {
+        if (!this.disableSchemaValidation && ADTGEKID.class == clazz) {
             SchemaValidator.isValid(str, SchemaValidator.SchemaVersion.ADT_GEKID_2_2_3);
-        } else if (OBDS.class == clazz) {
+        } else if (!this.disableSchemaValidation && OBDS.class == clazz) {
             SchemaValidator.isValid(str, SchemaValidator.SchemaVersion.OBDS_3_0_3);
         }
 
@@ -148,7 +150,7 @@ public class ObdsMapper {
                 System.lineSeparator(),
                 xmlString.replace("<oBDS ", "<oBDS xmlns=\"http://www.basisdatensatz.de/oBDS/XML\" "));
 
-        if (SchemaValidator.isValid(result, SchemaValidator.SchemaVersion.OBDS_3_0_3)) {
+        if (this.disableSchemaValidation || SchemaValidator.isValid(result, SchemaValidator.SchemaVersion.OBDS_3_0_3)) {
             return result;
         }
 
@@ -158,6 +160,7 @@ public class ObdsMapper {
     public static class Builder {
         private boolean ignoreUnmappable;
         private boolean fixMissingId;
+        private boolean disableSchemaValidation = false;
 
         public Builder ignoreUnmappable(boolean ignoreUnmappable) {
             this.ignoreUnmappable = ignoreUnmappable;
@@ -169,8 +172,26 @@ public class ObdsMapper {
             return this;
         }
 
+        /**
+         * This disables schema validation on input and output
+         * @param disableSchemaValidation Weather to disable schema validation or not
+         * @return the configured builder
+         */
+        public Builder disableSchemaValidation(boolean disableSchemaValidation) {
+            this.disableSchemaValidation = disableSchemaValidation;
+            return this;
+        }
+
+        /**
+         * This disables schema validation on input and output
+         * @return the configured builder
+         */
+        public Builder disableSchemaValidation() {
+            return disableSchemaValidation(true);
+        }
+
         public ObdsMapper build() {
-            return new ObdsMapper(ignoreUnmappable, fixMissingId);
+            return new ObdsMapper(ignoreUnmappable, fixMissingId, disableSchemaValidation);
         }
     }
 }
