@@ -76,7 +76,7 @@ class ModulMapperTest {
         assertThat(actual.getGleasonScore().getGradPrimaer()).isEqualTo("4");
         assertThat(actual.getGleasonScore().getGradSekundaer()).isEqualTo("5");
         assertThat(actual.getGleasonScore().getScoreErgebnis()).isEqualTo("9");
-        assertThat(actual.getKomplPostOPClavienDindo()).isEqualTo(de.basisdatensatz.obds.v3.JNUTyp.J);
+        assertThat(actual.getKomplPostOPClavienDindo()).isEqualTo(de.basisdatensatz.obds.v3.JNU.J);
         assertThat(actual.getCaBefallStanze().getProzentzahl()).isEqualTo(50);
     }
 

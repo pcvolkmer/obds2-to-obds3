@@ -225,7 +225,7 @@ class MeldungMapper {
                     var tod = new TodTyp();
                     // Nicht in oBDS v2?
                     // tod.setAbschlussID();
-                    tod.setTodTumorbedingt(JNUTyp.fromValue(verlaufTod.getTodTumorbedingt().value()));
+                    tod.setTodTumorbedingt(JNU.fromValue(verlaufTod.getTodTumorbedingt().value()));
                     // Sterbedatum
                     MapperUtils.mapDateString(verlaufTod.getSterbedatum())
                             .ifPresent(datum -> tod.setSterbedatum(datum.getValue()));
@@ -270,7 +270,7 @@ class MeldungMapper {
                     MapperUtils.mapDateString(tumorkonferenz.getTumorkonferenzDatum()).ifPresent(datum -> {
                         mappedTumorkonferenz.setDatum(datum);
                         // oBDS v2 Meldung-Meldeanlass ist Quelle!
-                        mappedTumorkonferenz.setMeldeanlass(source.getMeldeanlass());
+                        mappedTumorkonferenz.setMeldeanlass(TumorkonferenzTyp.Meldeanlass.fromValue(source.getMeldeanlass()));
                         mappedTumorkonferenz.setTumorkonferenzID(tumorkonferenz.getTumorkonferenzID());
                         mappedTumorkonferenz.setTyp(tumorkonferenz.getTumorkonferenzTyp());
                         // Therapieempfehlung nicht in oBDS v2?
@@ -310,7 +310,7 @@ class MeldungMapper {
                     var mappedVerlauf = new VerlaufTyp();
                     mappedVerlauf.setVerlaufID(verlauf.getVerlaufID());
                     mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
-                    mappedVerlauf.setAllgemeinerLeistungszustand(verlauf.getAllgemeinerLeistungszustand());
+                    mappedVerlauf.setAllgemeinerLeistungszustand(AllgemeinerLeistungszustand.fromValue(verlauf.getAllgemeinerLeistungszustand()));
                     // oBDS v2 Meldung->Meldeanlass wird in oBDS v3 für Verlauf verwendet
                     mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
                     mappedVerlauf.setVerlaufLokalerTumorstatus(verlauf.getVerlaufLokalerTumorstatus());
@@ -365,7 +365,7 @@ class MeldungMapper {
         // mappedDiagnose.setPrimaertumorTopographieFreitext(..);
         // oBDS v3 kennt auch 7.1, 7.2 ... als Untertyp von 7 für Diagnosesicherung
         if (diagnose.getDiagnosesicherung() != null && !diagnose.getDiagnosesicherung().isBlank()) {
-            mappedDiagnose.setDiagnosesicherung(diagnose.getDiagnosesicherung());
+            mappedDiagnose.setDiagnosesicherung(DiagnoseTyp.DiagnoseTypDiagnosesicherung.fromValue(diagnose.getDiagnosesicherung()));
         } else {
             throw new UnmappableItemException(DIAGNOSESICHERUNG_MUST_NOT_BE_NULL);
         }
@@ -441,9 +441,9 @@ class MeldungMapper {
         // Beide nutzen
         // {'0'|'1'|'2'|'3'|'4'|'U'|'10%'|'20%'|'30%'|'40%'|'50%'|'60%'|'70%'|'80%'|'90%'|'100%'}
         if (diagnose.getAllgemeinerLeistungszustand() != null) {
-            mappedDiagnose.setAllgemeinerLeistungszustand(diagnose.getAllgemeinerLeistungszustand());
+            mappedDiagnose.setAllgemeinerLeistungszustand(AllgemeinerLeistungszustand.fromValue(diagnose.getAllgemeinerLeistungszustand()));
         } else {
-            mappedDiagnose.setAllgemeinerLeistungszustand("U");
+            mappedDiagnose.setAllgemeinerLeistungszustand(AllgemeinerLeistungszustand.U);
         }
 
         var mappedMeldung = getMeldungsRumpf(source);
@@ -467,9 +467,9 @@ class MeldungMapper {
         // For now: Wenn Melder-ID keine "9999" enthält => "J" -> Onkostar-Konvention
         // für "Extern"
         if (source.getMelderID().contains("9999")) {
-            mappedMeldung.setEigeneLeistung(JNUTyp.N);
+            mappedMeldung.setEigeneLeistung(JNU.N);
         } else {
-            mappedMeldung.setEigeneLeistung(JNUTyp.J);
+            mappedMeldung.setEigeneLeistung(JNU.J);
         }
 
         // In jeder (Unter-)Meldung

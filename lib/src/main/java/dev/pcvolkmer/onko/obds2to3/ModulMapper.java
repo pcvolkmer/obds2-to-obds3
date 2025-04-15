@@ -58,7 +58,7 @@ class ModulMapper {
             result.setCaBefallStanze(caBefallStanze);
         }
         if(source.getKomplPostOPClavienDindo() != null) {
-            result.setKomplPostOPClavienDindo(JNUTyp.fromValue(source.getKomplPostOPClavienDindo().value()));
+            result.setKomplPostOPClavienDindo(JNU.fromValue(source.getKomplPostOPClavienDindo().value()));
         }
         return result;
     }

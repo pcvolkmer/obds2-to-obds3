@@ -24,6 +24,8 @@
 
 package dev.pcvolkmer.onko.obds2to3;
 
+import de.basisdatensatz.obds.v3.DatumTagOderMonatGenauTyp;
+import de.basisdatensatz.obds.v3.DatumTagOderMonatOderJahrOderNichtGenauTyp;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -45,7 +47,7 @@ class MapperUtilsTest {
         var actual = MapperUtils.mapDateString(obdsv2DateString);
         assertThat(actual).isPresent();
         assertThat(actual.get().getValue().toXMLFormat()).startsWith(expectedDateString);
-        assertThat(actual.get().getDatumsgenauigkeit()).isEqualTo(expectedPrecision);
+        assertThat(actual.get().getDatumsgenauigkeit()).isEqualTo(DatumTagOderMonatOderJahrOderNichtGenauTyp.DatumsgenauigkeitTagOderMonatOderJahrOderNichtGenau.fromValue(expectedPrecision));
     }
 
     @Test
@@ -64,7 +66,7 @@ class MapperUtilsTest {
         var actual = MapperUtils.mapDateStringGenau(obdsv2DateString);
         assertThat(actual).isPresent();
         assertThat(actual.get().getValue().toXMLFormat()).startsWith(expectedDateString);
-        assertThat(actual.get().getDatumsgenauigkeit()).isEqualTo(expectedPrecision);
+        assertThat(actual.get().getDatumsgenauigkeit()).isEqualTo(DatumTagOderMonatGenauTyp.DatumsgenauigkeitTagOderMonatGenau.fromValue(expectedPrecision));
     }
 
     @Test

@@ -67,17 +67,17 @@ class MapperUtils {
             calendar.clear();
 
             calendar.set(Calendar.YEAR, year);
-            result.setDatumsgenauigkeit("M");
+            result.setDatumsgenauigkeit(DatumTagOderMonatOderJahrOderNichtGenauTyp.DatumsgenauigkeitTagOderMonatOderJahrOderNichtGenau.M);
 
             if (month > 0) {
                 // Starts with month "0"
                 calendar.set(Calendar.MONTH, month - 1);
-                result.setDatumsgenauigkeit("T");
+                result.setDatumsgenauigkeit(DatumTagOderMonatOderJahrOderNichtGenauTyp.DatumsgenauigkeitTagOderMonatOderJahrOderNichtGenau.T);
             }
 
             if (day > 0) {
                 calendar.set(Calendar.DAY_OF_MONTH, day);
-                result.setDatumsgenauigkeit("E");
+                result.setDatumsgenauigkeit(DatumTagOderMonatOderJahrOderNichtGenauTyp.DatumsgenauigkeitTagOderMonatOderJahrOderNichtGenau.E);
             }
 
             try {
@@ -121,12 +121,12 @@ class MapperUtils {
             if (month > 0) {
                 // Starts with month "0"
                 calendar.set(Calendar.MONTH, month - 1);
-                result.setDatumsgenauigkeit("T");
+                result.setDatumsgenauigkeit(DatumTagOderMonatGenauTyp.DatumsgenauigkeitTagOderMonatGenau.T);
             }
 
             if (day > 0) {
                 calendar.set(Calendar.DAY_OF_MONTH, day);
-                result.setDatumsgenauigkeit("E");
+                result.setDatumsgenauigkeit(DatumTagOderMonatGenauTyp.DatumsgenauigkeitTagOderMonatGenau.E);
             }
 
             try {
