@@ -370,8 +370,8 @@ class MeldungMapper {
             throw new UnmappableItemException(DIAGNOSESICHERUNG_MUST_NOT_BE_NULL);
         }
 
-        mappedDiagnose.setMengeFruehereTumorerkrankung(new DiagnoseTyp.MengeFruehereTumorerkrankung());
         if (diagnose.getMengeFruehereTumorerkrankung() != null) {
+            mappedDiagnose.setMengeFruehereTumorerkrankung(new DiagnoseTyp.MengeFruehereTumorerkrankung());
             mappedDiagnose.getMengeFruehereTumorerkrankung().getFruehereTumorerkrankung().addAll(
                     diagnose.getMengeFruehereTumorerkrankung().getFruehereTumorerkrankung().stream()
                             .map(MeldungMapper::mapFruehereTumorerkrankung)
