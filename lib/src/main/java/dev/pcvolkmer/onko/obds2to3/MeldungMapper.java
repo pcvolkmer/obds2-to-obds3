@@ -326,6 +326,7 @@ class MeldungMapper {
 
                     // Fernmetastasen
                     if (verlauf.getMengeFM() != null) {
+                        mappedVerlauf.setMengeFM(new MengeFMTyp());
                         mappedVerlauf.getMengeFM().getFernmetastase().addAll(
                                 verlauf.getMengeFM().getFernmetastase().stream()
                                         .map(MeldungMapper::mapFernmetastase)
@@ -406,6 +407,7 @@ class MeldungMapper {
 
         // Fernmetastasen
         if (diagnose.getMengeFM() != null) {
+            mappedDiagnose.setMengeFM(new MengeFMTyp());
             mappedDiagnose.getMengeFM().getFernmetastase().addAll(
                     diagnose.getMengeFM().getFernmetastase().stream()
                             .map(MeldungMapper::mapFernmetastase)
@@ -422,6 +424,7 @@ class MeldungMapper {
 
         // Weitere Klassifikationen
         if (diagnose.getMengeWeitereKlassifikation() != null) {
+            mappedDiagnose.setMengeWeitereKlassifikation(new MengeWeitereKlassifikationTyp());
             mappedDiagnose.getMengeWeitereKlassifikation().getWeitereKlassifikation().addAll(
                     diagnose.getMengeWeitereKlassifikation().getWeitereKlassifikation().stream()
                             .map(MeldungMapper::mapWeitereKlassifikation)
@@ -432,6 +435,7 @@ class MeldungMapper {
 
         // Modul Prostata
         if (diagnose.getModulProstata() != null) {
+            mappedDiagnose.setModulProstata(new ModulProstataTyp());
             mappedDiagnose.setModulProstata(ModulMapper.map(diagnose.getModulProstata()));
         }
 
