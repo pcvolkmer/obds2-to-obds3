@@ -371,6 +371,7 @@ class MeldungMapper {
         }
 
         if (diagnose.getMengeFruehereTumorerkrankung() != null) {
+            mappedDiagnose.setMengeFruehereTumorerkrankung(new DiagnoseTyp.MengeFruehereTumorerkrankung());
             mappedDiagnose.getMengeFruehereTumorerkrankung().getFruehereTumorerkrankung().addAll(
                     diagnose.getMengeFruehereTumorerkrankung().getFruehereTumorerkrankung().stream()
                             .map(MeldungMapper::mapFruehereTumorerkrankung)
