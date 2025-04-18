@@ -71,7 +71,7 @@ class ModulMapperTest {
         assertThat(actual.getAnlassGleasonScore()).isEqualTo(AnlassGleasonScoreTyp.S);
         assertThat(actual.getAnzahlStanzen()).isEqualTo(2);
         assertThat(actual.getAnzahlPosStanzen()).isEqualTo(3);
-        assertThat(actual.getDatumPSA().toXMLFormat()).startsWith("2024-10-21");
+        assertThat(actual.getDatumPSA().getValue().toXMLFormat()).startsWith("2024-10-21");
         assertThat(actual.getDatumStanzen().toXMLFormat()).startsWith("2024-10-22");
         assertThat(actual.getGleasonScore().getGradPrimaer()).isEqualTo("4");
         assertThat(actual.getGleasonScore().getGradSekundaer()).isEqualTo("5");

@@ -69,7 +69,7 @@ public class ObdsMapper {
         }
 
         OBDS obds = new OBDS();
-        obds.setSchemaVersion("3.0.3");
+        obds.setSchemaVersion("3.0.4");
 
         // In oBDSv2 nicht so definiert
         // Letztes Meldedatum aus oBDSv2 Menge_Meldung?
@@ -130,7 +130,7 @@ public class ObdsMapper {
         if (!this.disableSchemaValidation && ADTGEKID.class == clazz) {
             SchemaValidator.isValid(str, SchemaValidator.SchemaVersion.ADT_GEKID_2_2_3);
         } else if (!this.disableSchemaValidation && OBDS.class == clazz) {
-            SchemaValidator.isValid(str, SchemaValidator.SchemaVersion.OBDS_3_0_3);
+            SchemaValidator.isValid(str, SchemaValidator.SchemaVersion.OBDS_3_0_4);
         }
 
         if (clazz == ADTGEKID.class || clazz == OBDS.class) {
@@ -150,7 +150,7 @@ public class ObdsMapper {
                 System.lineSeparator(),
                 xmlString.replace("<oBDS ", "<oBDS xmlns=\"http://www.basisdatensatz.de/oBDS/XML\" "));
 
-        if (this.disableSchemaValidation || SchemaValidator.isValid(result, SchemaValidator.SchemaVersion.OBDS_3_0_3)) {
+        if (this.disableSchemaValidation || SchemaValidator.isValid(result, SchemaValidator.SchemaVersion.OBDS_3_0_4)) {
             return result;
         }
 

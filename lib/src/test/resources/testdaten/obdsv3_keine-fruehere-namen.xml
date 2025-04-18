@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<oBDS xmlns="http://www.basisdatensatz.de/oBDS/XML" Schema_Version="3.0.3">
+<oBDS xmlns="http://www.basisdatensatz.de/oBDS/XML" Schema_Version="3.0.4">
   <Absender Absender_ID="TEST" Software_ID="obds2-to-obds3" Software_Version="0.1.0">
     <Bezeichnung>TEST</Bezeichnung>
     <Anschrift>Musterstraße 1, 012345 Musterhausen</Anschrift>
