@@ -63,7 +63,7 @@ class SchemaValidatorTest {
     })
     void shouldValidateCorrectV3Testdata(String filename) throws Exception {
         var xmlString = new String(getClass().getClassLoader().getResource(filename).openStream().readAllBytes());
-        assertThat(SchemaValidator.isValid(xmlString, SchemaValidator.SchemaVersion.OBDS_3_0_3)).isTrue();
+        assertThat(SchemaValidator.isValid(xmlString, SchemaValidator.SchemaVersion.OBDS_3_0_4)).isTrue();
     }
 
     @Test
@@ -72,7 +72,7 @@ class SchemaValidatorTest {
                 "<oBDS xmlns=\"http://www.basisdatensatz.de/oBDS/XML\" Schema_Version=\"3.0.3\"></oBDS>";
 
         var cause = assertThrows(SchemaValidatorException.class, () -> {
-            SchemaValidator.isValid(xmlString, SchemaValidator.SchemaVersion.OBDS_3_0_3);
+            SchemaValidator.isValid(xmlString, SchemaValidator.SchemaVersion.OBDS_3_0_4);
         }).getCause();
 
         assertThat(cause).hasMessageContaining("oBDS");
@@ -80,7 +80,7 @@ class SchemaValidatorTest {
 
     @Test
     void shouldReturnRegExpPattern() {
-        var x = SchemaValidator.regexpPattern("datatypeCtrimmed", SchemaValidator.SchemaVersion.OBDS_3_0_3);
+        var x = SchemaValidator.regexpPattern("datatypeCtrimmed", SchemaValidator.SchemaVersion.OBDS_3_0_4);
         assertThat(x).isPresent();
     }
 }

@@ -25,10 +25,12 @@
 package dev.pcvolkmer.onko.obds2to3;
 
 import de.basisdatensatz.obds.v3.DatumTagOderMonatGenauTyp;
+import de.basisdatensatz.obds.v3.DatumTagOderMonatGenauTypSchaetzOptional;
 import de.basisdatensatz.obds.v3.DatumTagOderMonatOderJahrOderNichtGenauTyp;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -141,6 +143,31 @@ class MapperUtils {
         return Optional.empty();
     }
 
+    /**
+     * Wandelt XMLGregorianCalendar in oBDS v3 "schaetz" Datum mit optionaler Genauigkeitsangabe um.
+     *
+     * @param calendar
+     * @return
+     */
+    public static Optional<DatumTagOderMonatGenauTypSchaetzOptional> mapDatumTagOderMonatGenauTypSchaetzOptional(XMLGregorianCalendar calendar) {
+        if (null == calendar) {
+            return Optional.empty();
+        }
+
+        var result = new DatumTagOderMonatGenauTypSchaetzOptional();
+        result.setValue(calendar);
+
+        if (calendar.getMonth() > 0) {
+            result.setDatumsgenauigkeit(DatumTagOderMonatGenauTypSchaetzOptional.DatumsgenauigkeitTagOderMonatGenauTypSchaetzOptional.T);
+        }
+
+        if (calendar.getDay() > 0) {
+            result.setDatumsgenauigkeit(DatumTagOderMonatGenauTypSchaetzOptional.DatumsgenauigkeitTagOderMonatGenauTypSchaetzOptional.T);
+        }
+
+        return Optional.of(result);
+    }
+
     public static Optional<LocalDate> parseDate(String dateString) {
         if (null == dateString || dateString.trim().isEmpty()) {
             return Optional.empty();
@@ -167,7 +194,7 @@ class MapperUtils {
      */
     public static Optional<String> trimToMatchDatatype(String datatypeName, String string) {
         return SchemaValidator
-                .regexpPattern(datatypeName, SchemaValidator.SchemaVersion.OBDS_3_0_3)
+                .regexpPattern(datatypeName, SchemaValidator.SchemaVersion.OBDS_3_0_4)
                 .map(pattern -> string.replaceAll(String.format("[^%s]", pattern.pattern()), ""));
     }
 }

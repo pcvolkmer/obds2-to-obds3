@@ -91,6 +91,7 @@ public class SchemaValidator {
     public enum SchemaVersion {
         ADT_GEKID_2_2_3("schema/ADT_GEKID_v2.2.3.xsd"),
         OBDS_3_0_3("schema/oBDS_v3.0.3.xsd"),
+        OBDS_3_0_4("schema/oBDS_v3.0.4.xsd"),
         ;
 
         private final String schemaFile;

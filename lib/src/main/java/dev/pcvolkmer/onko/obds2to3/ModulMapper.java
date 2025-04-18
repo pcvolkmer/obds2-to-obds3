@@ -49,7 +49,7 @@ class ModulMapper {
         result.setAnzahlStanzen(source.getAnzahlStanzen());
         result.setAnzahlPosStanzen(source.getAnzahlPosStanzen());
         // oBDS v2 verwendet hier abweichend Format yyyy-MM-dd! Daher direktes Mapping
-        result.setDatumPSA(source.getDatumPSA());
+        MapperUtils.mapDatumTagOderMonatGenauTypSchaetzOptional(source.getDatumPSA()).ifPresent(result::setDatumPSA);
         result.setPSA(source.getPSA());
         if (source.getCaBefallStanze() != null) {
             var caBefallStanze = new CaBefallStanzeTyp();
