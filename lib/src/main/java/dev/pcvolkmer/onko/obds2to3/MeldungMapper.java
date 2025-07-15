@@ -70,17 +70,23 @@ class MeldungMapper {
         }
 
         var result = new ArrayList<Meldung>();
-        try {
-            // Diagnose als einzelne Meldung
-            var diagnosemeldung = getMeldungDiagnose(source);
-            // Füge Zusatzitems zur Diagnosemeldung hinzu, wenn vorhanden
-            getMengeZusatzitemTyp(source).ifPresent(diagnosemeldung::setMengeZusatzitem);
-            result.add(diagnosemeldung);
-        } catch (UnmappableItemException e) {
-            if (!ignoreUnmappableMessages) {
-                throw e;
+
+        // im Falle von externen Meldungen wie Tumorkonferenzen existiert 
+        // kein Diagnose-Element.
+        if (null != source.getDiagnose()) {
+            try {
+                // Diagnose als einzelne Meldung
+                var diagnosemeldung = getMeldungDiagnose(source);
+                // Füge Zusatzitems zur Diagnosemeldung hinzu, wenn vorhanden
+                getMengeZusatzitemTyp(source).ifPresent(diagnosemeldung::setMengeZusatzitem);
+                result.add(diagnosemeldung);
+            } catch (UnmappableItemException e) {
+                if (!ignoreUnmappableMessages) {
+                    throw e;
+                }
             }
         }
+
         // Tumorkonferenzen als einzelne Meldung
         result.addAll(getMappedTumorkonferenzen(source));
         // Verlauf - Ohne: oOBDS v2 Verlauf - Tod
@@ -310,7 +316,24 @@ class MeldungMapper {
                     var mappedVerlauf = new VerlaufTyp();
                     mappedVerlauf.setVerlaufID(verlauf.getVerlaufID());
                     mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
-                    mappedVerlauf.setAllgemeinerLeistungszustand(AllgemeinerLeistungszustand.fromValue(verlauf.getAllgemeinerLeistungszustand()));
+                    
+                    if (verlauf.getAllgemeinerLeistungszustand() != null) {
+                        mappedVerlauf.setAllgemeinerLeistungszustand(
+                                AllgemeinerLeistungszustand.fromValue(verlauf.getAllgemeinerLeistungszustand()));
+                    } else {
+                        // XXX: das ist falsch, aber ansonsten schlägt die Validierung fehl mit:
+                        //  One of '{"http://www.basisdatensatz.de/oBDS/XML":Verlauf\_Lokaler\_Tumorstatus, 
+                        // "http://www.basisdatensatz.de/oBDS/XML":Verlauf\_Tumorstatus\_Lymphknoten, 
+                        // "http://www.basisdatensatz.de/oBDS/XML":Verlauf\_Tumorstatus\_Fernmetastasen, 
+                        // "http://www.basisdatensatz.de/oBDS/XML":Menge\_FM, 
+                        // "http://www.basisdatensatz.de/oBDS/XML":Histologie, 
+                        // "http://www.basisdatensatz.de/oBDS/XML":TNM, 
+                        // "http://www.basisdatensatz.de/oBDS/XML":Menge\_Weitere\_Klassifikation,
+                        // "http://www.basisdatensatz.de/oBDS/XML":Menge\_Genetik,
+                        // "http://www.basisdatensatz.de/oBDS/XML":Allgemeiner\_Leistungszustand\}' is expected.
+                        mappedVerlauf.setAllgemeinerLeistungszustand(AllgemeinerLeistungszustand.U);
+                    }
+                    
                     // oBDS v2 Meldung->Meldeanlass wird in oBDS v3 für Verlauf verwendet
                     mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
                     mappedVerlauf.setVerlaufLokalerTumorstatus(verlauf.getVerlaufLokalerTumorstatus());
