@@ -39,7 +39,7 @@
             <Meldeanlass>statusaenderung</Meldeanlass>
             <Untersuchungsdatum_Verlauf>2017-11-06</Untersuchungsdatum_Verlauf>
             <Gesamtbeurteilung_Tumorstatus>K</Gesamtbeurteilung_Tumorstatus>
-            <Allgemeiner_Leistungszustand>U</Allgemeiner_Leistungszustand>
+            <Allgemeiner_Leistungszustand>0</Allgemeiner_Leistungszustand>
           </Verlauf>
         </Meldung>
       </Menge_Meldung>

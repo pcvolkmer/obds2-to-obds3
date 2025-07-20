@@ -42,6 +42,7 @@
                   <Verlauf Verlauf_ID="297776">
                      <Untersuchungsdatum_Verlauf>06.11.2017</Untersuchungsdatum_Verlauf>
                      <Gesamtbeurteilung_Tumorstatus>K</Gesamtbeurteilung_Tumorstatus>
+                     <Allgemeiner_Leistungszustand>0</Allgemeiner_Leistungszustand>
                   </Verlauf>
                </Menge_Verlauf>
             </Meldung>
