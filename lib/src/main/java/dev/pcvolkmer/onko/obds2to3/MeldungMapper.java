@@ -70,17 +70,23 @@ class MeldungMapper {
         }
 
         var result = new ArrayList<Meldung>();
-        try {
-            // Diagnose als einzelne Meldung
-            var diagnosemeldung = getMeldungDiagnose(source);
-            // Füge Zusatzitems zur Diagnosemeldung hinzu, wenn vorhanden
-            getMengeZusatzitemTyp(source).ifPresent(diagnosemeldung::setMengeZusatzitem);
-            result.add(diagnosemeldung);
-        } catch (UnmappableItemException e) {
-            if (!ignoreUnmappableMessages) {
-                throw e;
+
+        // im Falle von externen Meldungen wie Tumorkonferenzen existiert 
+        // kein Diagnose-Element.
+        if (null != source.getDiagnose()) {
+            try {
+                // Diagnose als einzelne Meldung
+                var diagnosemeldung = getMeldungDiagnose(source);
+                // Füge Zusatzitems zur Diagnosemeldung hinzu, wenn vorhanden
+                getMengeZusatzitemTyp(source).ifPresent(diagnosemeldung::setMengeZusatzitem);
+                result.add(diagnosemeldung);
+            } catch (UnmappableItemException e) {
+                if (!ignoreUnmappableMessages) {
+                    throw e;
+                }
             }
         }
+
         // Tumorkonferenzen als einzelne Meldung
         result.addAll(getMappedTumorkonferenzen(source));
         // Verlauf - Ohne: oOBDS v2 Verlauf - Tod
@@ -310,7 +316,14 @@ class MeldungMapper {
                     var mappedVerlauf = new VerlaufTyp();
                     mappedVerlauf.setVerlaufID(verlauf.getVerlaufID());
                     mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
-                    mappedVerlauf.setAllgemeinerLeistungszustand(AllgemeinerLeistungszustand.fromValue(verlauf.getAllgemeinerLeistungszustand()));
+                    
+                    // AllgemeinerLeistungszustand ist nicht verpflicchtend oBDS v2. In v3 schon.
+                    // der "else"-Pfad erzeugt also invalide Meldungen. obds-to-fhir kommt damit aber zurecht.
+                    if (verlauf.getAllgemeinerLeistungszustand() != null) {
+                        mappedVerlauf.setAllgemeinerLeistungszustand(
+                                AllgemeinerLeistungszustand.fromValue(verlauf.getAllgemeinerLeistungszustand()));
+                    }
+                    
                     // oBDS v2 Meldung->Meldeanlass wird in oBDS v3 für Verlauf verwendet
                     mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
                     mappedVerlauf.setVerlaufLokalerTumorstatus(verlauf.getVerlaufLokalerTumorstatus());
