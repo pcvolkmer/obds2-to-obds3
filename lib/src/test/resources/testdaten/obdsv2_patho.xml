@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ADT_GEKID xmlns="http://www.gekid.de/namespace" Schema_Version="2.2.3">
+  <Absender Absender_ID="TEST" Software_ID="ONKOSTAR" Installations_ID="2011">
+    <Absender_Bezeichnung>TEST</Absender_Bezeichnung>
+    <Absender_Anschrift>Musterstraße 1, 012345 Musterhausen</Absender_Anschrift>
+  </Absender>
+  <Menge_Patient>
+    <Patient>
+      <Patienten_Stammdaten Patient_ID="/0Khz2/2wUCFNNbXMzO/SQ">
+        <KrankenkassenNr>970000011</KrankenkassenNr>
+        <Patienten_Nachname>Mustermann</Patienten_Nachname>
+        <Patienten_Vornamen>Max</Patienten_Vornamen>
+        <Patienten_Geschlecht>M</Patienten_Geschlecht>
+        <Patienten_Geburtsdatum>01.01.2000</Patienten_Geburtsdatum>
+        <Menge_Adresse>
+          <Adresse>
+            <Patienten_Strasse>Muster Str.</Patienten_Strasse>
+            <Patienten_Hausnummer>123</Patienten_Hausnummer>
+            <Patienten_Land>DE</Patienten_Land>
+            <Patienten_PLZ>12345</Patienten_PLZ>
+            <Patienten_Ort>Musterstadt</Patienten_Ort>
+          </Adresse>
+        </Menge_Adresse>
+      </Patienten_Stammdaten>
+      <Menge_Meldung>
+        <Meldung Meldung_ID="H/2025/000323" Melder_ID="TEST">
+          <Meldedatum>28.07.2025</Meldedatum>
+          <Meldebegruendung>D</Meldebegruendung>
+          <Meldeanlass>histologie_zytologie</Meldeanlass>
+          <Diagnose>
+            <Primaertumor_ICD_Code>C82.1</Primaertumor_ICD_Code>
+            <Primaertumor_ICD_Version>10 2024 GM</Primaertumor_ICD_Version>
+            <Diagnosedatum>28.07.2025</Diagnosedatum>
+            <Diagnosesicherung>7</Diagnosesicherung>
+            <Seitenlokalisation>T</Seitenlokalisation>
+            <Menge_Histologie>
+              <Histologie>
+                <Tumor_Histologiedatum>28.07.2025</Tumor_Histologiedatum>
+                <Histologie_EinsendeNr>H/2025/000323</Histologie_EinsendeNr>
+                <Grading>U</Grading>
+              </Histologie>
+            </Menge_Histologie>
+            <Anmerkung>*** Pathobericht: Hauptbefund, Befunddatum 28.07.2025 ***
+              Dies ist ein Befundtext
+              Mit freundlichen Grüßen
+              *** Ende Pathobericht: Hauptbefund ***
+            </Anmerkung>
+          </Diagnose>
+          <Menge_Zusatzitem>
+            <Zusatzitem>
+              <Art>Histologie_Material_Text</Art>
+              <Wert>1 B, 8 OT</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Klinik_Abteilung_Praxis</Art>
+              <Wert>-, Pathologisches Institut der Testuni Prof. Tester Leistungsabrechnung</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Arzt</Art>
+              <Wert>Test Universität Musterhausen Institut für Pathologie Prof. Dr. C. Tester</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Anschrift</Art>
+              <Wert>Teststraße 1, D 12345 Musterhausen</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Titel</Art>
+              <Wert/>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Vorname</Art>
+              <Wert/>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Nachname</Art>
+              <Wert/>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Einrichtung</Art>
+              <Wert>Test Universität Musterhausen Institut für Pathologie Prof. Dr. C. Tester</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Strasse</Art>
+              <Wert>Teststraße</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Hausnummer</Art>
+              <Wert>1</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Adresszusatz</Art>
+              <Wert/>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_PLZ</Art>
+              <Wert>12345</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Ort</Art>
+              <Wert>Musterhausen</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Teilnahme_Forschungsvorhaben</Art>
+              <Wert>NB</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Datum>23.01.2025</Datum>
+              <Art>Diagnose</Art>
+              <Wert>C82.1 undefiniert Undefined</Wert>
+            </Zusatzitem>
+          </Menge_Zusatzitem>
+        </Meldung>
+      </Menge_Meldung>
+      <Anmerkung>Kostenträger: Pathologisches Institut der Test Universität Musterhausen</Anmerkung>
+    </Patient>
+  </Menge_Patient>
+  <Menge_Melder>
+    <Melder Melder_ID="TEST">
+      <Melder_IKNR>103456789</Melder_IKNR>
+      <Meldende_Stelle>TEST</Meldende_Stelle>
+    </Melder>
+  </Menge_Melder>
+</ADT_GEKID>

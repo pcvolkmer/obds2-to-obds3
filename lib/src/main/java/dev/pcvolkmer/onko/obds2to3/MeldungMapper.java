@@ -28,10 +28,9 @@ import de.basisdatensatz.obds.v2.ADTGEKID;
 import de.basisdatensatz.obds.v3.*;
 import de.basisdatensatz.obds.v3.DiagnoseTyp.MengeFruehereTumorerkrankung.FruehereTumorerkrankung;
 import de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.*;
-
-import org.apache.commons.codec.digest.DigestUtils;
 
 class MeldungMapper {
 
@@ -71,18 +70,30 @@ class MeldungMapper {
 
         var result = new ArrayList<Meldung>();
 
-        // im Falle von externen Meldungen wie Tumorkonferenzen existiert 
+        // im Falle von externen Meldungen wie Tumorkonferenzen existiert
         // kein Diagnose-Element.
         if (null != source.getDiagnose()) {
-            try {
-                // Diagnose als einzelne Meldung
-                var diagnosemeldung = getMeldungDiagnose(source);
-                // Füge Zusatzitems zur Diagnosemeldung hinzu, wenn vorhanden
-                getMengeZusatzitemTyp(source).ifPresent(diagnosemeldung::setMengeZusatzitem);
-                result.add(diagnosemeldung);
-            } catch (UnmappableItemException e) {
-                if (!ignoreUnmappableMessages) {
-                    throw e;
+            if ("histologie_zytologie".equals(source.getMeldeanlass())) {
+                var pathomeldung = getMeldungPathologie(source);
+                // Füge Zusatzitems zur Diagnosemeldung hinzu, wenn vorhanden und nicht "Einsender"
+                getMengeZusatzitemTyp(source).ifPresent(zusatzitems -> {
+                    var filtered = zusatzitems.getZusatzitem().stream().filter(zusatzitem -> !zusatzitem.getArt().startsWith("Einsender")).toList();
+                    var mengeZusatzitemTyp = new MengeZusatzitemTyp();
+                    mengeZusatzitemTyp.getZusatzitem().addAll(filtered);
+                    pathomeldung.setMengeZusatzitem(mengeZusatzitemTyp);
+                });
+                result.add(pathomeldung);
+            } else {
+                try {
+                    // Diagnose als einzelne Meldung
+                    var diagnosemeldung = getMeldungDiagnose(source);
+                    // Füge Zusatzitems zur Diagnosemeldung hinzu, wenn vorhanden
+                    getMengeZusatzitemTyp(source).ifPresent(diagnosemeldung::setMengeZusatzitem);
+                    result.add(diagnosemeldung);
+                } catch (UnmappableItemException e) {
+                    if (!ignoreUnmappableMessages) {
+                        throw e;
+                    }
                 }
             }
         }
@@ -316,14 +327,14 @@ class MeldungMapper {
                     var mappedVerlauf = new VerlaufTyp();
                     mappedVerlauf.setVerlaufID(verlauf.getVerlaufID());
                     mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
-                    
+
                     // AllgemeinerLeistungszustand ist nicht verpflicchtend oBDS v2. In v3 schon.
                     // der "else"-Pfad erzeugt also invalide Meldungen. obds-to-fhir kommt damit aber zurecht.
                     if (verlauf.getAllgemeinerLeistungszustand() != null) {
                         mappedVerlauf.setAllgemeinerLeistungszustand(
                                 AllgemeinerLeistungszustand.fromValue(verlauf.getAllgemeinerLeistungszustand()));
                     }
-                    
+
                     // oBDS v2 Meldung->Meldeanlass wird in oBDS v3 für Verlauf verwendet
                     mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
                     mappedVerlauf.setVerlaufLokalerTumorstatus(verlauf.getVerlaufLokalerTumorstatus());
@@ -467,6 +478,98 @@ class MeldungMapper {
         var mappedMeldung = getMeldungsRumpf(source);
         mappedMeldung.setMeldungID(source.getMeldungID());
         mappedMeldung.setDiagnose(mappedDiagnose);
+        return mappedMeldung;
+    }
+
+    private Meldung getMeldungPathologie(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+        var diagnose = source.getDiagnose();
+        if (null == diagnose) {
+            throw new IllegalArgumentException(DIAGNOSE_SHOULD_NOT_BE_NULL);
+        }
+
+        var mappedPathologie = new PathologieTyp();
+        mappedPathologie.setPrimaertumorDiagnosetext(diagnose.getPrimaertumorDiagnosetext());
+        mappedPathologie.setBefundtext(diagnose.getAnmerkung());
+        mappedPathologie.setDiagnosesicherung(diagnose.getDiagnosesicherung());
+
+        // Menge Histologie lässt sich nicht direkt auf einen Wert mappen in oBDS v3 -
+        // mehrere Diagnose-Meldungen?
+        // mappedDiagnose.setHistologie(..);
+        // Aktuell: Immer nur erste Histologie verwendet!
+        if (diagnose.getMengeHistologie() != null) {
+            diagnose.getMengeHistologie().getHistologie().stream().findFirst().map(firstHisto -> {
+                        var mappedHisto = new HistologieTyp();
+                        mappedHisto.setGrading(firstHisto.getGrading());
+                        mappedHisto.setHistologieID(firstHisto.getHistologieID());
+                        mappedHisto.setHistologieEinsendeNr(firstHisto.getHistologieEinsendeNr());
+                        mappedHisto.setLKBefallen(firstHisto.getLKBefallen());
+                        mappedHisto.setLKUntersucht(firstHisto.getLKUntersucht());
+                        mappedHisto.setMorphologieFreitext(firstHisto.getMorphologieFreitext());
+                        mappedHisto.setSentinelLKBefallen(firstHisto.getSentinelLKBefallen());
+                        mappedHisto.setSentinelLKUntersucht(firstHisto.getSentinelLKUntersucht());
+                        // Nur wenn vorhanden und mappbar
+                        MapperUtils.mapDateString(firstHisto.getTumorHistologiedatum())
+                                .ifPresent(mappedHisto::setTumorHistologiedatum);
+                        return mappedHisto;
+                    })
+                    // Wenn Histo vorhanden - erste Histo
+                    .ifPresent(mappedPathologie::setHistologie);
+        }
+
+        // Fernmetastasen
+        if (diagnose.getMengeFM() != null) {
+            mappedPathologie.setMengeFM(new MengeFMTyp());
+            mappedPathologie.getMengeFM().getFernmetastase().addAll(
+                    diagnose.getMengeFM().getFernmetastase().stream()
+                            .map(MeldungMapper::mapFernmetastase)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .toList());
+        }
+
+        // cTNPM
+        mapTnmType(diagnose.getCTNM()).ifPresent(mappedPathologie::setCTNM);
+
+        // pTNPM
+        mapTnmType(diagnose.getPTNM()).ifPresent(mappedPathologie::setPTNM);
+
+        // Weitere Klassifikationen
+        if (diagnose.getMengeWeitereKlassifikation() != null) {
+            mappedPathologie.setMengeWeitereKlassifikation(new MengeWeitereKlassifikationTyp());
+            mappedPathologie.getMengeWeitereKlassifikation().getWeitereKlassifikation().addAll(
+                    diagnose.getMengeWeitereKlassifikation().getWeitereKlassifikation().stream()
+                            .map(MeldungMapper::mapWeitereKlassifikation)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .toList());
+        }
+
+        // Einsender aus Zusatzitems
+        getMengeZusatzitemTyp(source).ifPresent(zusatzitems -> {
+            var einsender = new PathologieTyp.Einsender();
+            var strukturiert = new PathologieTyp.Einsender.Strukturiert();
+            zusatzitems.getZusatzitem().stream().filter(item -> "Einsender_Einrichtung".equals(item.getArt())).findFirst()
+                    .ifPresent(item -> strukturiert.setEinrichtung(item.getWert()));
+            zusatzitems.getZusatzitem().stream().filter(item -> "Einsender_Klinik_Abteilung_Praxis".equals(item.getArt())).findFirst()
+                    .ifPresent(item -> strukturiert.setAbteilung(item.getWert()));
+            zusatzitems.getZusatzitem().stream().filter(item -> "Einsender_Strasse".equals(item.getArt())).findFirst()
+                    .ifPresent(item -> strukturiert.setStrasse(item.getWert()));
+            zusatzitems.getZusatzitem().stream().filter(item -> "Einsender_Hausnummer".equals(item.getArt())).findFirst()
+                    .ifPresent(item -> strukturiert.setHausnummer(item.getWert()));
+            zusatzitems.getZusatzitem().stream().filter(item -> "Einsender_PLZ".equals(item.getArt())).findFirst()
+                    .ifPresent(item -> strukturiert.setPLZ(item.getWert()));
+            zusatzitems.getZusatzitem().stream().filter(item -> "Einsender_Ort".equals(item.getArt())).findFirst()
+                    .ifPresent(item -> strukturiert.setOrt(item.getWert()));
+            // Not in obds2!
+            strukturiert.setLand("DE");
+            einsender.setStrukturiert(strukturiert);
+            mappedPathologie.setEinsender(einsender);
+        });
+
+        var mappedMeldung = getMeldungsRumpf(source);
+        mappedMeldung.setMeldungID(source.getMeldungID());
+        mappedMeldung.setPathologie(mappedPathologie);
+
         return mappedMeldung;
     }
 
