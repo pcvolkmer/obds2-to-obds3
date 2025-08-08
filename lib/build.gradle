@@ -36,6 +36,7 @@ dependencies {
     api 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations'
     api 'jakarta.validation:jakarta.validation-api:3.1.0'
     api 'commons-codec:commons-codec:1.18.0'
+    api 'org.slf4j:slf4j-api:2.0.17'
 
     // JAXB code generation
     xsd2java "com.sun.xml.bind:jaxb-xjc:4.0.5"
