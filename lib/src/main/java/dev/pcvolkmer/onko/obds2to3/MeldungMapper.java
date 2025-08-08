@@ -29,10 +29,14 @@ import de.basisdatensatz.obds.v3.*;
 import de.basisdatensatz.obds.v3.DiagnoseTyp.MengeFruehereTumorerkrankung.FruehereTumorerkrankung;
 import de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 class MeldungMapper {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MeldungMapper.class);
 
     private static final String MUST_NOT_BE_NULL = "ADT_GEKID must not be null at this point";
     private static final String DIAGNOSE_SHOULD_NOT_BE_NULL = "ADT_GEKID diagnose should not be null at this point";
@@ -61,7 +65,7 @@ class MeldungMapper {
 
         if (null == source.getTumorzuordnung()
                 && (null == source.getDiagnose() || null == source.getDiagnose().getPrimaertumorICDCode()
-                        || null == source.getDiagnose().getPrimaertumorICDVersion())) {
+                || null == source.getDiagnose().getPrimaertumorICDVersion())) {
             if (ignoreUnmappableMessages) {
                 return new ArrayList<>();
             }
@@ -150,8 +154,8 @@ class MeldungMapper {
                 && null != source.getPrimaertumorICDCode()
                 && null != meldung.getMeldungID()) {
             var generatedTumorId = DigestUtils.sha1Hex(
-                    String.format("%s_%s_%s", source.getDiagnosedatum(), source.getPrimaertumorICDCode(),
-                            meldung.getMeldungID()))
+                            String.format("%s_%s_%s", source.getDiagnosedatum(), source.getPrimaertumorICDCode(),
+                                    meldung.getMeldungID()))
                     .subSequence(0, 16);
             mappedTumorzuordnung.setTumorID(String.format("TID_%s", generatedTumorId));
         } else if (null != source.getTumorID()) {
@@ -410,21 +414,26 @@ class MeldungMapper {
         // mappedDiagnose.setHistologie(..);
         // Aktuell: Immer nur erste Histologie verwendet!
         if (diagnose.getMengeHistologie() != null) {
+
+            if (diagnose.getMengeHistologie().getHistologie().size() > 1) {
+                LOG.warn("Multiple entries for 'Diagnose.Histologie' found. Only the first entry will be mapped!");
+            }
+
             diagnose.getMengeHistologie().getHistologie().stream().findFirst().map(firstHisto -> {
-                var mappedHisto = new HistologieTyp();
-                mappedHisto.setGrading(firstHisto.getGrading());
-                mappedHisto.setHistologieID(firstHisto.getHistologieID());
-                mappedHisto.setHistologieEinsendeNr(firstHisto.getHistologieEinsendeNr());
-                mappedHisto.setLKBefallen(firstHisto.getLKBefallen());
-                mappedHisto.setLKUntersucht(firstHisto.getLKUntersucht());
-                mappedHisto.setMorphologieFreitext(firstHisto.getMorphologieFreitext());
-                mappedHisto.setSentinelLKBefallen(firstHisto.getSentinelLKBefallen());
-                mappedHisto.setSentinelLKUntersucht(firstHisto.getSentinelLKUntersucht());
-                // Nur wenn vorhanden und mappbar
-                MapperUtils.mapDateString(firstHisto.getTumorHistologiedatum())
-                        .ifPresent(mappedHisto::setTumorHistologiedatum);
-                return mappedHisto;
-            })
+                        var mappedHisto = new HistologieTyp();
+                        mappedHisto.setGrading(firstHisto.getGrading());
+                        mappedHisto.setHistologieID(firstHisto.getHistologieID());
+                        mappedHisto.setHistologieEinsendeNr(firstHisto.getHistologieEinsendeNr());
+                        mappedHisto.setLKBefallen(firstHisto.getLKBefallen());
+                        mappedHisto.setLKUntersucht(firstHisto.getLKUntersucht());
+                        mappedHisto.setMorphologieFreitext(firstHisto.getMorphologieFreitext());
+                        mappedHisto.setSentinelLKBefallen(firstHisto.getSentinelLKBefallen());
+                        mappedHisto.setSentinelLKUntersucht(firstHisto.getSentinelLKUntersucht());
+                        // Nur wenn vorhanden und mappbar
+                        MapperUtils.mapDateString(firstHisto.getTumorHistologiedatum())
+                                .ifPresent(mappedHisto::setTumorHistologiedatum);
+                        return mappedHisto;
+                    })
                     // Wenn Histo vorhanden - erste Histo
                     .ifPresent(mappedDiagnose::setHistologie);
         }
@@ -604,8 +613,8 @@ class MeldungMapper {
                     && null != tumorzuordnung.getPrimaertumorICDCode()
                     && null != source.getMeldungID()) {
                 var generatedTumorId = DigestUtils.sha1Hex(
-                        String.format("%s_%s_%s", tumorzuordnung.getDiagnosedatum(),
-                                tumorzuordnung.getPrimaertumorICDCode(), source.getMeldungID()))
+                                String.format("%s_%s_%s", tumorzuordnung.getDiagnosedatum(),
+                                        tumorzuordnung.getPrimaertumorICDCode(), source.getMeldungID()))
                         .subSequence(0, 16);
                 mappedTumorzuordnung.setTumorID(String.format("TID_%s", generatedTumorId));
             } else if (null != tumorzuordnung.getTumorID()) {
