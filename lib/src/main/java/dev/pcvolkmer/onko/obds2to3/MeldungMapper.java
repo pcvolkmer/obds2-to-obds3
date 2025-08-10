@@ -102,6 +102,8 @@ class MeldungMapper {
             }
         }
 
+        // OPs als einzelne Meldung
+        result.addAll(getMappedOPs(source));
         // Tumorkonferenzen als einzelne Meldung
         result.addAll(getMappedTumorkonferenzen(source));
         // Verlauf - Ohne: oOBDS v2 Verlauf - Tod
@@ -178,6 +180,22 @@ class MeldungMapper {
         }
 
         return Optional.of(mappedTumorzuordnung);
+    }
+
+    private List<Meldung> getMappedOPs(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+        var mengeOP = source.getMengeOP();
+        if (mengeOP == null || mengeOP.getOP().isEmpty()) {
+            return List.of();
+        }
+
+        var mappedOps = OpMapper.map(source.getMengeOP());
+
+        return mappedOps.stream().map(mappedOpTyp -> {
+            var meldung = getMeldungsRumpf(source);
+            meldung.setMeldungID(String.format("%s_%s", source.getMeldungID(), mappedOpTyp.getOPID()));
+            meldung.setOP(mappedOpTyp);
+            return meldung;
+        }).toList();
     }
 
     /**
@@ -419,23 +437,10 @@ class MeldungMapper {
                 LOG.warn("Multiple entries for 'Diagnose.Histologie' found. Only the first entry will be mapped!");
             }
 
-            diagnose.getMengeHistologie().getHistologie().stream().findFirst().map(firstHisto -> {
-                        var mappedHisto = new HistologieTyp();
-                        mappedHisto.setGrading(firstHisto.getGrading());
-                        mappedHisto.setHistologieID(firstHisto.getHistologieID());
-                        mappedHisto.setHistologieEinsendeNr(firstHisto.getHistologieEinsendeNr());
-                        mappedHisto.setLKBefallen(firstHisto.getLKBefallen());
-                        mappedHisto.setLKUntersucht(firstHisto.getLKUntersucht());
-                        mappedHisto.setMorphologieFreitext(firstHisto.getMorphologieFreitext());
-                        mappedHisto.setSentinelLKBefallen(firstHisto.getSentinelLKBefallen());
-                        mappedHisto.setSentinelLKUntersucht(firstHisto.getSentinelLKUntersucht());
-                        // Nur wenn vorhanden und mappbar
-                        MapperUtils.mapDateString(firstHisto.getTumorHistologiedatum())
-                                .ifPresent(mappedHisto::setTumorHistologiedatum);
-                        return mappedHisto;
-                    })
-                    // Wenn Histo vorhanden - erste Histo
-                    .ifPresent(mappedDiagnose::setHistologie);
+            var firstHistologie = diagnose.getMengeHistologie().getHistologie().stream().findFirst();
+            if (firstHistologie.isPresent()) {
+                MeldungMapper.mapHistologie(firstHistologie.get()).ifPresent(mappedDiagnose::setHistologie);
+            }
         }
 
         // Fernmetastasen
@@ -468,7 +473,6 @@ class MeldungMapper {
 
         // Modul Prostata
         if (diagnose.getModulProstata() != null) {
-            mappedDiagnose.setModulProstata(new ModulProstataTyp());
             mappedDiagnose.setModulProstata(ModulMapper.map(diagnose.getModulProstata()));
         }
 
@@ -479,7 +483,8 @@ class MeldungMapper {
         // Beide nutzen
         // {'0'|'1'|'2'|'3'|'4'|'U'|'10%'|'20%'|'30%'|'40%'|'50%'|'60%'|'70%'|'80%'|'90%'|'100%'}
         if (diagnose.getAllgemeinerLeistungszustand() != null) {
-            mappedDiagnose.setAllgemeinerLeistungszustand(AllgemeinerLeistungszustand.fromValue(diagnose.getAllgemeinerLeistungszustand()));
+            mappedDiagnose.setAllgemeinerLeistungszustand(
+                    AllgemeinerLeistungszustand.fromValue(diagnose.getAllgemeinerLeistungszustand()));
         } else {
             mappedDiagnose.setAllgemeinerLeistungszustand(AllgemeinerLeistungszustand.U);
         }
@@ -506,23 +511,11 @@ class MeldungMapper {
         // mappedDiagnose.setHistologie(..);
         // Aktuell: Immer nur erste Histologie verwendet!
         if (diagnose.getMengeHistologie() != null) {
-            diagnose.getMengeHistologie().getHistologie().stream().findFirst().map(firstHisto -> {
-                        var mappedHisto = new HistologieTyp();
-                        mappedHisto.setGrading(firstHisto.getGrading());
-                        mappedHisto.setHistologieID(firstHisto.getHistologieID());
-                        mappedHisto.setHistologieEinsendeNr(firstHisto.getHistologieEinsendeNr());
-                        mappedHisto.setLKBefallen(firstHisto.getLKBefallen());
-                        mappedHisto.setLKUntersucht(firstHisto.getLKUntersucht());
-                        mappedHisto.setMorphologieFreitext(firstHisto.getMorphologieFreitext());
-                        mappedHisto.setSentinelLKBefallen(firstHisto.getSentinelLKBefallen());
-                        mappedHisto.setSentinelLKUntersucht(firstHisto.getSentinelLKUntersucht());
-                        // Nur wenn vorhanden und mappbar
-                        MapperUtils.mapDateString(firstHisto.getTumorHistologiedatum())
-                                .ifPresent(mappedHisto::setTumorHistologiedatum);
-                        return mappedHisto;
-                    })
-                    // Wenn Histo vorhanden - erste Histo
-                    .ifPresent(mappedPathologie::setHistologie);
+            var firstHistologie = diagnose.getMengeHistologie().getHistologie().stream().findFirst();
+            // Wenn Histo vorhanden - erste Histo
+            if (firstHistologie.isPresent()) {
+                MeldungMapper.mapHistologie(firstHistologie.get()).ifPresent(mappedPathologie::setHistologie);
+            }
         }
 
         // Fernmetastasen
@@ -709,35 +702,57 @@ class MeldungMapper {
         return Optional.empty();
     }
 
-    private static Optional<TNMTyp> mapTnmType(de.basisdatensatz.obds.v2.TNMTyp source) {
-        if (source != null) {
-            var result = new TNMTyp();
-            var date = MapperUtils.mapDateString(source.getTNMDatum());
-            if (date.isEmpty()) {
-                return Optional.empty();
-            } else {
-                result.setDatum(date.get().getValue());
-            }
-            result.setVersion(source.getTNMVersion());
-            result.setYSymbol(source.getTNMYSymbol());
-            result.setRSymbol(source.getTNMRSymbol());
-            result.setASymbol(source.getTNMASymbol());
-            result.setCPUPraefixT(source.getTNMCPUPraefixT());
-            result.setT(source.getTNMT());
-            result.setMSymbol(source.getTNMMSymbol());
-            result.setCPUPraefixN(source.getTNMCPUPraefixN());
-            result.setN(source.getTNMN());
-            result.setCPUPraefixM(source.getTNMCPUPraefixM());
-            result.setM(source.getTNMM());
-            result.setL(source.getTNML());
-            result.setV(source.getTNMV());
-            result.setPn(source.getTNMPn());
-            result.setS(source.getTNMS());
-            // Nicht in oBDSv2?
-            // result.setUICCStadium();
-            return Optional.of(result);
+    public static Optional<TNMTyp> mapTnmType(de.basisdatensatz.obds.v2.TNMTyp source) {
+        if (source == null) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        var result = new TNMTyp();
+        var date = MapperUtils.mapDateString(source.getTNMDatum());
+        // das Datum ist optional, selbst wenn es nicht in oBDS v2 gesetzt ist,
+        // können wir also korrekte oBDS v3 TNM Elemente erzeugen
+        if (date.isPresent()) {
+            result.setDatum(date.get().getValue());
+        }
+
+        result.setVersion(source.getTNMVersion());
+        result.setYSymbol(source.getTNMYSymbol());
+        result.setRSymbol(source.getTNMRSymbol());
+        result.setASymbol(source.getTNMASymbol());
+        result.setCPUPraefixT(source.getTNMCPUPraefixT());
+        result.setT(source.getTNMT());
+        result.setMSymbol(source.getTNMMSymbol());
+        result.setCPUPraefixN(source.getTNMCPUPraefixN());
+        result.setN(source.getTNMN());
+        result.setCPUPraefixM(source.getTNMCPUPraefixM());
+        result.setM(source.getTNMM());
+        result.setL(source.getTNML());
+        result.setV(source.getTNMV());
+        result.setPn(source.getTNMPn());
+        result.setS(source.getTNMS());
+        // Nicht in oBDSv2?
+        // result.setUICCStadium();
+        return Optional.of(result);
+
+    }
+
+    public static Optional<HistologieTyp> mapHistologie(de.basisdatensatz.obds.v2.HistologieTyp source) {
+        if (source == null) {
+            return Optional.empty();
+        }
+
+        var mappedHisto = new HistologieTyp();
+        mappedHisto.setGrading(source.getGrading());
+        mappedHisto.setHistologieID(source.getHistologieID());
+        mappedHisto.setHistologieEinsendeNr(source.getHistologieEinsendeNr());
+        mappedHisto.setLKBefallen(source.getLKBefallen());
+        mappedHisto.setLKUntersucht(source.getLKUntersucht());
+        mappedHisto.setMorphologieFreitext(source.getMorphologieFreitext());
+        mappedHisto.setSentinelLKBefallen(source.getSentinelLKBefallen());
+        mappedHisto.setSentinelLKUntersucht(source.getSentinelLKUntersucht());
+        // Nur wenn vorhanden und mappbar
+        MapperUtils.mapDateString(source.getTumorHistologiedatum())
+                .ifPresent(mappedHisto::setTumorHistologiedatum);
+        return Optional.of(mappedHisto);
     }
 
 }

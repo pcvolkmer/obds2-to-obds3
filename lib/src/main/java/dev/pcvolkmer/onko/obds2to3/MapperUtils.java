@@ -162,7 +162,7 @@ class MapperUtils {
         }
 
         if (calendar.getDay() > 0) {
-            result.setDatumsgenauigkeit(DatumTagOderMonatGenauTypSchaetzOptional.DatumsgenauigkeitTagOderMonatGenauTypSchaetzOptional.T);
+            result.setDatumsgenauigkeit(DatumTagOderMonatGenauTypSchaetzOptional.DatumsgenauigkeitTagOderMonatGenauTypSchaetzOptional.E);
         }
 
         return Optional.of(result);
