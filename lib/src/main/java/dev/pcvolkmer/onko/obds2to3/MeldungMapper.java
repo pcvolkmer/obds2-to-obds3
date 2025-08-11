@@ -104,6 +104,12 @@ class MeldungMapper {
             }
         }
 
+        // SYSTs als einzelne Meldungen
+        result.addAll(getMappedSYSTs(source));
+        // STs als einzelne Meldung
+        result.addAll(getMappedSTs(source));
+        // OPs als einzelne Meldung
+        result.addAll(getMappedOPs(source));
         // Tumorkonferenzen als einzelne Meldung
         result.addAll(getMappedTumorkonferenzen(source));
         // Verlauf - Ohne: oOBDS v2 Verlauf - Tod
@@ -127,7 +133,7 @@ class MeldungMapper {
         });
 
         // Nicht direkt Mappbar: Meldeanlass -> Untertypen
-        // TODO other items: Pathologie, OP, ST, SYST, Menge_Zusatzitem
+        // TODO other items: Pathologie, Menge_Zusatzitem
 
         return result.stream()
                 .filter(meldung -> !ignoreUnmappableMessages
@@ -180,6 +186,54 @@ class MeldungMapper {
         }
 
         return Optional.of(mappedTumorzuordnung);
+    }
+
+    private List<Meldung> getMappedSYSTs(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+        var mengeOP = source.getMengeSYST();
+        if (mengeOP == null || mengeOP.getSYST().isEmpty()) {
+            return List.of();
+        }
+
+        var mappedSyst = SystemtherapieMapper.map(source.getMengeSYST(), source.getMeldeanlass());
+
+        return mappedSyst.stream().map(mappedSysTyp -> {
+            var meldung = getMeldungsRumpf(source);
+            meldung.setMeldungID(String.format("%s_%s", source.getMeldungID(), mappedSysTyp.getSYSTID()));
+            meldung.setSYST(mappedSysTyp);
+            return meldung;
+        }).toList();
+    }
+
+    private List<Meldung> getMappedOPs(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+        var mengeOP = source.getMengeOP();
+        if (mengeOP == null || mengeOP.getOP().isEmpty()) {
+            return List.of();
+        }
+
+        var mappedOps = OpMapper.map(source.getMengeOP());
+
+        return mappedOps.stream().map(mappedOpTyp -> {
+            var meldung = getMeldungsRumpf(source);
+            meldung.setMeldungID(String.format("%s_%s", source.getMeldungID(), mappedOpTyp.getOPID()));
+            meldung.setOP(mappedOpTyp);
+            return meldung;
+        }).toList();
+    }
+
+    private List<Meldung> getMappedSTs(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+        var mengeOP = source.getMengeST();
+        if (mengeOP == null || mengeOP.getST().isEmpty()) {
+            return List.of();
+        }
+
+        var mappedSTs = StrahlentherapieMapper.map(source.getMengeST(), source.getMeldeanlass());
+
+        return mappedSTs.stream().map(mappedSTTyp -> {
+            var meldung = getMeldungsRumpf(source);
+            meldung.setMeldungID(String.format("%s_%s", source.getMeldungID(), mappedSTTyp.getSTID()));
+            meldung.setST(mappedSTTyp);
+            return meldung;
+        }).toList();
     }
 
     /**
