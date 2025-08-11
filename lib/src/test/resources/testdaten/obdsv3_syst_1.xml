@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<oBDS xmlns="http://www.basisdatensatz.de/oBDS/XML" Schema_Version="3.0.4">
+  <Absender Absender_ID="TEST" Software_ID="obds2-to-obds3" Software_Version="0.1.0">
+    <Bezeichnung>TEST</Bezeichnung>
+    <Anschrift>TEST 2, 00 TEST</Anschrift>
+  </Absender>
+  <Meldedatum>2021-11-23</Meldedatum>
+  <Menge_Patient>
+    <Patient Patient_ID="1055555777">
+      <Patienten_Stammdaten>
+        <Versichertendaten_PKV>
+          <IKNR>950123456</IKNR>
+          <PKV_Versichertennummer>123456789</PKV_Versichertennummer>
+        </Versichertendaten_PKV>
+        <Nachname>Doe</Nachname>
+        <Vornamen>John</Vornamen>
+        <Geschlecht>M</Geschlecht>
+        <Geburtsdatum Datumsgenauigkeit="E">1900-09-11</Geburtsdatum>
+        <Adresse>
+          <Strasse>Johnstr. 7</Strasse>
+          <Land>DE</Land>
+          <PLZ>91000</PLZ>
+          <Ort>Johncity</Ort>
+        </Adresse>
+      </Patienten_Stammdaten>
+      <Menge_Meldung>
+        <Meldung Meldung_ID="M0_39458" Melder_ID="M">
+          <Meldebegruendung>I</Meldebegruendung>
+          <Eigene_Leistung>J</Eigene_Leistung>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD>
+              <Code>C91.00</Code>
+              <Version>10 2021 GM</Version>
+            </Primaertumor_ICD>
+            <Diagnosedatum Datumsgenauigkeit="E">2021-05-21</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <SYST SYST_ID="39458">
+            <Meldeanlass>behandlungsende</Meldeanlass>
+            <Intention>K</Intention>
+            <Stellung_OP>O</Stellung_OP>
+            <Therapieart>CH</Therapieart>
+            <Beginn Datumsgenauigkeit="E">2021-05-22</Beginn>
+            <Menge_Substanz>
+              <Substanz>
+                <Bezeichnung>Methotrexat (MTX)</Bezeichnung>
+              </Substanz>
+              <Substanz>
+                <Bezeichnung>Cyclophosphamid</Bezeichnung>
+              </Substanz>
+              <Substanz>
+                <Bezeichnung>Cytarabin (AraC)</Bezeichnung>
+              </Substanz>
+              <Substanz>
+                <Bezeichnung>Mercaptopurin (6-MP, Purinethol)</Bezeichnung>
+              </Substanz>
+            </Menge_Substanz>
+            <Ende_Grund>P</Ende_Grund>
+            <Ende>2021-07-20</Ende>
+            <Nebenwirkungen>
+              <Grad_maximal2_oder_unbekannt>U</Grad_maximal2_oder_unbekannt>
+            </Nebenwirkungen>
+          </SYST>
+        </Meldung>
+      </Menge_Meldung>
+    </Patient>
+  </Menge_Patient>
+  <Menge_Melder>
+    <Melder ID="M">
+      <Ident_Nummern/>
+    </Melder>
+  </Menge_Melder>
+</oBDS>

@@ -87,14 +87,19 @@ public class StrahlentherapieMapper {
         for (var nebenwirkungV2 : mengeNebenwirkung.getSTNebenwirkung()) {
             var nebenwirkungV3 = new Nebenwirkung();
 
-            if (nebenwirkungV2.getNebenwirkungArt() != null && (nebenwirkungV2.getNebenwirkungArt().equals("K")
-                    || nebenwirkungV2.getNebenwirkungArt().equals("U"))) {
+            if (nebenwirkungV2.getNebenwirkungGrad() != null && (nebenwirkungV2.getNebenwirkungGrad().equals("K")
+                    || nebenwirkungV2.getNebenwirkungGrad().equals("U"))) {
                 if (mengeNebenwirkung.getSTNebenwirkung().size() > 1) {
                     LOG.warn(
                             "ST has multiple Nebenwirkungen, but should only contain one if set to 'K' or 'U'.");
                 }
 
-                result.setGradMaximal2OderUnbekannt(nebenwirkungV2.getNebenwirkungArt());
+                if (nebenwirkungV2.getNebenwirkungArt() != null) {
+                    LOG.warn(
+                            "Nebenwirkung Grad is 'K' or 'U', but the Art is set. This information is lost after the mapping.");
+                }
+
+                result.setGradMaximal2OderUnbekannt(nebenwirkungV2.getNebenwirkungGrad());
                 return result;
             }
 
