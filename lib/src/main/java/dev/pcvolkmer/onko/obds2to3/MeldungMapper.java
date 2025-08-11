@@ -65,7 +65,7 @@ class MeldungMapper {
 
         if (null == source.getTumorzuordnung()
                 && (null == source.getDiagnose() || null == source.getDiagnose().getPrimaertumorICDCode()
-                || null == source.getDiagnose().getPrimaertumorICDVersion())) {
+                        || null == source.getDiagnose().getPrimaertumorICDVersion())) {
             if (ignoreUnmappableMessages) {
                 return new ArrayList<>();
             }
@@ -79,9 +79,11 @@ class MeldungMapper {
         if (null != source.getDiagnose()) {
             if ("histologie_zytologie".equals(source.getMeldeanlass())) {
                 var pathomeldung = getMeldungPathologie(source);
-                // Füge Zusatzitems zur Diagnosemeldung hinzu, wenn vorhanden und nicht "Einsender"
+                // Füge Zusatzitems zur Diagnosemeldung hinzu, wenn vorhanden und nicht
+                // "Einsender"
                 getMengeZusatzitemTyp(source).ifPresent(zusatzitems -> {
-                    var filtered = zusatzitems.getZusatzitem().stream().filter(zusatzitem -> !zusatzitem.getArt().startsWith("Einsender")).toList();
+                    var filtered = zusatzitems.getZusatzitem().stream()
+                            .filter(zusatzitem -> !zusatzitem.getArt().startsWith("Einsender")).toList();
                     var mengeZusatzitemTyp = new MengeZusatzitemTyp();
                     mengeZusatzitemTyp.getZusatzitem().addAll(filtered);
                     pathomeldung.setMengeZusatzitem(mengeZusatzitemTyp);
@@ -102,6 +104,8 @@ class MeldungMapper {
             }
         }
 
+        // STs als einzelne Meldung
+        result.addAll(getMappedSTs(source));
         // OPs als einzelne Meldung
         result.addAll(getMappedOPs(source));
         // Tumorkonferenzen als einzelne Meldung
@@ -156,8 +160,8 @@ class MeldungMapper {
                 && null != source.getPrimaertumorICDCode()
                 && null != meldung.getMeldungID()) {
             var generatedTumorId = DigestUtils.sha1Hex(
-                            String.format("%s_%s_%s", source.getDiagnosedatum(), source.getPrimaertumorICDCode(),
-                                    meldung.getMeldungID()))
+                    String.format("%s_%s_%s", source.getDiagnosedatum(), source.getPrimaertumorICDCode(),
+                            meldung.getMeldungID()))
                     .subSequence(0, 16);
             mappedTumorzuordnung.setTumorID(String.format("TID_%s", generatedTumorId));
         } else if (null != source.getTumorID()) {
@@ -198,6 +202,22 @@ class MeldungMapper {
         }).toList();
     }
 
+    private List<Meldung> getMappedSTs(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+        var mengeOP = source.getMengeST();
+        if (mengeOP == null || mengeOP.getST().isEmpty()) {
+            return List.of();
+        }
+
+        var mappedSTs = StrahlentherapieMapper.map(source.getMengeST(), source.getMeldeanlass());
+
+        return mappedSTs.stream().map(mappedSTTyp -> {
+            var meldung = getMeldungsRumpf(source);
+            meldung.setMeldungID(String.format("%s_%s", source.getMeldungID(), mappedSTTyp.getSTID()));
+            meldung.setST(mappedSTTyp);
+            return meldung;
+        }).toList();
+    }
+
     /**
      * Liefert ein Optional mit MengeZusatzitems, wenn im oBDS v2 enthalten und
      * nicht leer
@@ -222,7 +242,8 @@ class MeldungMapper {
                     mappedZusatzitem.setArt(null != zusatzitem.getArt() ? zusatzitem.getArt().trim() : null);
                     // Nur, wenn in oBDSv2 vorhanden und mappbar
                     MapperUtils.mapDateString(zusatzitem.getDatum()).ifPresent(mappedZusatzitem::setDatum);
-                    mappedZusatzitem.setBemerkung(null != zusatzitem.getBemerkung() ? zusatzitem.getBemerkung().trim() : null);
+                    mappedZusatzitem
+                            .setBemerkung(null != zusatzitem.getBemerkung() ? zusatzitem.getBemerkung().trim() : null);
                     mappedZusatzitem.setWert(null != zusatzitem.getWert() ? zusatzitem.getWert().trim() : null);
                     return mappedZusatzitem;
                 }).toList();
@@ -309,7 +330,8 @@ class MeldungMapper {
                     MapperUtils.mapDateString(tumorkonferenz.getTumorkonferenzDatum()).ifPresent(datum -> {
                         mappedTumorkonferenz.setDatum(datum);
                         // oBDS v2 Meldung-Meldeanlass ist Quelle!
-                        mappedTumorkonferenz.setMeldeanlass(TumorkonferenzTyp.Meldeanlass.fromValue(source.getMeldeanlass()));
+                        mappedTumorkonferenz
+                                .setMeldeanlass(TumorkonferenzTyp.Meldeanlass.fromValue(source.getMeldeanlass()));
                         mappedTumorkonferenz.setTumorkonferenzID(tumorkonferenz.getTumorkonferenzID());
                         mappedTumorkonferenz.setTyp(tumorkonferenz.getTumorkonferenzTyp());
                         // Therapieempfehlung nicht in oBDS v2?
@@ -351,7 +373,8 @@ class MeldungMapper {
                     mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
 
                     // AllgemeinerLeistungszustand ist nicht verpflicchtend oBDS v2. In v3 schon.
-                    // der "else"-Pfad erzeugt also invalide Meldungen. obds-to-fhir kommt damit aber zurecht.
+                    // der "else"-Pfad erzeugt also invalide Meldungen. obds-to-fhir kommt damit
+                    // aber zurecht.
                     if (verlauf.getAllgemeinerLeistungszustand() != null) {
                         mappedVerlauf.setAllgemeinerLeistungszustand(
                                 AllgemeinerLeistungszustand.fromValue(verlauf.getAllgemeinerLeistungszustand()));
@@ -412,7 +435,8 @@ class MeldungMapper {
         // mappedDiagnose.setPrimaertumorTopographieFreitext(..);
         // oBDS v3 kennt auch 7.1, 7.2 ... als Untertyp von 7 für Diagnosesicherung
         if (diagnose.getDiagnosesicherung() != null && !diagnose.getDiagnosesicherung().isBlank()) {
-            mappedDiagnose.setDiagnosesicherung(DiagnoseTyp.DiagnoseTypDiagnosesicherung.fromValue(diagnose.getDiagnosesicherung()));
+            mappedDiagnose.setDiagnosesicherung(
+                    DiagnoseTyp.DiagnoseTypDiagnosesicherung.fromValue(diagnose.getDiagnosesicherung()));
         } else {
             throw new UnmappableItemException(DIAGNOSESICHERUNG_MUST_NOT_BE_NULL);
         }
@@ -550,13 +574,16 @@ class MeldungMapper {
         getMengeZusatzitemTyp(source).ifPresent(zusatzitems -> {
             var einsender = new PathologieTyp.Einsender();
             var strukturiert = new PathologieTyp.Einsender.Strukturiert();
-            zusatzitems.getZusatzitem().stream().filter(item -> "Einsender_Einrichtung".equals(item.getArt())).findFirst()
+            zusatzitems.getZusatzitem().stream().filter(item -> "Einsender_Einrichtung".equals(item.getArt()))
+                    .findFirst()
                     .ifPresent(item -> strukturiert.setEinrichtung(item.getWert()));
-            zusatzitems.getZusatzitem().stream().filter(item -> "Einsender_Klinik_Abteilung_Praxis".equals(item.getArt())).findFirst()
+            zusatzitems.getZusatzitem().stream()
+                    .filter(item -> "Einsender_Klinik_Abteilung_Praxis".equals(item.getArt())).findFirst()
                     .ifPresent(item -> strukturiert.setAbteilung(item.getWert()));
             zusatzitems.getZusatzitem().stream().filter(item -> "Einsender_Strasse".equals(item.getArt())).findFirst()
                     .ifPresent(item -> strukturiert.setStrasse(item.getWert()));
-            zusatzitems.getZusatzitem().stream().filter(item -> "Einsender_Hausnummer".equals(item.getArt())).findFirst()
+            zusatzitems.getZusatzitem().stream().filter(item -> "Einsender_Hausnummer".equals(item.getArt()))
+                    .findFirst()
                     .ifPresent(item -> strukturiert.setHausnummer(item.getWert()));
             zusatzitems.getZusatzitem().stream().filter(item -> "Einsender_PLZ".equals(item.getArt())).findFirst()
                     .ifPresent(item -> strukturiert.setPLZ(item.getWert()));
@@ -606,8 +633,8 @@ class MeldungMapper {
                     && null != tumorzuordnung.getPrimaertumorICDCode()
                     && null != source.getMeldungID()) {
                 var generatedTumorId = DigestUtils.sha1Hex(
-                                String.format("%s_%s_%s", tumorzuordnung.getDiagnosedatum(),
-                                        tumorzuordnung.getPrimaertumorICDCode(), source.getMeldungID()))
+                        String.format("%s_%s_%s", tumorzuordnung.getDiagnosedatum(),
+                                tumorzuordnung.getPrimaertumorICDCode(), source.getMeldungID()))
                         .subSequence(0, 16);
                 mappedTumorzuordnung.setTumorID(String.format("TID_%s", generatedTumorId));
             } else if (null != tumorzuordnung.getTumorID()) {
