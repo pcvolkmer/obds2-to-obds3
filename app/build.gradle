@@ -6,6 +6,12 @@ group = 'dev.pcvolkmer.onco'
 version = '0.1.0-SNAPSHOT'
 archivesBaseName = 'obds2-to-obds3-app'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 repositories {
     mavenCentral()
 }
