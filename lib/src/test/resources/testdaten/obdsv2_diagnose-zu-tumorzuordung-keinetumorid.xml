@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ADT_GEKID xmlns="http://www.gekid.de/namespace" Schema_Version="2.2.3">
+<ADT_GEKID
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.gekid.de/namespace https://www.basisdatensatz.de/xml/ADT_GEKID_v2.2.3.xsd"
+  xmlns="http://www.gekid.de/namespace" Schema_Version="2.2.3">
   <Absender Absender_ID="TEST" Software_ID="ONKOSTAR" Installations_ID="2011">
     <Absender_Bezeichnung>TEST</Absender_Bezeichnung>
     <Absender_Anschrift>Musterstraße 1, 012345 Musterhausen</Absender_Anschrift>
@@ -41,6 +44,13 @@
           </Tumorzuordnung>
           <Diagnose>
             <Diagnosesicherung>1</Diagnosesicherung>
+            <Menge_Weitere_Klassifikation>
+              <Weitere_Klassifikation>
+                <Datum>18.05.2021</Datum>
+                <Name>WHO-2016</Name>
+                <Stadium>III</Stadium>
+              </Weitere_Klassifikation>
+            </Menge_Weitere_Klassifikation>
             <Allgemeiner_Leistungszustand>0</Allgemeiner_Leistungszustand>
             <Anmerkung>Test</Anmerkung>
           </Diagnose>

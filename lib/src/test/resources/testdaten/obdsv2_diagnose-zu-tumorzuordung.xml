@@ -55,6 +55,13 @@
             <Diagnosedatum>10.09.2024</Diagnosedatum>
             <Diagnosesicherung>1</Diagnosesicherung>
             <Seitenlokalisation>T</Seitenlokalisation>
+            <Menge_Weitere_Klassifikation>
+              <Weitere_Klassifikation>
+                <Datum>18.05.2021</Datum>
+                <Name>WHO-2016</Name>
+                <Stadium>III</Stadium>
+              </Weitere_Klassifikation>
+            </Menge_Weitere_Klassifikation>
             <Allgemeiner_Leistungszustand>0</Allgemeiner_Leistungszustand>
             <Anmerkung>Test</Anmerkung>
           </Diagnose>
