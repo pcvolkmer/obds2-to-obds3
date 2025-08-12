@@ -2,6 +2,7 @@ package dev.pcvolkmer.onko.obds2to3;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class SystemtherapieMapper {
                             systTyp.getSYSTID());
                 }
 
-                var therapieart = mapTherapieart(source.getMengeTherapieart().getSYSTTherapieart().getFirst());
+                var therapieart = mapTherapieart(source.getMengeTherapieart().getSYSTTherapieart().get(0));
                 systTyp.setTherapieart(therapieart);
             }
 
