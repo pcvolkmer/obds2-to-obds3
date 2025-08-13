@@ -58,6 +58,13 @@
           </Tumorzuordnung>
           <Diagnose>
             <Diagnosesicherung>1</Diagnosesicherung>
+            <Menge_Weitere_Klassifikation>
+              <Weitere_Klassifikation>
+                <Datum Datumsgenauigkeit="E">2021-05-18</Datum>
+                <Name>WHO-2016</Name>
+                <Stadium>III</Stadium>
+              </Weitere_Klassifikation>
+            </Menge_Weitere_Klassifikation>
             <Allgemeiner_Leistungszustand>0</Allgemeiner_Leistungszustand>
           </Diagnose>
         </Meldung>

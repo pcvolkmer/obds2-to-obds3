@@ -404,7 +404,7 @@ class MeldungMapper {
                     mappedVerlauf.setVerlaufTumorstatusFernmetastasen(verlauf.getVerlaufTumorstatusFernmetastasen());
                     mappedVerlauf.setVerlaufTumorstatusLymphknoten(verlauf.getVerlaufTumorstatusLymphknoten());
 
-                    // TODO mappedVerlauf.setHistologie();
+                    mapHistologie(verlauf.getHistologie()).ifPresent(mappedVerlauf::setHistologie);
 
                     // Nur verwendet, wenn Datumstring mappbar
                     MapperUtils.mapDateString(verlauf.getUntersuchungsdatumVerlauf())
@@ -424,6 +424,12 @@ class MeldungMapper {
 
                     // TNPM
                     mapTnmType(verlauf.getTNM()).ifPresent(mappedVerlauf::setTNM);
+
+                    // Weitere Klassifikationen
+                    if (verlauf.getMengeWeitereKlassifikation() != null) {
+                        mappedVerlauf.setMengeWeitereKlassifikation(
+                                mapMengeWeitereKlassifikation(verlauf.getMengeWeitereKlassifikation()));
+                    }
 
                     // Nicht in oBDS v2 enthalten ?
                     // mappedVerlauf.setMengeGenetik(..);
@@ -504,13 +510,8 @@ class MeldungMapper {
 
         // Weitere Klassifikationen
         if (diagnose.getMengeWeitereKlassifikation() != null) {
-            mappedDiagnose.setMengeWeitereKlassifikation(new MengeWeitereKlassifikationTyp());
-            mappedDiagnose.getMengeWeitereKlassifikation().getWeitereKlassifikation().addAll(
-                    diagnose.getMengeWeitereKlassifikation().getWeitereKlassifikation().stream()
-                            .map(MeldungMapper::mapWeitereKlassifikation)
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .toList());
+            mappedDiagnose.setMengeWeitereKlassifikation(
+                    mapMengeWeitereKlassifikation(diagnose.getMengeWeitereKlassifikation()));
         }
 
         // Modul Prostata
@@ -579,13 +580,8 @@ class MeldungMapper {
 
         // Weitere Klassifikationen
         if (diagnose.getMengeWeitereKlassifikation() != null) {
-            mappedPathologie.setMengeWeitereKlassifikation(new MengeWeitereKlassifikationTyp());
-            mappedPathologie.getMengeWeitereKlassifikation().getWeitereKlassifikation().addAll(
-                    diagnose.getMengeWeitereKlassifikation().getWeitereKlassifikation().stream()
-                            .map(MeldungMapper::mapWeitereKlassifikation)
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .toList());
+            mappedPathologie.setMengeWeitereKlassifikation(
+                    mapMengeWeitereKlassifikation(diagnose.getMengeWeitereKlassifikation()));
         }
 
         // Einsender aus Zusatzitems
@@ -683,21 +679,24 @@ class MeldungMapper {
         return mappedMeldung;
     }
 
-    private static Optional<MengeWeitereKlassifikationTyp.WeitereKlassifikation> mapWeitereKlassifikation(
-            de.basisdatensatz.obds.v2.MengeWeitereKlassifikationTyp.WeitereKlassifikation source) {
-        if (source != null) {
-            var result = new MengeWeitereKlassifikationTyp.WeitereKlassifikation();
-            // Datum
+    private static MengeWeitereKlassifikationTyp mapMengeWeitereKlassifikation(
+            de.basisdatensatz.obds.v2.MengeWeitereKlassifikationTyp mengeWeitereKlassifikation) {
+        var mappedMengeWeitereKlassifikation = new MengeWeitereKlassifikationTyp();
+        for (var source : mengeWeitereKlassifikation.getWeitereKlassifikation()) {
+            var mappedWeitereKlassifikation = new MengeWeitereKlassifikationTyp.WeitereKlassifikation();
+
+            mappedWeitereKlassifikation.setName(source.getName());
+            mappedWeitereKlassifikation.setStadium(source.getStadium());
+
             var date = MapperUtils.mapDateStringGenau(source.getDatum());
-            if (date.isEmpty()) {
-                return Optional.empty();
-            } else {
-                result.setDatum(date.get());
+            if (date.isPresent()) {
+                mappedWeitereKlassifikation.setDatum(date.get());
             }
-            return Optional.of(result);
+
+            mappedMengeWeitereKlassifikation.getWeitereKlassifikation().add(mappedWeitereKlassifikation);
         }
 
-        return Optional.empty();
+        return mappedMengeWeitereKlassifikation;
     }
 
     private static Optional<MengeFMTyp.Fernmetastase> mapFernmetastase(
@@ -794,6 +793,14 @@ class MeldungMapper {
         mappedHisto.setMorphologieFreitext(source.getMorphologieFreitext());
         mappedHisto.setSentinelLKBefallen(source.getSentinelLKBefallen());
         mappedHisto.setSentinelLKUntersucht(source.getSentinelLKUntersucht());
+
+        if (source.getMorphologieCode() != null) {
+            var morphologieCode = new MorphologieICDOTyp();
+            morphologieCode.setCode(source.getMorphologieCode());
+            morphologieCode.setVersion(source.getMorphologieICDOVersion());
+            mappedHisto.getMorphologieICDO().add(morphologieCode);
+        }
+
         // Nur wenn vorhanden und mappbar
         MapperUtils.mapDateString(source.getTumorHistologiedatum())
                 .ifPresent(mappedHisto::setTumorHistologiedatum);

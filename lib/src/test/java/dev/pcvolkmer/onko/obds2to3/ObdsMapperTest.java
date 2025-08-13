@@ -63,7 +63,8 @@ class ObdsMapperTest {
                 "testdaten/obdsv2_keine-diagnose.xml,testdaten/obdsv3_keine-diagnose.xml",
                 "testdaten/obdsv2_op_1.xml,testdaten/obdsv3_op_1.xml",
                 "testdaten/obdsv2_st_1.xml,testdaten/obdsv3_st_1.xml",
-                "testdaten/obdsv2_syst_1.xml,testdaten/obdsv3_syst_1.xml"
+                "testdaten/obdsv2_syst_1.xml,testdaten/obdsv3_syst_1.xml",
+                "testdaten/obdsv2_verlauf_histologie.xml,testdaten/obdsv3_verlauf_histologie.xml"
         })
         void shouldMapObdsFile(String obdsV2File, String obdsV3File) throws Exception {
             var obdsV2String = new String(

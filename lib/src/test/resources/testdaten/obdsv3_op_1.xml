@@ -75,6 +75,10 @@
             <Histologie Histologie_ID="8594">
               <Tumor_Histologiedatum Datumsgenauigkeit="E">2021-03-20</Tumor_Histologiedatum>
               <Histologie_EinsendeNr>N 9391/8</Histologie_EinsendeNr>
+              <Morphologie_ICD_O>
+                <Code>9391/8</Code>
+                <Version>32</Version>
+              </Morphologie_ICD_O>
               <Grading>U</Grading>
             </Histologie>
             <TNM>
@@ -138,6 +142,10 @@
             <Histologie Histologie_ID="8595">
               <Tumor_Histologiedatum Datumsgenauigkeit="E">2022-03-20</Tumor_Histologiedatum>
               <Histologie_EinsendeNr>N 9391/8</Histologie_EinsendeNr>
+              <Morphologie_ICD_O>
+                <Code>9391/8</Code>
+                <Version>32</Version>
+              </Morphologie_ICD_O>
               <Grading>U</Grading>
             </Histologie>
             <TNM>
