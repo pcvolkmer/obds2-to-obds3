@@ -1,6 +1,7 @@
 package dev.pcvolkmer.onko.obds2to3;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -33,14 +34,7 @@ public class SystemtherapieMapper {
             systTyp.setMeldeanlass(Meldeanlass.fromValue(meldeanlass));
 
             if (source.getMengeTherapieart() != null) {
-                if (source.getMengeTherapieart().getSYSTTherapieart().size() > 1) {
-                    LOG.warn(
-                            "Meldung SYST_ID={} contains more than one Therapieart. "
-                                    + "Mapping this to v3 isn't supported yet. Defaulting to the first entry.",
-                            systTyp.getSYSTID());
-                }
-
-                var therapieart = mapTherapieart(source.getMengeTherapieart().getSYSTTherapieart().get(0));
+                var therapieart = mapTherapieart(source.getMengeTherapieart().getSYSTTherapieart());
                 systTyp.setTherapieart(therapieart);
             }
 
@@ -77,15 +71,30 @@ public class SystemtherapieMapper {
         return result;
     }
 
-    private static Therapieart mapTherapieart(String therapieartV2) {
+    private static Therapieart mapTherapieart(List<String> therapieartV2) {
         // v2: CH, HO, IM, KM, WS, AS, ZS, SO
         // v3: CH, HO, IM, ??, WS, AS, ZS, SO, CI, CZ, CIZ, IZ, SZ, WW
         // v3: SZ = Stammzelltransplantation (inkl. Knochenmarktransplantation)
 
-        if (therapieartV2.equals("KM")) {
-            return Therapieart.SZ;
+        if (therapieartV2.size() == 1) {
+            var code = therapieartV2.get(0);
+            if (code.equals("KM")) {
+                return Therapieart.SZ;
+            }
+            return Therapieart.fromValue(code);
         }
-        return Therapieart.fromValue(therapieartV2);
+
+        var sortedCodes = new ArrayList<String>(therapieartV2);
+        Collections.sort(sortedCodes);
+        var code = String.join("", sortedCodes);
+
+        return switch (code) {
+            case "CHIM" -> Therapieart.CI;
+            case "CHZS" -> Therapieart.CZ;
+            case "CHIMZS" -> Therapieart.CIZ;
+            case "IMZS" -> Therapieart.IZ;
+            default -> throw new IllegalStateException("Unsupported Therapieart: " + code);
+        };
     }
 
     // painfully similar to the one in "StrahlentherapieMapper", but the types are
