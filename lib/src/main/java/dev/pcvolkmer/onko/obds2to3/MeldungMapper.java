@@ -133,7 +133,6 @@ class MeldungMapper {
         });
 
         // Nicht direkt Mappbar: Meldeanlass -> Untertypen
-        // TODO other items: Pathologie, Menge_Zusatzitem
 
         return result.stream()
                 .filter(meldung -> !ignoreUnmappableMessages
