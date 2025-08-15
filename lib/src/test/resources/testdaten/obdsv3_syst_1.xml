@@ -39,7 +39,7 @@
             <Meldeanlass>behandlungsende</Meldeanlass>
             <Intention>K</Intention>
             <Stellung_OP>O</Stellung_OP>
-            <Therapieart>CH</Therapieart>
+            <Therapieart>CI</Therapieart>
             <Beginn Datumsgenauigkeit="E">2021-05-22</Beginn>
             <Menge_Substanz>
               <Substanz>
