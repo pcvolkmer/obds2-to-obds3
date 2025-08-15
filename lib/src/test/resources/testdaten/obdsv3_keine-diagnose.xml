@@ -39,6 +39,7 @@
             <Meldeanlass>statusaenderung</Meldeanlass>
             <Untersuchungsdatum_Verlauf>2017-11-06</Untersuchungsdatum_Verlauf>
             <Gesamtbeurteilung_Tumorstatus>K</Gesamtbeurteilung_Tumorstatus>
+            <Verlauf_Tumorstatus_Fernmetastasen>X</Verlauf_Tumorstatus_Fernmetastasen>
             <Allgemeiner_Leistungszustand>0</Allgemeiner_Leistungszustand>
           </Verlauf>
         </Meldung>
