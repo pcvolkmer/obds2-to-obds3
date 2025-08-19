@@ -400,7 +400,14 @@ class MeldungMapper {
                     // oBDS v2 Meldung->Meldeanlass wird in oBDS v3 für Verlauf verwendet
                     mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
                     mappedVerlauf.setVerlaufLokalerTumorstatus(verlauf.getVerlaufLokalerTumorstatus());
-                    mappedVerlauf.setVerlaufTumorstatusFernmetastasen(verlauf.getVerlaufTumorstatusFernmetastasen());
+
+                    if ("M".equals(verlauf.getVerlaufTumorstatusFernmetastasen())) {
+                        // "M" ist nicht mehr in oBDS3 enthalten. Equivalent "T" verwendet.
+                        mappedVerlauf.setVerlaufTumorstatusFernmetastasen("T");
+                    } else {
+                        mappedVerlauf.setVerlaufTumorstatusFernmetastasen(verlauf.getVerlaufTumorstatusFernmetastasen());
+                    }
+
                     mappedVerlauf.setVerlaufTumorstatusLymphknoten(verlauf.getVerlaufTumorstatusLymphknoten());
 
                     mapHistologie(verlauf.getHistologie()).ifPresent(mappedVerlauf::setHistologie);
