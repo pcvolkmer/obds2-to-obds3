@@ -60,7 +60,6 @@
             <Meldeanlass>statusaenderung</Meldeanlass>
             <Untersuchungsdatum_Verlauf>2024-10-14</Untersuchungsdatum_Verlauf>
             <Gesamtbeurteilung_Tumorstatus>B</Gesamtbeurteilung_Tumorstatus>
-            <Verlauf_Tumorstatus_Fernmetastasen>X</Verlauf_Tumorstatus_Fernmetastasen>
             <Allgemeiner_Leistungszustand>1</Allgemeiner_Leistungszustand>
           </Verlauf>
         </Meldung>
@@ -79,7 +78,6 @@
             <Meldeanlass>statusaenderung</Meldeanlass>
             <Untersuchungsdatum_Verlauf>2024-10-15</Untersuchungsdatum_Verlauf>
             <Gesamtbeurteilung_Tumorstatus>B</Gesamtbeurteilung_Tumorstatus>
-            <Verlauf_Tumorstatus_Fernmetastasen>X</Verlauf_Tumorstatus_Fernmetastasen>
             <Allgemeiner_Leistungszustand>1</Allgemeiner_Leistungszustand>
           </Verlauf>
         </Meldung>

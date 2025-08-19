@@ -401,12 +401,9 @@ class MeldungMapper {
                     mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
                     mappedVerlauf.setVerlaufLokalerTumorstatus(verlauf.getVerlaufLokalerTumorstatus());
 
-                    if (null == verlauf.getVerlaufTumorstatusFernmetastasen()) {
-                        // Keine Angabe, daher "X" - keine Angabe
-                        mappedVerlauf.setVerlaufTumorstatusFernmetastasen("X");
-                    } else if ("M".equals(verlauf.getVerlaufTumorstatusFernmetastasen())) {
-                        // "M" ist nicht mehr in oBDS3 enthalten. Kein genaues Mapping möglich, daher "U" - unbekannt
-                        mappedVerlauf.setVerlaufTumorstatusFernmetastasen("U");
+                    if ("M".equals(verlauf.getVerlaufTumorstatusFernmetastasen())) {
+                        // "M" ist nicht mehr in oBDS3 enthalten. Equivalent "T" verwendet.
+                        mappedVerlauf.setVerlaufTumorstatusFernmetastasen("T");
                     } else {
                         mappedVerlauf.setVerlaufTumorstatusFernmetastasen(verlauf.getVerlaufTumorstatusFernmetastasen());
                     }
