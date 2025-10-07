@@ -387,7 +387,8 @@ class MeldungMapper {
                 .map(verlauf -> {
                     var mappedVerlauf = new VerlaufTyp();
                     mappedVerlauf.setVerlaufID(verlauf.getVerlaufID());
-                    mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
+                    // oBDS v2 Meldung->Meldeanlass wird in oBDS v3 für Verlauf verwendet
+                    mappedVerlauf.setMeldeanlass(VerlaufTyp.Meldeanlass.fromValue(source.getMeldeanlass()));
 
                     // AllgemeinerLeistungszustand ist nicht verpflicchtend oBDS v2. In v3 schon.
                     // der "else"-Pfad erzeugt also invalide Meldungen. obds-to-fhir kommt damit
@@ -397,8 +398,6 @@ class MeldungMapper {
                                 AllgemeinerLeistungszustand.fromValue(verlauf.getAllgemeinerLeistungszustand()));
                     }
 
-                    // oBDS v2 Meldung->Meldeanlass wird in oBDS v3 für Verlauf verwendet
-                    mappedVerlauf.setMeldeanlass(source.getMeldeanlass());
                     mappedVerlauf.setVerlaufLokalerTumorstatus(verlauf.getVerlaufLokalerTumorstatus());
 
                     if ("M".equals(verlauf.getVerlaufTumorstatusFernmetastasen())) {
