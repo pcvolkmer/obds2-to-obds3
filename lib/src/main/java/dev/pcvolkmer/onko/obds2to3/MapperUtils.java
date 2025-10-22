@@ -41,7 +41,8 @@ class MapperUtils {
 
     public static final String OBDS2_DATE_REGEX = "(?<day>([0-2]\\d)|(3[01]))\\.(?<month>(0\\d)|(1[0-2]))\\.(?<year>(18|19|20)\\d\\d)";
 
-    private MapperUtils() {}
+    private MapperUtils() {
+    }
 
 
     /**
@@ -58,6 +59,21 @@ class MapperUtils {
 
         var result = new DatumTagOderMonatOderJahrOderNichtGenauTyp();
 
+        var calendar = new GregorianCalendar();
+        calendar.clear();
+
+        if ("00.00.0000".equals(date)) {
+            calendar.set(Calendar.YEAR, 1900);
+            result.setDatumsgenauigkeit(DatumTagOderMonatOderJahrOderNichtGenauTyp.DatumsgenauigkeitTagOderMonatOderJahrOderNichtGenau.V);
+
+            try {
+                result.setValue(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+                return Optional.of(result);
+            } catch (DatatypeConfigurationException e) {
+                return Optional.empty();
+            }
+        }
+
         var obdsV2datePattern = Pattern.compile(OBDS2_DATE_REGEX);
         var matcher = obdsV2datePattern.matcher(date);
         if (matcher.matches()) {
@@ -65,11 +81,9 @@ class MapperUtils {
             var month = Integer.parseInt(matcher.group("month"));
             var year = Integer.parseInt(matcher.group("year"));
 
-            var calendar = new GregorianCalendar();
-            calendar.clear();
-
             calendar.set(Calendar.YEAR, year);
             result.setDatumsgenauigkeit(DatumTagOderMonatOderJahrOderNichtGenauTyp.DatumsgenauigkeitTagOderMonatOderJahrOderNichtGenau.M);
+
 
             if (month > 0) {
                 // Starts with month "0"
@@ -90,7 +104,7 @@ class MapperUtils {
             }
         }
 
-        // Schätze kein Datum (Genauigkeit "V")
+        // Schätze kein Datum (Genauigkeit "V") bei Fehler
         return Optional.empty();
     }
 
