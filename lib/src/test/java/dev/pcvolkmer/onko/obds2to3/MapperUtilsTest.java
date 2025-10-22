@@ -42,6 +42,7 @@ class MapperUtilsTest {
             "04.02.1978,1978-02-04,E",
             "00.10.2024,2024-10-01,T",
             "00.00.2024,2024-01-01,M",
+            "00.00.0000,1900-01-01,V",
     })
     void shouldMapDate(String obdsv2DateString, String expectedDateString, String expectedPrecision) {
         var actual = MapperUtils.mapDateString(obdsv2DateString);
