@@ -123,25 +123,27 @@ class PatientMapper {
             mappedStammdaten.setAdresse(new PatientenAdresseMelderTyp());
         }
 
-        // Stammdaten - Krankenkasse: In oBDS v2 keine Unterscheidung GKV/PKV
-        // See: https://www.krebsregister-sh.de/wp-content/uploads/2023/02/son_2023-02-01_KRSH_Ersatzkodes_Krankenkassennummer.pdf
-        if (List.of("970000011", "970001001", "970100001", "970000022", "970000099").contains(stammdaten.getKrankenkassenNr())) {
-            var versichertendaten = new VersichertendatenSonstigeTyp();
-            versichertendaten.setErsatzkode(stammdaten.getKrankenkassenNr());
-            mappedStammdaten.setVersichertendatenSonstige(versichertendaten);
-        } else if (null != stammdaten.getKrankenversichertenNr() && !stammdaten.getKrankenversichertenNr().isBlank() && null != stammdaten.getKrankenkassenNr() && stammdaten.getKrankenkassenNr().matches("16\\d{7}|950\\d{6}")) {
-            var versichertendaten = new VersichertendatenPKVTyp();
-            versichertendaten.setIKNR(stammdaten.getKrankenkassenNr());
-            versichertendaten.setPKVVersichertennummer(stammdaten.getKrankenversichertenNr());
-            mappedStammdaten.setVersichertendatenPKV(versichertendaten);
-        } else if (null != stammdaten.getKrankenversichertenNr() && stammdaten.getKrankenversichertenNr().matches("[A-Z]\\d{9}") && null != stammdaten.getKrankenkassenNr() && stammdaten.getKrankenkassenNr().matches("10\\d{7}")) {
-            // Andere Werte: Aktuell als GKV behandelt
-            var versichertendatenGkv = new VersichertendatenGKVTyp();
-            versichertendatenGkv.setIKNR(stammdaten.getKrankenkassenNr());
-            versichertendatenGkv.setGKVVersichertennummer(stammdaten.getKrankenversichertenNr());
-            mappedStammdaten.setVersichertendatenGKV(versichertendatenGkv);
-        } else {
-            throw new UnmappableItemException("Unmappable 'Versichertendaten'");
+        if (stammdaten.getKrankenkassenNr() != null && !stammdaten.getKrankenkassenNr().isBlank()) {
+            // Stammdaten - Krankenkasse: In oBDS v2 keine Unterscheidung GKV/PKV
+            // See: https://www.krebsregister-sh.de/wp-content/uploads/2023/02/son_2023-02-01_KRSH_Ersatzkodes_Krankenkassennummer.pdf
+            if (List.of("970000011", "970001001", "970100001", "970000022", "970000099").contains(stammdaten.getKrankenkassenNr())) {
+                var versichertendaten = new VersichertendatenSonstigeTyp();
+                versichertendaten.setErsatzkode(stammdaten.getKrankenkassenNr());
+                mappedStammdaten.setVersichertendatenSonstige(versichertendaten);
+            } else if (null != stammdaten.getKrankenversichertenNr() && !stammdaten.getKrankenversichertenNr().isBlank() && null != stammdaten.getKrankenkassenNr() && stammdaten.getKrankenkassenNr().matches("16\\d{7}|950\\d{6}")) {
+                var versichertendaten = new VersichertendatenPKVTyp();
+                versichertendaten.setIKNR(stammdaten.getKrankenkassenNr());
+                versichertendaten.setPKVVersichertennummer(stammdaten.getKrankenversichertenNr());
+                mappedStammdaten.setVersichertendatenPKV(versichertendaten);
+            } else if (null != stammdaten.getKrankenversichertenNr() && stammdaten.getKrankenversichertenNr().matches("[A-Z]\\d{9}") && null != stammdaten.getKrankenkassenNr() && stammdaten.getKrankenkassenNr().matches("10\\d{7}")) {
+                // Andere Werte: Aktuell als GKV behandelt
+                var versichertendatenGkv = new VersichertendatenGKVTyp();
+                versichertendatenGkv.setIKNR(stammdaten.getKrankenkassenNr());
+                versichertendatenGkv.setGKVVersichertennummer(stammdaten.getKrankenversichertenNr());
+                mappedStammdaten.setVersichertendatenGKV(versichertendatenGkv);
+            } else {
+                throw new UnmappableItemException("Unmappable 'Versichertendaten'");
+            }
         }
 
         // Geburtsdatum
