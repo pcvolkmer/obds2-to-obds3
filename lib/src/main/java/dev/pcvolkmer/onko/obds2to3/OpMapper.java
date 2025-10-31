@@ -53,10 +53,21 @@ public class OpMapper {
         // v3: R0, R1, R1(is), R1(cy+), R2, RX, U
         if (source.getResidualstatus() != null) {
             var residualstatus = new de.basisdatensatz.obds.v3.ResidualstatusTyp();
-            residualstatus.setGesamtbeurteilungResidualstatus(
-                    RTyp.fromValue(source.getResidualstatus().getGesamtbeurteilungResidualstatus().value()));
-            residualstatus.setLokaleBeurteilungResidualstatus(
-                    RTyp.fromValue(source.getResidualstatus().getLokaleBeurteilungResidualstatus().value()));
+
+            var gesamtbeurteilung = source.getResidualstatus().getGesamtbeurteilungResidualstatus();
+            if (gesamtbeurteilung != null) {
+                residualstatus.setGesamtbeurteilungResidualstatus(RTyp.fromValue(gesamtbeurteilung.value()));
+            } else {
+                LOG.debug("OP {} has no GesamtbeurteilungResidualstatus set in v2 residualstatus", source.getOPID());
+            }
+
+            var lokaleBeurteilung = source.getResidualstatus().getLokaleBeurteilungResidualstatus();
+            if (lokaleBeurteilung != null) {
+                residualstatus.setLokaleBeurteilungResidualstatus(RTyp.fromValue(lokaleBeurteilung.value()));
+            } else {
+                LOG.debug("OP {} has no LokaleBeurteilungResidualstatus set in v2 residualstatus", source.getOPID());
+            }
+
             opTyp.setResidualstatus(residualstatus);
         }
 
