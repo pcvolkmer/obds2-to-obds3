@@ -35,6 +35,7 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 class MapperUtils {
@@ -210,5 +211,17 @@ class MapperUtils {
         return SchemaValidator
                 .regexpPattern(datatypeName, SchemaValidator.SchemaVersion.OBDS_3_0_4)
                 .map(pattern -> string.replaceAll(String.format("[^%s]", pattern.pattern()), ""));
+    }
+
+    /**
+     * Runs given function if value is not null
+     * @param value The value to operate on
+     * @param f The function to be used
+     * @param <T> The type of the given value
+     */
+    public static <T> void ifNotNull(T value, Consumer<T> f) {
+        if (null != value) {
+            f.accept(value);
+        }
     }
 }

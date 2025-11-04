@@ -24,13 +24,20 @@
 
 package dev.pcvolkmer.onko.obds2to3;
 
+import de.basisdatensatz.obds.v2.ADTGEKID;
+import de.basisdatensatz.obds.v2.JNUTyp;
 import de.basisdatensatz.obds.v3.DatumTagOderMonatGenauTyp;
 import de.basisdatensatz.obds.v3.DatumTagOderMonatOderJahrOderNichtGenauTyp;
+import de.basisdatensatz.obds.v3.JNU;
+import de.basisdatensatz.obds.v3.TodTyp;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -93,6 +100,28 @@ class MapperUtilsTest {
     void shouldRemoveAllInvalidChars() {
         var actual = MapperUtils.trimToMatchDatatype("datatypeBtrimmed", "Das ist ein パウルTest");
         assertThat(actual).isPresent().isEqualTo(Optional.of("Das ist ein Test"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("nullMappingSource")
+    void shouldOnlyMapValueIfNotNull(JNUTyp given, JNU expected) {
+        var givenTod = new ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeVerlauf.Verlauf.Tod();
+        givenTod.setTodTumorbedingt(given);
+        var actualTod = new TodTyp();
+
+        MapperUtils.ifNotNull(givenTod.getTodTumorbedingt(), value ->
+                actualTod.setTodTumorbedingt(JNU.fromValue(value.value()))
+        );
+        assertThat(actualTod.getTodTumorbedingt()).isEqualTo(expected);
+    }
+
+    public static Stream<Arguments> nullMappingSource() {
+        return Stream.of(
+                Arguments.of(null, null),
+                Arguments.of(JNUTyp.J, JNU.J),
+                Arguments.of(JNUTyp.N, JNU.N),
+                Arguments.of(JNUTyp.U, JNU.U)
+        );
     }
 
 }
