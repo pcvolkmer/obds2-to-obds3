@@ -295,14 +295,17 @@ class MeldungMapper {
             return Optional.empty();
         }
 
-        mengeVerlauf.getVerlauf().stream()
+        var mengeTod = mengeVerlauf.getVerlauf().stream()
                 .map(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeVerlauf.Verlauf::getTod)
                 .filter(Objects::nonNull)
                 .map(verlaufTod -> {
                     var tod = new TodTyp();
                     // Nicht in oBDS v2?
                     // tod.setAbschlussID();
-                    tod.setTodTumorbedingt(JNU.fromValue(verlaufTod.getTodTumorbedingt().value()));
+                    if (verlaufTod.getTodTumorbedingt() != null) {
+                        tod.setTodTumorbedingt(JNU.fromValue(verlaufTod.getTodTumorbedingt().value()));
+                    }
+
                     // Sterbedatum
                     MapperUtils.mapDateString(verlaufTod.getSterbedatum())
                             .ifPresent(datum -> tod.setSterbedatum(datum.getValue()));
@@ -321,7 +324,14 @@ class MeldungMapper {
                         tod.setMengeTodesursachen(mengeTodesursachen);
                     }
                     return tod;
-                })
+                }).toList();
+
+            if (mengeTod.size() > 1) {
+                LOG.warn("Multiple 'Tod' entries found in Verlauf Meldung_ID={}. " +
+                    "Only the first entry can be mapped!", source.getMeldungID());
+            }
+
+            mengeTod.stream()
                 .findFirst()
                 .ifPresent(meldung::setTod);
 
