@@ -63,6 +63,10 @@ class MeldungMapper {
             throw new IllegalArgumentException(MUST_NOT_BE_NULL);
         }
 
+        if (null == source.getMeldungID() || source.getMeldungID().isBlank()) {
+            throw new IllegalArgumentException("MeldungID must not be null or blank");
+        }
+
         if (null == source.getTumorzuordnung()
                 && (null == source.getDiagnose() || null == source.getDiagnose().getPrimaertumorICDCode()
                         || null == source.getDiagnose().getPrimaertumorICDVersion())) {
