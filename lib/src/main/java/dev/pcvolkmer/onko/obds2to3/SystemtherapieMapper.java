@@ -88,6 +88,11 @@ public class SystemtherapieMapper {
         Collections.sort(sortedCodes);
         var code = String.join("", sortedCodes);
 
+        if (code.equals("CHIMSO")) {
+            LOG.warn("Therapieart 'CHIMSO' not recognised - mapping to 'CI'");
+            return Therapieart.CI;
+        }
+
         return switch (code) {
             case "CHIM" -> Therapieart.CI;
             case "CHZS" -> Therapieart.CZ;
