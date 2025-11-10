@@ -15,7 +15,8 @@ import de.basisdatensatz.obds.v3.OPTyp.MengeOPS.OPS;
 public class OpMapper {
     private static final Logger LOG = LoggerFactory.getLogger(OpMapper.class);
 
-    private OpMapper() { }
+    private OpMapper() {
+    }
 
     public static List<OPTyp> map(
             de.basisdatensatz.obds.v2.ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeOP mengeOp) {
@@ -80,6 +81,8 @@ public class OpMapper {
 
     private static Komplikationen mapToKomplikationen(OP source) {
         var komplikationen = new Komplikationen();
+        var mengeKomplikation = new OPTyp.Komplikationen.MengeKomplikation();
+
         for (var komp : source.getMengeKomplikation().getOPKomplikation()) {
             if (komp.equals("N") || komp.equals("U")) {
                 komplikationen.setKomplikationNeinOderUnbekannt(komp);
@@ -91,8 +94,16 @@ public class OpMapper {
             } else {
                 var komplikationTyp = new de.basisdatensatz.obds.v3.KomplikationTyp();
                 komplikationTyp.setKuerzel(komp);
-                komplikationen.getMengeKomplikation().getKomplikation().add(komplikationTyp);
+
+                mengeKomplikation.getKomplikation().add(komplikationTyp);
             }
+        }
+
+        // currently, if both "N"/"U" and other komplikationen are set,
+        // we keep both in v3 which isn't strictly schema-compliant,
+        // but preserves all information.
+        if (!mengeKomplikation.getKomplikation().isEmpty()) {
+            komplikationen.setMengeKomplikation(mengeKomplikation);
         }
 
         return komplikationen;
