@@ -15,7 +15,8 @@ import de.basisdatensatz.obds.v3.OPTyp.MengeOPS.OPS;
 public class OpMapper {
     private static final Logger LOG = LoggerFactory.getLogger(OpMapper.class);
 
-    private OpMapper() { }
+    private OpMapper() {
+    }
 
     public static List<OPTyp> map(
             de.basisdatensatz.obds.v2.ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeOP mengeOp) {
@@ -89,9 +90,12 @@ public class OpMapper {
                             source.getOPID());
                 }
             } else {
+                var mengeKomplikation = new OPTyp.Komplikationen.MengeKomplikation();
+                mengeKomplikation.getKomplikation().add(komplikationTyp);
+
                 var komplikationTyp = new de.basisdatensatz.obds.v3.KomplikationTyp();
                 komplikationTyp.setKuerzel(komp);
-                komplikationen.getMengeKomplikation().getKomplikation().add(komplikationTyp);
+                komplikationen.setMengeKomplikation(mengeKomplikation);
             }
         }
 
