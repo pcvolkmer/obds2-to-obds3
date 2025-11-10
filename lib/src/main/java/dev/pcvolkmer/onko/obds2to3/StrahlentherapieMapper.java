@@ -134,7 +134,11 @@ public class StrahlentherapieMapper {
         var zielgebiet = new ZielgebietTyp();
         zielgebiet.setCodeVersion2014(bestrahlung.getSTZielgebiet());
 
-        var seiteZielgebiet = SeiteZielgebietTyp.fromValue(bestrahlung.getSTSeiteZielgebiet());
+        SeiteZielgebietTyp seiteZielgebiet = null;
+
+        if (bestrahlung.getSTSeiteZielgebiet() != null) {
+            seiteZielgebiet = SeiteZielgebietTyp.fromValue(bestrahlung.getSTSeiteZielgebiet());
+        }
 
         StrahlendosisTyp einzeldosis = null;
         if (bestrahlung.getSTEinzeldosis() != null) {
@@ -159,7 +163,14 @@ public class StrahlentherapieMapper {
         if (applikationsart.startsWith("P")) {
             var perkutan = new Applikationsart.Perkutan();
             perkutan.setZielgebiet(zielgebiet);
-            perkutan.setSeiteZielgebiet(seiteZielgebiet);
+
+            if (seiteZielgebiet != null) {
+                perkutan.setSeiteZielgebiet(seiteZielgebiet);
+            } else {
+                LOG.warn("Seite_Zielgebiet is unset in v2 but required for Perkutan in v3. Defaulting to 'U'.");
+                perkutan.setSeiteZielgebiet(SeiteZielgebietTyp.U);
+            }
+
             perkutan.setEinzeldosis(einzeldosis);
             perkutan.setGesamtdosis(gesamtdosis);
             switch (applikationsart) {
@@ -185,7 +196,14 @@ public class StrahlentherapieMapper {
         if (applikationsart.startsWith("K")) {
             var kontakt = new Applikationsart.Kontakt();
             kontakt.setZielgebiet(zielgebiet);
-            kontakt.setSeiteZielgebiet(seiteZielgebiet);
+
+            if (seiteZielgebiet != null) {
+                kontakt.setSeiteZielgebiet(seiteZielgebiet);
+            } else {
+                LOG.warn("Seite_Zielgebiet is unset in v2 but required for Kontakt in v3. Defaulting to 'U'.");
+                kontakt.setSeiteZielgebiet(SeiteZielgebietTyp.U);
+            }
+
             kontakt.setEinzeldosis(einzeldosis);
             kontakt.setGesamtdosis(gesamtdosis);
             switch (applikationsart) {
@@ -218,7 +236,14 @@ public class StrahlentherapieMapper {
         if (applikationsart.startsWith("I")) {
             var kontakt = new Applikationsart.Kontakt();
             kontakt.setZielgebiet(zielgebiet);
-            kontakt.setSeiteZielgebiet(seiteZielgebiet);
+
+            if (seiteZielgebiet != null) {
+                kontakt.setSeiteZielgebiet(seiteZielgebiet);
+            } else {
+                LOG.warn("Seite_Zielgebiet is unset in v2 but required for Kontakt in v3. Defaulting to 'U'.");
+                kontakt.setSeiteZielgebiet(SeiteZielgebietTyp.U);
+            }
+
             kontakt.setEinzeldosis(einzeldosis);
             kontakt.setGesamtdosis(gesamtdosis);
             switch (applikationsart) {
@@ -251,7 +276,12 @@ public class StrahlentherapieMapper {
         if (applikationsart.startsWith("M")) {
             var metabolisch = new Applikationsart.Metabolisch();
             metabolisch.setZielgebiet(zielgebiet);
-            metabolisch.setSeiteZielgebiet(seiteZielgebiet);
+
+            // For 'M' and 'S' it's fine if Seite_Zielgebiet is unset
+            if (seiteZielgebiet != null) {
+                metabolisch.setSeiteZielgebiet(seiteZielgebiet);
+            }
+
             switch (applikationsart) {
                 case "M":
                     result.setMetabolisch(metabolisch);
@@ -275,7 +305,11 @@ public class StrahlentherapieMapper {
         if (applikationsart.equals("S")) {
             var sonstige = new Applikationsart.Sonstige();
             sonstige.setZielgebiet(zielgebiet);
-            sonstige.setSeiteZielgebiet(seiteZielgebiet);
+
+            if (seiteZielgebiet != null) {
+                sonstige.setSeiteZielgebiet(seiteZielgebiet);
+            }
+
             sonstige.setEinzeldosis(einzeldosis);
             sonstige.setGesamtdosis(gesamtdosis);
             result.setSonstige(sonstige);
