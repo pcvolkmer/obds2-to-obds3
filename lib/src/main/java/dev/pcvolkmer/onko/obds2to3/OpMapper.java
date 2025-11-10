@@ -81,6 +81,8 @@ public class OpMapper {
 
     private static Komplikationen mapToKomplikationen(OP source) {
         var komplikationen = new Komplikationen();
+        var mengeKomplikation = new OPTyp.Komplikationen.MengeKomplikation();
+
         for (var komp : source.getMengeKomplikation().getOPKomplikation()) {
             if (komp.equals("N") || komp.equals("U")) {
                 komplikationen.setKomplikationNeinOderUnbekannt(komp);
@@ -90,13 +92,18 @@ public class OpMapper {
                             source.getOPID());
                 }
             } else {
-                var mengeKomplikation = new OPTyp.Komplikationen.MengeKomplikation();
-                mengeKomplikation.getKomplikation().add(komplikationTyp);
-
                 var komplikationTyp = new de.basisdatensatz.obds.v3.KomplikationTyp();
                 komplikationTyp.setKuerzel(komp);
-                komplikationen.setMengeKomplikation(mengeKomplikation);
+
+                mengeKomplikation.getKomplikation().add(komplikationTyp);
             }
+        }
+
+        // currently, if both "N"/"U" and other komplikationen are set,
+        // we keep both in v3 which isn't strictly schema-compliant,
+        // but preserves all information.
+        if (!mengeKomplikation.getKomplikation().isEmpty()) {
+            komplikationen.setMengeKomplikation(mengeKomplikation);
         }
 
         return komplikationen;
