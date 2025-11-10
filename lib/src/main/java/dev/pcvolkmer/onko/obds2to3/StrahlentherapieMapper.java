@@ -276,7 +276,6 @@ public class StrahlentherapieMapper {
         if (applikationsart.startsWith("M")) {
             var metabolisch = new Applikationsart.Metabolisch();
             metabolisch.setZielgebiet(zielgebiet);
-            metabolisch.setSeiteZielgebiet(seiteZielgebiet);
 
             // For 'M' and 'S' it's fine if Seite_Zielgebiet is unset
             if (seiteZielgebiet != null) {
@@ -305,6 +304,7 @@ public class StrahlentherapieMapper {
 
         if (applikationsart.equals("S")) {
             var sonstige = new Applikationsart.Sonstige();
+            sonstige.setZielgebiet(zielgebiet);
 
             if (seiteZielgebiet != null) {
                 sonstige.setSeiteZielgebiet(seiteZielgebiet);
