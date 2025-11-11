@@ -31,6 +31,10 @@ import de.basisdatensatz.obds.v3.DatumTagOderMonatOderJahrOderNichtGenauTyp;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -39,6 +43,8 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 class MapperUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MapperUtils.class);
 
     public static final String OBDS2_DATE_REGEX = "(?<day>([0-2]\\d)|(3[01]))\\.(?<month>(0\\d)|(1[0-2]))\\.(?<year>(18|19|20)\\d\\d)";
 
@@ -135,6 +141,15 @@ class MapperUtils {
 
             calendar.set(Calendar.YEAR, year);
 
+            if (month == 0 && day == 0) {
+                // For DatumTagOderMonatGenauTyp, Datumsgenauigkeit is a required field.
+                // If both month and day are unknown, our only choice is to set the
+                // least precise enum
+                LOG.warn("Both the month and day are unset, " +
+                    "but DatumTagOderMonatGenauTyp requires at least the month. Defaulting to precision of 'T'");
+                result.setDatumsgenauigkeit(DatumTagOderMonatGenauTyp.DatumsgenauigkeitTagOderMonatGenau.T);
+            }
+
             if (month > 0) {
                 // Starts with month "0"
                 calendar.set(Calendar.MONTH, month - 1);
@@ -171,6 +186,8 @@ class MapperUtils {
 
         var result = new DatumTagOderMonatGenauTypSchaetzOptional();
         result.setValue(calendar);
+        // as per the schema, the default value of Datum_Tag_oder_Monat_genau_Typ_Schaetz_optional should be 'E'
+        result.setDatumsgenauigkeit(DatumTagOderMonatGenauTypSchaetzOptional.DatumsgenauigkeitTagOderMonatGenauTypSchaetzOptional.E);
 
         if (calendar.getMonth() > 0) {
             result.setDatumsgenauigkeit(DatumTagOderMonatGenauTypSchaetzOptional.DatumsgenauigkeitTagOderMonatGenauTypSchaetzOptional.T);
