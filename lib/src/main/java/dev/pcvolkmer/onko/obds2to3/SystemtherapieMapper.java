@@ -3,6 +3,7 @@ package dev.pcvolkmer.onko.obds2to3;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,9 +89,13 @@ public class SystemtherapieMapper {
         Collections.sort(sortedCodes);
         var code = String.join("", sortedCodes);
 
-        if (code.equals("CHIMSO")) {
-            LOG.warn("Therapieart 'CHIMSO' not recognised - mapping to 'CI'");
-            return Therapieart.CI;
+        var extraMappings = Map.of(
+                "CHIMSO", Therapieart.CI,
+                "CHSO", Therapieart.CH);
+
+        if (extraMappings.containsKey(code)) {
+            LOG.warn("Therapieart '{}' not directly mappable. Falling back to '{}'", code, extraMappings.get(code));
+            return extraMappings.get(code);
         }
 
         return switch (code) {
