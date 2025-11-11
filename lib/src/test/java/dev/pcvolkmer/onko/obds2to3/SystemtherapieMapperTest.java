@@ -25,7 +25,7 @@ class SystemtherapieMapperTest {
             // Not direct mappings
             "KM,SZ",
             "CH;IM;SO,CI",
-            "CH;IM,CH"
+            "CH;SO,CH"
     })
     void shouldMapTherapieart(String in, String out) {
         var menge = new ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeSYST();
