@@ -83,7 +83,6 @@ class ObdsMapperTest {
                 "testdaten/obdsv2_keine-tumorzuordung.xml,ADT_GEKID tumorzuordung should not be null at this point - required for oBDS v3",
                 "testdaten/obdsv2_nicht-mappbarer-patient.xml,ADT_GEKID tumorzuordung should not be null at this point - required for oBDS v3",
                 "testdaten/obdsv2_diagnose-zu-tumorzuordung-keinetumorid.xml,ADT_GEKID attribute 'Tumor_ID' must not be null at this point - required for oBDS v3",
-                "testdaten/obdsv2_invalid-kv.xml,Unmappable 'Versichertendaten'"
         })
         void shouldNotMapObdsFileAndThrowUnmappableItemException(String obdsV2File, String message) throws Exception {
             var obdsV2String = new String(
@@ -111,8 +110,7 @@ class ObdsMapperTest {
         @ParameterizedTest
         @CsvSource({
                 "testdaten/obdsv2_keine-tumorzuordung.xml,testdaten/obdsv3_keine-tumorzuordung.xml",
-                "testdaten/obdsv2_nicht-mappbarer-patient.xml,testdaten/obdsv3_nicht-mappbarer-patient.xml",
-                "testdaten/obdsv2_invalid-kv.xml,testdaten/obdsv3_invalid-kv.xml"
+                "testdaten/obdsv2_nicht-mappbarer-patient.xml,testdaten/obdsv3_nicht-mappbarer-patient.xml"
         })
         void shouldMapObdsFileIgnoringUnmappableItems(String obdsV2File, String obdsV3File) throws Exception {
             var obdsV2String = new String(
@@ -165,7 +163,8 @@ class ObdsMapperTest {
 
         @ParameterizedTest
         @CsvSource({
-                "testdaten/obdsv2_invalid-schema.xml,testdaten/obdsv3_invalid-schema.xml"
+                "testdaten/obdsv2_invalid-schema.xml,testdaten/obdsv3_invalid-schema.xml",
+                "testdaten/obdsv2_invalid-kv.xml,testdaten/obdsv3_invalid-kv.xml"
         })
         void shouldMapObdsFileWithoutSchemaValidation(String obdsV2File, String obdsV3File) throws Exception {
             var obdsV2String = new String(

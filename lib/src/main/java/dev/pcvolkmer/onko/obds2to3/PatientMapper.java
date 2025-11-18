@@ -31,7 +31,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 class PatientMapper {
+    private static final Logger LOG = LoggerFactory.getLogger(PatientMapper.class);
 
     private final MeldungMapper meldungMapper;
 
@@ -130,19 +134,24 @@ class PatientMapper {
                 var versichertendaten = new VersichertendatenSonstigeTyp();
                 versichertendaten.setErsatzkode(stammdaten.getKrankenkassenNr());
                 mappedStammdaten.setVersichertendatenSonstige(versichertendaten);
-            } else if (null != stammdaten.getKrankenversichertenNr() && !stammdaten.getKrankenversichertenNr().isBlank() && null != stammdaten.getKrankenkassenNr() && stammdaten.getKrankenkassenNr().matches("16\\d{7}|950\\d{6}")) {
+            } else if (null != stammdaten.getKrankenversichertenNr() && !stammdaten.getKrankenversichertenNr().isBlank() && stammdaten.getKrankenkassenNr().matches("16\\d{7}|950\\d{6}")) {
                 var versichertendaten = new VersichertendatenPKVTyp();
                 versichertendaten.setIKNR(stammdaten.getKrankenkassenNr());
                 versichertendaten.setPKVVersichertennummer(stammdaten.getKrankenversichertenNr());
                 mappedStammdaten.setVersichertendatenPKV(versichertendaten);
-            } else if (null != stammdaten.getKrankenversichertenNr() && stammdaten.getKrankenversichertenNr().matches("[A-Z]\\d{9}") && null != stammdaten.getKrankenkassenNr() && stammdaten.getKrankenkassenNr().matches("10\\d{7}")) {
+            } else {
+                if (null == stammdaten.getKrankenversichertenNr() ||
+                    !stammdaten.getKrankenversichertenNr().matches("[A-Z]\\d{9}") ||
+                        !stammdaten.getKrankenkassenNr().matches("10\\d{7}")) {
+                    LOG.warn(
+                            "KrankenversichertenNr or KrankenkassenNr doesn't match the expected format. Defaulting to GKV element.");
+                }
+                
                 // Andere Werte: Aktuell als GKV behandelt
                 var versichertendatenGkv = new VersichertendatenGKVTyp();
                 versichertendatenGkv.setIKNR(stammdaten.getKrankenkassenNr());
                 versichertendatenGkv.setGKVVersichertennummer(stammdaten.getKrankenversichertenNr());
                 mappedStammdaten.setVersichertendatenGKV(versichertendatenGkv);
-            } else {
-                throw new UnmappableItemException("Unmappable 'Versichertendaten'");
             }
         }
 
