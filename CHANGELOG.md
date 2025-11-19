@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.1...v0.1.2) (2025-11-19)
+
+
+### Bug Fixes
+
+* upgraded gradle and possibly fixed build ([#76](https://github.com/bzkf/obds2-to-obds3/issues/76)) ([de005af](https://github.com/bzkf/obds2-to-obds3/commit/de005af65a447ec4d4a5afe2abb8bae2d9ed622f))
+
 ## [0.1.1](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.0...v0.1.1) (2025-11-19)
 
 
