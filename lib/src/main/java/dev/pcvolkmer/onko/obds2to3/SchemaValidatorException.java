@@ -25,11 +25,11 @@
 package dev.pcvolkmer.onko.obds2to3;
 
 public class SchemaValidatorException extends RuntimeException {
-    public SchemaValidatorException(String message) {
-        super(message);
-    }
+  public SchemaValidatorException(String message) {
+    super(message);
+  }
 
-    public SchemaValidatorException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public SchemaValidatorException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

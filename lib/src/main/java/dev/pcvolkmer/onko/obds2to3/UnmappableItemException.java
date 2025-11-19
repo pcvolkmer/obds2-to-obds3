@@ -25,11 +25,11 @@
 package dev.pcvolkmer.onko.obds2to3;
 
 public class UnmappableItemException extends RuntimeException {
-    public UnmappableItemException(String message) {
-        super(message);
-    }
+  public UnmappableItemException(String message) {
+    super(message);
+  }
 
-    public UnmappableItemException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public UnmappableItemException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

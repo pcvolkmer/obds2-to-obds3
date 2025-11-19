@@ -24,105 +24,110 @@
 
 package dev.pcvolkmer.onko.obds2to3;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import de.basisdatensatz.obds.v2.ADTGEKID;
 import de.basisdatensatz.obds.v2.JNUTyp;
 import de.basisdatensatz.obds.v3.DatumTagOderMonatGenauTyp;
 import de.basisdatensatz.obds.v3.DatumTagOderMonatOderJahrOderNichtGenauTyp;
 import de.basisdatensatz.obds.v3.JNU;
 import de.basisdatensatz.obds.v3.TodTyp;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 class MapperUtilsTest {
 
-    @ParameterizedTest
-    @CsvSource({
-            "01.01.2024,2024-01-01,E",
-            "04.02.1978,1978-02-04,E",
-            "00.10.2024,2024-10-01,T",
-            "00.00.2024,2024-01-01,M",
-            "00.00.0000,1900-01-01,V",
-    })
-    void shouldMapDate(String obdsv2DateString, String expectedDateString, String expectedPrecision) {
-        var actual = MapperUtils.mapDateString(obdsv2DateString);
-        assertThat(actual).isPresent();
-        assertThat(actual.get().getValue().toXMLFormat()).startsWith(expectedDateString);
-        assertThat(actual.get().getDatumsgenauigkeit()).isEqualTo(DatumTagOderMonatOderJahrOderNichtGenauTyp.DatumsgenauigkeitTagOderMonatOderJahrOderNichtGenau.fromValue(expectedPrecision));
-    }
+  @ParameterizedTest
+  @CsvSource({
+    "01.01.2024,2024-01-01,E",
+    "04.02.1978,1978-02-04,E",
+    "00.10.2024,2024-10-01,T",
+    "00.00.2024,2024-01-01,M",
+    "00.00.0000,1900-01-01,V",
+  })
+  void shouldMapDate(String obdsv2DateString, String expectedDateString, String expectedPrecision) {
+    var actual = MapperUtils.mapDateString(obdsv2DateString);
+    assertThat(actual).isPresent();
+    assertThat(actual.get().getValue().toXMLFormat()).startsWith(expectedDateString);
+    assertThat(actual.get().getDatumsgenauigkeit())
+        .isEqualTo(
+            DatumTagOderMonatOderJahrOderNichtGenauTyp
+                .DatumsgenauigkeitTagOderMonatOderJahrOderNichtGenau.fromValue(expectedPrecision));
+  }
 
-    @Test
-    void shouldNotMapDate() {
-        var actual = MapperUtils.mapDateString("somethingbad");
-        assertThat(actual).isNotPresent();
-    }
+  @Test
+  void shouldNotMapDate() {
+    var actual = MapperUtils.mapDateString("somethingbad");
+    assertThat(actual).isNotPresent();
+  }
 
-    @ParameterizedTest
-    @CsvSource({
-            "01.01.2024,2024-01-01,E",
-            "04.02.1978,1978-02-04,E",
-            "00.10.2024,2024-10-01,T",
-            "00.00.2020,2020-01-01,T",
-    })
-    void shouldMapDateGenau(String obdsv2DateString, String expectedDateString, String expectedPrecision) {
-        var actual = MapperUtils.mapDateStringGenau(obdsv2DateString);
-        assertThat(actual).isPresent();
-        assertThat(actual.get().getValue().toXMLFormat()).startsWith(expectedDateString);
-        assertThat(actual.get().getDatumsgenauigkeit()).isEqualTo(DatumTagOderMonatGenauTyp.DatumsgenauigkeitTagOderMonatGenau.fromValue(expectedPrecision));
-    }
+  @ParameterizedTest
+  @CsvSource({
+    "01.01.2024,2024-01-01,E",
+    "04.02.1978,1978-02-04,E",
+    "00.10.2024,2024-10-01,T",
+    "00.00.2020,2020-01-01,T",
+  })
+  void shouldMapDateGenau(
+      String obdsv2DateString, String expectedDateString, String expectedPrecision) {
+    var actual = MapperUtils.mapDateStringGenau(obdsv2DateString);
+    assertThat(actual).isPresent();
+    assertThat(actual.get().getValue().toXMLFormat()).startsWith(expectedDateString);
+    assertThat(actual.get().getDatumsgenauigkeit())
+        .isEqualTo(
+            DatumTagOderMonatGenauTyp.DatumsgenauigkeitTagOderMonatGenau.fromValue(
+                expectedPrecision));
+  }
 
-    @Test
-    void shouldNotMapDateGenau() {
-        var actual = MapperUtils.mapDateStringGenau("somethingbad");
-        assertThat(actual).isNotPresent();
-    }
+  @Test
+  void shouldNotMapDateGenau() {
+    var actual = MapperUtils.mapDateStringGenau("somethingbad");
+    assertThat(actual).isNotPresent();
+  }
 
-    @ParameterizedTest
-    @CsvSource({
-            "01.01.2024,2024-01-01",
-            "04.02.1978,1978-02-04",
-            "00.10.2024,2024-10-01",
-            "00.00.2024,2024-01-01",
-    })
-    void shouldMapToLocalDate(String obdsv2DateString, String expectedDateString) {
-        var actual = MapperUtils.mapDateString(obdsv2DateString);
-        assertThat(actual).isPresent();
-        assertThat(actual.get().getValue().toString()).startsWith(expectedDateString);
-    }
+  @ParameterizedTest
+  @CsvSource({
+    "01.01.2024,2024-01-01",
+    "04.02.1978,1978-02-04",
+    "00.10.2024,2024-10-01",
+    "00.00.2024,2024-01-01",
+  })
+  void shouldMapToLocalDate(String obdsv2DateString, String expectedDateString) {
+    var actual = MapperUtils.mapDateString(obdsv2DateString);
+    assertThat(actual).isPresent();
+    assertThat(actual.get().getValue().toString()).startsWith(expectedDateString);
+  }
 
-    @Test
-    void shouldRemoveAllInvalidChars() {
-        var actual = MapperUtils.trimToMatchDatatype("datatypeBtrimmed", "Das ist ein パウルTest");
-        assertThat(actual).isPresent().isEqualTo(Optional.of("Das ist ein Test"));
-    }
+  @Test
+  void shouldRemoveAllInvalidChars() {
+    var actual = MapperUtils.trimToMatchDatatype("datatypeBtrimmed", "Das ist ein パウルTest");
+    assertThat(actual).isPresent().isEqualTo(Optional.of("Das ist ein Test"));
+  }
 
-    @ParameterizedTest
-    @MethodSource("nullMappingSource")
-    void shouldOnlyMapValueIfNotNull(JNUTyp given, JNU expected) {
-        var givenTod = new ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeVerlauf.Verlauf.Tod();
-        givenTod.setTodTumorbedingt(given);
-        var actualTod = new TodTyp();
+  @ParameterizedTest
+  @MethodSource("nullMappingSource")
+  void shouldOnlyMapValueIfNotNull(JNUTyp given, JNU expected) {
+    var givenTod =
+        new ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeVerlauf.Verlauf.Tod();
+    givenTod.setTodTumorbedingt(given);
+    var actualTod = new TodTyp();
 
-        MapperUtils.ifNotNull(givenTod.getTodTumorbedingt(), value ->
-                actualTod.setTodTumorbedingt(JNU.fromValue(value.value()))
-        );
-        assertThat(actualTod.getTodTumorbedingt()).isEqualTo(expected);
-    }
+    MapperUtils.ifNotNull(
+        givenTod.getTodTumorbedingt(),
+        value -> actualTod.setTodTumorbedingt(JNU.fromValue(value.value())));
+    assertThat(actualTod.getTodTumorbedingt()).isEqualTo(expected);
+  }
 
-    public static Stream<Arguments> nullMappingSource() {
-        return Stream.of(
-                Arguments.of(null, null),
-                Arguments.of(JNUTyp.J, JNU.J),
-                Arguments.of(JNUTyp.N, JNU.N),
-                Arguments.of(JNUTyp.U, JNU.U)
-        );
-    }
-
+  public static Stream<Arguments> nullMappingSource() {
+    return Stream.of(
+        Arguments.of(null, null),
+        Arguments.of(JNUTyp.J, JNU.J),
+        Arguments.of(JNUTyp.N, JNU.N),
+        Arguments.of(JNUTyp.U, JNU.U));
+  }
 }

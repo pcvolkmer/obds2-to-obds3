@@ -29,26 +29,25 @@ import de.basisdatensatz.obds.v3.AbsenderTyp;
 
 class AbsenderMapper {
 
-    private AbsenderMapper() {}
+  private AbsenderMapper() {}
 
-    public static AbsenderTyp map(ADTGEKID.Absender source) {
-        if (null == source) {
-            throw new IllegalArgumentException("Source cannot be null");
-        }
-
-        var absender = new AbsenderTyp();
-        absender.setAbsenderID(source.getAbsenderID());
-        absender.setAnschrift(source.getAbsenderAnschrift());
-        absender.setAnsprechpartner(source.getAbsenderAnsprechpartner());
-        absender.setBezeichnung(source.getAbsenderBezeichnung());
-        absender.setEMail(source.getAbsenderEMail());
-        absender.setTelefon(source.getAbsenderTelefon());
-
-        // Fixed Values
-        absender.setSoftwareID("obds2-to-obds3");
-        absender.setSoftwareVersion("0.1.0");
-
-        return absender;
+  public static AbsenderTyp map(ADTGEKID.Absender source) {
+    if (null == source) {
+      throw new IllegalArgumentException("Source cannot be null");
     }
 
+    var absender = new AbsenderTyp();
+    absender.setAbsenderID(source.getAbsenderID());
+    absender.setAnschrift(source.getAbsenderAnschrift());
+    absender.setAnsprechpartner(source.getAbsenderAnsprechpartner());
+    absender.setBezeichnung(source.getAbsenderBezeichnung());
+    absender.setEMail(source.getAbsenderEMail());
+    absender.setTelefon(source.getAbsenderTelefon());
+
+    // Fixed Values
+    absender.setSoftwareID("obds2-to-obds3");
+    absender.setSoftwareVersion("0.1.0");
+
+    return absender;
+  }
 }

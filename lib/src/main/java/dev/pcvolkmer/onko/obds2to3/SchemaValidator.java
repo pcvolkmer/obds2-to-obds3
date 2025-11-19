@@ -24,8 +24,10 @@
 
 package dev.pcvolkmer.onko.obds2to3;
 
-import org.xml.sax.SAXException;
-
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Optional;
+import java.util.regex.Pattern;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -34,10 +36,7 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
-import java.util.regex.Pattern;
+import org.xml.sax.SAXException;
 
 /**
  * Validator for ADT_GEKID or oBDS files
@@ -47,62 +46,81 @@ import java.util.regex.Pattern;
  */
 public class SchemaValidator {
 
-    /**
-     * Validates xml string using given schema version
-     *
-     * @param xmlString     The xml string to be validated
-     * @param schemaVersion The schema version to be used
-     * @return true, if xml string is valid
-     * @throws SchemaValidatorException if xmlString is not valid
-     */
-    public static boolean isValid(String xmlString, SchemaVersion schemaVersion) {
-        try {
-            var factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            var schemaFile = new StreamSource(SchemaValidator.class.getClassLoader().getResource(schemaVersion.getSchemaFile()).openStream());
-            var validator = factory.newSchema(schemaFile).newValidator();
-            validator.validate(new StreamSource(new StringReader(xmlString)));
-        } catch (Exception e) {
-            throw new SchemaValidatorException("Cannot validate result using oBDS schema", e);
-        }
-        return true;
+  /**
+   * Validates xml string using given schema version
+   *
+   * @param xmlString The xml string to be validated
+   * @param schemaVersion The schema version to be used
+   * @return true, if xml string is valid
+   * @throws SchemaValidatorException if xmlString is not valid
+   */
+  public static boolean isValid(String xmlString, SchemaVersion schemaVersion) {
+    try {
+      var factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+      var schemaFile =
+          new StreamSource(
+              SchemaValidator.class
+                  .getClassLoader()
+                  .getResource(schemaVersion.getSchemaFile())
+                  .openStream());
+      var validator = factory.newSchema(schemaFile).newValidator();
+      validator.validate(new StreamSource(new StringReader(xmlString)));
+    } catch (Exception e) {
+      throw new SchemaValidatorException("Cannot validate result using oBDS schema", e);
+    }
+    return true;
+  }
+
+  /**
+   * Returns regexp pattern of string based datatypes defined in given schema
+   *
+   * @param name The name of the datatype
+   * @param schemaVersion The schema version
+   * @return returns valid <code>Pattern</code> or empty <code>Optional</code>
+   */
+  public static Optional<Pattern> regexpPattern(
+      String name, SchemaValidator.SchemaVersion schemaVersion) {
+    try {
+      final var documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      final var schemaFile =
+          new StreamSource(
+              SchemaValidator.class
+                  .getClassLoader()
+                  .getResource(schemaVersion.getSchemaFile())
+                  .openStream());
+      final var doc = documentBuilder.parse(schemaFile.getInputStream());
+
+      final var expr =
+          XPathFactory.newInstance()
+              .newXPath()
+              .compile(
+                  String.format(
+                      "//*[local-name()='simpleType'][@name='%s']/*[local-name()='restriction']/*[local-name()='pattern']/@value",
+                      name));
+
+      return Optional.of(Pattern.compile(expr.evaluate(doc, XPathConstants.STRING).toString()));
+    } catch (XPathExpressionException
+        | ParserConfigurationException
+        | IOException
+        | SAXException e) {
+      return Optional.empty();
+    }
+  }
+
+  public enum SchemaVersion {
+    ADT_GEKID_2_2_3("schema/ADT_GEKID_v2.2.3.xsd"),
+    OBDS_3_0_3("schema/oBDS_v3.0.3.xsd"),
+    OBDS_3_0_4("schema/oBDS_v3.0.4.xsd"),
+    ;
+
+    private final String schemaFile;
+
+    SchemaVersion(String schemaFile) {
+      this.schemaFile = schemaFile;
     }
 
-    /**
-     * Returns regexp pattern of string based datatypes defined in given schema
-     *
-     * @param name          The name of the datatype
-     * @param schemaVersion The schema version
-     * @return returns valid <code>Pattern</code> or empty <code>Optional</code>
-     */
-    public static Optional<Pattern> regexpPattern(String name, SchemaValidator.SchemaVersion schemaVersion) {
-        try {
-            final var documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            final var schemaFile = new StreamSource(SchemaValidator.class.getClassLoader().getResource(schemaVersion.getSchemaFile()).openStream());
-            final var doc = documentBuilder.parse(schemaFile.getInputStream());
-
-            final var expr = XPathFactory.newInstance().newXPath().compile(String.format("//*[local-name()='simpleType'][@name='%s']/*[local-name()='restriction']/*[local-name()='pattern']/@value", name));
-
-            return Optional.of(Pattern.compile(expr.evaluate(doc, XPathConstants.STRING).toString()));
-        } catch (XPathExpressionException | ParserConfigurationException | IOException | SAXException e) {
-            return Optional.empty();
-        }
+    String getSchemaFile() {
+      return schemaFile;
     }
-
-    public enum SchemaVersion {
-        ADT_GEKID_2_2_3("schema/ADT_GEKID_v2.2.3.xsd"),
-        OBDS_3_0_3("schema/oBDS_v3.0.3.xsd"),
-        OBDS_3_0_4("schema/oBDS_v3.0.4.xsd"),
-        ;
-
-        private final String schemaFile;
-
-        SchemaVersion(String schemaFile) {
-            this.schemaFile = schemaFile;
-        }
-
-        String getSchemaFile() {
-            return schemaFile;
-        }
-    }
-
+  }
 }

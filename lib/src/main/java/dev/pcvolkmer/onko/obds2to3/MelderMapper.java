@@ -29,36 +29,35 @@ import de.basisdatensatz.obds.v3.MelderTyp;
 
 class MelderMapper {
 
-    private MelderMapper() {}
+  private MelderMapper() {}
 
-    public static MelderTyp map(de.basisdatensatz.obds.v2.MelderTyp source) {
-        if (null == source) {
-            throw new IllegalArgumentException("Source cannot be null");
-        }
-
-        var mappedMelder = new MelderTyp();
-        mappedMelder.setID(source.getMelderID());
-        mappedMelder.setAnschrift(source.getMelderAnschrift());
-        mappedMelder.setArztname(source.getMelderArztname());
-        mappedMelder.setBankname(source.getMelderBankname());
-        mappedMelder.setOrt(source.getMelderOrt());
-        mappedMelder.setPLZ(source.getMelderPLZ());
-        mappedMelder.setBIC(source.getMelderBIC());
-        mappedMelder.setIBAN(source.getMelderIBAN());
-        mappedMelder.setKontoinhaber(source.getMelderKontoinhaber());
-        mappedMelder.setKHAbtStationPraxis(source.getMelderKHAbtStationPraxis());
-
-        var identNummern = new IdentNummernTyp();
-        identNummern.setIKNR(source.getMelderIKNR());
-        identNummern.setBSNR(source.getMelderBSNR());
-        identNummern.setLANR(source.getMelderLANR());
-        // Nicht in oBDS v2 ?
-        //identNummern.setZANR();
-        mappedMelder.setIdentNummern(identNummern);
-
-        // nicht in oBDS v3 ?
-        // source.getMeldendeStelle();
-        return mappedMelder;
+  public static MelderTyp map(de.basisdatensatz.obds.v2.MelderTyp source) {
+    if (null == source) {
+      throw new IllegalArgumentException("Source cannot be null");
     }
 
+    var mappedMelder = new MelderTyp();
+    mappedMelder.setID(source.getMelderID());
+    mappedMelder.setAnschrift(source.getMelderAnschrift());
+    mappedMelder.setArztname(source.getMelderArztname());
+    mappedMelder.setBankname(source.getMelderBankname());
+    mappedMelder.setOrt(source.getMelderOrt());
+    mappedMelder.setPLZ(source.getMelderPLZ());
+    mappedMelder.setBIC(source.getMelderBIC());
+    mappedMelder.setIBAN(source.getMelderIBAN());
+    mappedMelder.setKontoinhaber(source.getMelderKontoinhaber());
+    mappedMelder.setKHAbtStationPraxis(source.getMelderKHAbtStationPraxis());
+
+    var identNummern = new IdentNummernTyp();
+    identNummern.setIKNR(source.getMelderIKNR());
+    identNummern.setBSNR(source.getMelderBSNR());
+    identNummern.setLANR(source.getMelderLANR());
+    // Nicht in oBDS v2 ?
+    // identNummern.setZANR();
+    mappedMelder.setIdentNummern(identNummern);
+
+    // nicht in oBDS v3 ?
+    // source.getMeldendeStelle();
+    return mappedMelder;
+  }
 }

@@ -8,7 +8,7 @@ plugins {
     id 'io.gitee.pkmer.sonatype-central-publisher' version '1.1.0'
 }
 
-group = 'io.github.bzkf' 
+group = 'io.github.bzkf'
 version = '0.1.0' // x-release-please-version
 archivesBaseName = 'obds2-to-obds3'
 
@@ -20,7 +20,7 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
-    // currently fails with 
+    // currently fails with
     // /home/gulch/proj/github/bzkf/obds2-to-obds3/lib/src/generated/java/de/basisdatensatz/obds/v3/TNMTyp.java:689: error: malformed HTML
     // due to '<' in comments.
     // withJavadocJar()
@@ -165,5 +165,13 @@ pkmerBoot {
 task printVersion {
     doLast {
         println project.version
+    }
+}
+
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        googleJavaFormat()
     }
 }
