@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.3](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.2...v0.1.3) (2025-11-19)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#72](https://github.com/bzkf/obds2-to-obds3/issues/72)) ([31d073a](https://github.com/bzkf/obds2-to-obds3/commit/31d073ad53ebf48389e6dd672c8b26867485b54e))
+* support K applikationsart ([#80](https://github.com/bzkf/obds2-to-obds3/issues/80)) ([9e22051](https://github.com/bzkf/obds2-to-obds3/commit/9e22051a02a21def88837a737290b20b2951beeb))
+
 ## [0.1.2](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.1...v0.1.2) (2025-11-19)
 
 
