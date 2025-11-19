@@ -4,7 +4,7 @@ plugins {
 
 group = 'io.github.bzkf'
 version = '0.1.0' // x-release-please-version
-archivesBaseName = 'obds2-to-obds3-app'
+base.archivesName = 'obds2-to-obds3-app'
 
 java {
     toolchain {
