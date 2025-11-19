@@ -32,6 +32,7 @@ import java.util.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 class MeldungMapper {
 
@@ -70,10 +71,15 @@ class MeldungMapper {
       throw new IllegalArgumentException("MeldungID must not be null or blank");
     }
 
+    MDC.put("meldungId", source.getMeldungID());
+
     if (null == source.getTumorzuordnung()
         && (null == source.getDiagnose()
             || null == source.getDiagnose().getPrimaertumorICDCode()
             || null == source.getDiagnose().getPrimaertumorICDVersion())) {
+
+      LOG.warn("Meldung has incomplete Diagnose data: ICD_Code, ICD_Version may be null.");
+
       if (ignoreUnmappableMessages) {
         return new ArrayList<>();
       }
@@ -109,6 +115,7 @@ class MeldungMapper {
           getMengeZusatzitemTyp(source).ifPresent(diagnosemeldung::setMengeZusatzitem);
           result.add(diagnosemeldung);
         } catch (UnmappableItemException e) {
+          LOG.error("Failed to map Diagnosemeldung", e);
           if (!ignoreUnmappableMessages) {
             throw e;
           }
@@ -137,6 +144,7 @@ class MeldungMapper {
             try {
               getMappedTumorzuordung(source).ifPresent(meldung::setTumorzuordnung);
             } catch (UnmappableItemException e) {
+              LOG.error("Failed to map Tumorzuordnung", e);
               if (!ignoreUnmappableMessages) {
                 throw e;
               }
@@ -167,6 +175,7 @@ class MeldungMapper {
         || null == source.getDiagnosedatum()
         || null == source.getPrimaertumorICDCode()
         || null == source.getPrimaertumorICDVersion()) {
+      LOG.warn("Tumorzuordnung Diagnosedatum, ICD_Code or ICD_Version are null");
       return Optional.empty();
     }
 
@@ -189,6 +198,7 @@ class MeldungMapper {
     } else if (null != source.getTumorID()) {
       mappedTumorzuordnung.setTumorID(source.getTumorID());
     } else {
+      LOG.error("TumorID is null");
       throw new UnmappableItemException(TUMORID_MUST_NOT_BE_NULL);
     }
     // Datum
@@ -210,8 +220,8 @@ class MeldungMapper {
   }
 
   private List<Meldung> getMappedSYSTs(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
-    var mengeOP = source.getMengeSYST();
-    if (mengeOP == null || mengeOP.getSYST().isEmpty()) {
+    var mengeSYST = source.getMengeSYST();
+    if (mengeSYST == null || mengeSYST.getSYST().isEmpty()) {
       return List.of();
     }
 
@@ -377,10 +387,7 @@ class MeldungMapper {
             .toList();
 
     if (mengeTod.size() > 1) {
-      LOG.warn(
-          "Multiple 'Tod' entries found in Verlauf Meldung_ID={}. "
-              + "Only the first entry can be mapped!",
-          source.getMeldungID());
+      LOG.warn("Multiple 'Tod' entries found in Verlauf. Only the first entry can be mapped!");
     }
 
     mengeTod.stream().findFirst().ifPresent(meldung::setTod);
@@ -456,9 +463,14 @@ class MeldungMapper {
             verlauf -> {
               var mappedVerlauf = new VerlaufTyp();
               mappedVerlauf.setVerlaufID(verlauf.getVerlaufID());
+
               // oBDS v2 Meldung->Meldeanlass wird in oBDS v3 für Verlauf verwendet
-              mappedVerlauf.setMeldeanlass(
-                  VerlaufTyp.Meldeanlass.fromValue(source.getMeldeanlass()));
+              if (source.getMeldeanlass() != null) {
+                mappedVerlauf.setMeldeanlass(
+                    VerlaufTyp.Meldeanlass.fromValue(source.getMeldeanlass()));
+              } else {
+                LOG.warn("Meldeanlass is null for Verlauf={}", verlauf.getVerlaufID());
+              }
 
               // AllgemeinerLeistungszustand ist nicht verpflicchtend oBDS v2. In v3 schon.
               // der "else"-Pfad erzeugt also invalide Meldungen. obds-to-fhir kommt damit
@@ -467,6 +479,9 @@ class MeldungMapper {
                 mappedVerlauf.setAllgemeinerLeistungszustand(
                     AllgemeinerLeistungszustand.fromValue(
                         verlauf.getAllgemeinerLeistungszustand()));
+              } else {
+                LOG.warn(
+                    "AllgemeinerLeistungszustand is null for Verlauf={}", verlauf.getVerlaufID());
               }
 
               mappedVerlauf.setVerlaufLokalerTumorstatus(verlauf.getVerlaufLokalerTumorstatus());
@@ -499,8 +514,6 @@ class MeldungMapper {
                     .addAll(
                         verlauf.getMengeFM().getFernmetastase().stream()
                             .map(MeldungMapper::mapFernmetastase)
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
                             .toList());
               }
 
@@ -538,29 +551,31 @@ class MeldungMapper {
 
     var mappedDiagnose = new DiagnoseTyp();
     mappedDiagnose.setPrimaertumorDiagnosetext(diagnose.getPrimaertumorDiagnosetext());
-    // mappedDiagnose.setPrimaertumorTopographieICDO(..);
-    // Nicht in oBDS v2 ?
-    // mappedDiagnose.setPrimaertumorTopographieFreitext(..);
+
+    // ICDO Topographie
+    var icdo = new TopographieICDOTyp();
+    icdo.setCode(diagnose.getPrimaertumorTopographieICDO());
+    icdo.setVersion(diagnose.getPrimaertumorTopographieICDOVersion());
+    mappedDiagnose.setPrimaertumorTopographieFreitext(
+        diagnose.getPrimaertumorTopographieICDOFreitext());
+    mappedDiagnose.setPrimaertumorTopographieICDO(icdo);
+
     // oBDS v3 kennt auch 7.1, 7.2 ... als Untertyp von 7 für Diagnosesicherung
     if (diagnose.getDiagnosesicherung() != null && !diagnose.getDiagnosesicherung().isBlank()) {
       mappedDiagnose.setDiagnosesicherung(
           DiagnoseTyp.DiagnoseTypDiagnosesicherung.fromValue(diagnose.getDiagnosesicherung()));
     } else {
-      throw new UnmappableItemException(DIAGNOSESICHERUNG_MUST_NOT_BE_NULL);
+      LOG.error("Diagnosesicherung is unset in v2 but required in v3.");
     }
 
     if (diagnose.getMengeFruehereTumorerkrankung() != null) {
-      mappedDiagnose.setMengeFruehereTumorerkrankung(
-          new DiagnoseTyp.MengeFruehereTumorerkrankung());
-      mappedDiagnose
-          .getMengeFruehereTumorerkrankung()
-          .getFruehereTumorerkrankung()
-          .addAll(
-              diagnose.getMengeFruehereTumorerkrankung().getFruehereTumorerkrankung().stream()
-                  .map(MeldungMapper::mapFruehereTumorerkrankung)
-                  .filter(Optional::isPresent)
-                  .map(Optional::get)
-                  .toList());
+      var fruehereTumorerkrankungen =
+          diagnose.getMengeFruehereTumorerkrankung().getFruehereTumorerkrankung().stream()
+              .map(MeldungMapper::mapFruehereTumorerkrankung)
+              .toList();
+      var mengeFruehereTumorerkrankung = new DiagnoseTyp.MengeFruehereTumorerkrankung();
+      mengeFruehereTumorerkrankung.getFruehereTumorerkrankung().addAll(fruehereTumorerkrankungen);
+      mappedDiagnose.setMengeFruehereTumorerkrankung(mengeFruehereTumorerkrankung);
     }
 
     // Menge Histologie lässt sich nicht direkt auf einen Wert mappen in oBDS v3 -
@@ -571,7 +586,7 @@ class MeldungMapper {
 
       if (diagnose.getMengeHistologie().getHistologie().size() > 1) {
         LOG.warn(
-            "Multiple entries for 'Diagnose.Histologie' found. Only the first entry will be mapped!");
+            "Multiple entries for 'Diagnose.Histologie' found. Only the first entry can be mapped!");
       }
 
       var firstHistologie = diagnose.getMengeHistologie().getHistologie().stream().findFirst();
@@ -589,8 +604,6 @@ class MeldungMapper {
           .addAll(
               diagnose.getMengeFM().getFernmetastase().stream()
                   .map(MeldungMapper::mapFernmetastase)
-                  .filter(Optional::isPresent)
-                  .map(Optional::get)
                   .toList());
     }
 
@@ -621,6 +634,7 @@ class MeldungMapper {
       mappedDiagnose.setAllgemeinerLeistungszustand(
           AllgemeinerLeistungszustand.fromValue(diagnose.getAllgemeinerLeistungszustand()));
     } else {
+      LOG.warn("Allgemeiner Leistungszustand not set on the Diagnose element. Defaulting to 'U'.");
       mappedDiagnose.setAllgemeinerLeistungszustand(AllgemeinerLeistungszustand.U);
     }
 
@@ -646,6 +660,11 @@ class MeldungMapper {
     // mappedDiagnose.setHistologie(..);
     // Aktuell: Immer nur erste Histologie verwendet!
     if (diagnose.getMengeHistologie() != null) {
+      if (diagnose.getMengeHistologie().getHistologie().size() > 1) {
+        LOG.warn(
+            "Multiple entries for 'Diagnose.Histologie' found. Only the first entry can be mapped!");
+      }
+
       var firstHistologie = diagnose.getMengeHistologie().getHistologie().stream().findFirst();
       // Wenn Histo vorhanden - erste Histo
       if (firstHistologie.isPresent()) {
@@ -656,16 +675,13 @@ class MeldungMapper {
 
     // Fernmetastasen
     if (diagnose.getMengeFM() != null) {
-      mappedPathologie.setMengeFM(new MengeFMTyp());
-      mappedPathologie
-          .getMengeFM()
-          .getFernmetastase()
-          .addAll(
-              diagnose.getMengeFM().getFernmetastase().stream()
-                  .map(MeldungMapper::mapFernmetastase)
-                  .filter(Optional::isPresent)
-                  .map(Optional::get)
-                  .toList());
+      var fm =
+          diagnose.getMengeFM().getFernmetastase().stream()
+              .map(MeldungMapper::mapFernmetastase)
+              .toList();
+      var mengeFM = new MengeFMTyp();
+      mengeFM.getFernmetastase().addAll(fm);
+      mappedPathologie.setMengeFM(mengeFM);
     }
 
     // cTNPM
@@ -775,7 +791,7 @@ class MeldungMapper {
       icd10.setCode(tumorzuordnung.getPrimaertumorICDCode());
       icd10.setVersion(tumorzuordnung.getPrimaertumorICDVersion());
       mappedTumorzuordnung.setPrimaertumorICD(icd10);
-      // Morphologie nicht in oBDS v2 ?
+
       // Seitenlokalisation: mapping über Enum - beide {'L'|'R'|'B'|'M'|'U'|'T'}
       if (null != tumorzuordnung.getSeitenlokalisation()) {
         mappedTumorzuordnung.setSeitenlokalisation(
@@ -810,53 +826,50 @@ class MeldungMapper {
     return mappedMengeWeitereKlassifikation;
   }
 
-  private static Optional<MengeFMTyp.Fernmetastase> mapFernmetastase(
+  private static MengeFMTyp.Fernmetastase mapFernmetastase(
       de.basisdatensatz.obds.v2.MengeFMTyp.Fernmetastase source) {
-    if (source != null) {
-      var result = new MengeFMTyp.Fernmetastase();
-      // Diagnosedatum
-      var date = MapperUtils.mapDateString(source.getFMDiagnosedatum());
-      if (date.isEmpty()) {
-        return Optional.empty();
-      } else {
-        result.setDiagnosedatum(date.get());
-      }
-      // Lokalisation - direkt übernommen
-      // oBDS v2 kennt
-      // 'PUL'|'OSS'|'HEP'|'BRA'|'LYM'|'MAR'|'PLE'|'PER'|'ADR'|'SKI'|'OTH'|'GEN'
-      // oBDS v3 kennt
-      // 'PUL'|'OSS'|'HEP'|'BRA'|'LYM'|'MAR'|'PLE'|'PER'|'ADR'|'SKI'|'OTH'|'GEN'
-      result.setLokalisation(source.getFMLokalisation());
-      return Optional.of(result);
+    var result = new MengeFMTyp.Fernmetastase();
+    // Diagnosedatum
+    var date = MapperUtils.mapDateString(source.getFMDiagnosedatum());
+    if (date.isPresent()) {
+      result.setDiagnosedatum(date.get());
+    } else {
+      LOG.warn(
+          "Unable to map FM Diagnosedatum but required in v3: {}", source.getFMDiagnosedatum());
     }
 
-    return Optional.empty();
+    // Lokalisation - direkt übernommen
+    // oBDS v2 kennt
+    // 'PUL'|'OSS'|'HEP'|'BRA'|'LYM'|'MAR'|'PLE'|'PER'|'ADR'|'SKI'|'OTH'|'GEN'
+    // oBDS v3 kennt
+    // 'PUL'|'OSS'|'HEP'|'BRA'|'LYM'|'MAR'|'PLE'|'PER'|'ADR'|'SKI'|'OTH'|'GEN'
+    result.setLokalisation(source.getFMLokalisation());
+    return result;
   }
 
-  private static Optional<FruehereTumorerkrankung> mapFruehereTumorerkrankung(
+  private static FruehereTumorerkrankung mapFruehereTumorerkrankung(
       ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.Diagnose.MengeFruehereTumorerkrankung
               .FruehereTumorerkrankung
           source) {
-    if (source != null) {
-      var result = new FruehereTumorerkrankung();
-      // Diagnosedatum
-      var date = MapperUtils.mapDateString(source.getDiagnosedatum());
-      if (date.isEmpty()) {
-        return Optional.empty();
-      } else {
-        result.setDiagnosedatum(date.get().getValue());
-      }
-      // ICD10
-      var icd10 = new TumorICDTyp();
-      icd10.setCode(source.getICDCode());
-      icd10.setVersion(source.getICDVersion());
-      result.setICD(icd10);
-      // Freitext
-      result.setFreitext(source.getFreitext());
-      return Optional.of(result);
+    var result = new FruehereTumorerkrankung();
+    // Diagnosedatum
+    var date = MapperUtils.mapDateString(source.getDiagnosedatum());
+    if (date.isPresent()) {
+      result.setDiagnosedatum(date.get().getValue());
+    } else {
+      LOG.warn(
+          "Unable to map FruehereTumorerkrankung Diagnosedatum but required in v3: {}",
+          source.getDiagnosedatum());
     }
 
-    return Optional.empty();
+    // ICD10
+    var icd10 = new TumorICDTyp();
+    icd10.setCode(source.getICDCode());
+    icd10.setVersion(source.getICDVersion());
+    result.setICD(icd10);
+    // Freitext
+    result.setFreitext(source.getFreitext());
+    return result;
   }
 
   public static Optional<TNMTyp> mapTnmType(de.basisdatensatz.obds.v2.TNMTyp source) {
@@ -886,6 +899,9 @@ class MeldungMapper {
     result.setV(source.getTNMV());
     result.setPn(source.getTNMPn());
     result.setS(source.getTNMS());
+
+    result.setID(source.getTNMID());
+
     // Nicht in oBDSv2?
     // result.setUICCStadium();
     return Optional.of(result);
