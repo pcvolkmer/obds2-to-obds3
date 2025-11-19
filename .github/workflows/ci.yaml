@@ -75,7 +75,6 @@ jobs:
       - name: Generate SLSA subject for release assets
         id: hash
         run: |
-          # air-gapped-installer.tgz air-gapped-prerequisites-installer.tgz
           sha256sum app/build/libs/*.jar lib/build/libs/*.jar os-abgleich/build/libs/*.jar > checksums.sha256
           echo "hashes=$(base64 -w0 < checksums.sha256)" >> "$GITHUB_OUTPUT"
 
