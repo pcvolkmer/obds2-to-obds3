@@ -170,6 +170,8 @@ task printVersion {
 
 spotless {
     java {
+        target('**/*.java')
+        targetExclude('src/generated/java/**/*.*')
         importOrder()
         removeUnusedImports()
         googleJavaFormat()
