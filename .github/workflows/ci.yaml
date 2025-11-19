@@ -16,9 +16,8 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-24.04
     permissions:
-      contents: read
       # to upload release assets
-      packages: write
+      contents: write
     outputs:
       hashes: ${{ steps.hash.outputs.hashes }}
     steps:
@@ -33,7 +32,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
         with:
-          java-version: "17"
+          java-version: "25"
           distribution: "temurin"
 
       - uses: gradle/actions/wrapper-validation@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
@@ -112,7 +111,7 @@ jobs:
     with:
       enable-validate-gradle-wrapper: true
       codeql-languages: '["java"]'
-      java-version: "17"
+      java-version: "25"
       enable-codeql: false
       enable-verify-base-image-signature: false
     secrets:
