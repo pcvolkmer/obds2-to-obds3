@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.4...v0.1.5) (2025-11-19)
+
+
+### Bug Fixes
+
+* more lenient mapping and added TNM ID and ICDO ([#83](https://github.com/bzkf/obds2-to-obds3/issues/83)) ([5daa2b3](https://github.com/bzkf/obds2-to-obds3/commit/5daa2b3ab4ad21a42c3ab8b776813fba7d0ac19d))
+
 ## [0.1.4](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.3...v0.1.4) (2025-11-19)
 
 
