@@ -1,3 +1,5 @@
+// groovylint-disable NestedBlockDepth
+
 plugins {
     id 'java'
     id 'java-library'
@@ -21,7 +23,7 @@ java {
         languageVersion = JavaLanguageVersion.of(17)
     }
     // currently fails with
-    // /home/gulch/proj/github/bzkf/obds2-to-obds3/lib/src/generated/java/de/basisdatensatz/obds/v3/TNMTyp.java:689: error: malformed HTML
+    // /lib/src/generated/java/de/basisdatensatz/obds/v3/TNMTyp.java:689: error: malformed HTML
     // due to '<' in comments.
     // withJavadocJar()
     withSourcesJar()
@@ -32,7 +34,7 @@ repositories {
 }
 
 ext {
-    jaxbTargetDir = file("src/generated/java")
+    jaxbTargetDir = file('src/generated/java')
 }
 
 sourceSets {
@@ -53,8 +55,8 @@ dependencies {
     api 'org.slf4j:slf4j-api:2.0.17'
 
     // JAXB code generation
-    xsd2java "com.sun.xml.bind:jaxb-xjc:4.0.5"
-    xsd2java "com.sun.xml.bind:jaxb-impl:4.0.5"
+    xsd2java 'com.sun.xml.bind:jaxb-xjc:4.0.5'
+    xsd2java 'com.sun.xml.bind:jaxb-impl:4.0.5'
 
     testImplementation platform('org.junit:junit-bom:5.11.4')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -75,13 +77,13 @@ tasks.register('xsd2java') {
 
 
         ant.xjc(
-                destdir: '${jaxbTargetDir}',
+                destdir: "${jaxbTargetDir}",
                 package: 'de.basisdatensatz.obds.v2',
                 schema: 'src/main/resources/schema/ADT_GEKID_v2.2.3.xsd'
         )
 
         ant.xjc(
-                destdir: '${jaxbTargetDir}',
+                destdir: "${jaxbTargetDir}",
                 package: 'de.basisdatensatz.obds.v3',
                 schema: 'src/main/resources/schema/oBDS_v3.0.4.xsd',
                 binding: 'src/main/resources/schema/oBDS_v3.0.4.bindings.xjb'
@@ -154,7 +156,7 @@ pkmerBoot {
         stagingRepository = layout.buildDirectory.dir('repos/bundles')
         /**
          * get username and password from
-         * <a href="https://central.sonatype.com/account"> central sonatype account</a>
+         * <a href='https://central.sonatype.com/account'> central sonatype account</a>
          */
         username = System.getenv('OSSRH_USERNAME')
         password = System.getenv('OSSRH_PASSWORD')

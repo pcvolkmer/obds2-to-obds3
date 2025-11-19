@@ -8,7 +8,7 @@ Library to map oBDS v2 (ADT_GEKID) into oBDS v3 messages
 
 Besides the library, an application can be used to map a set of messages into oBDS v3 messages.
 
-```
+```console
 > java -jar obds2-to-obds3-app.jar
 
 usage: java -jar obds2-to-obds3-app.jar --input <input file> --output
