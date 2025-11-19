@@ -76,7 +76,9 @@ class ObdsMapperTest {
       var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
       assertThat(obdsv2).isNotNull();
 
-      assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
+      var obdsV3MappedString = mapper.writeMappedXmlString(obdsv2);
+
+      assertThat(obdsV3MappedString).isEqualTo(obdsV3String);
     }
 
     @ParameterizedTest
@@ -156,7 +158,9 @@ class ObdsMapperTest {
       var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
       assertThat(obdsv2).isNotNull();
 
-      assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
+      var mappedObdsv3String = mapper.writeMappedXmlString(obdsv2);
+
+      assertThat(mappedObdsv3String).isEqualTo(obdsV3String);
     }
   }
 

@@ -81,7 +81,7 @@
               </Morphologie_ICD_O>
               <Grading>U</Grading>
             </Histologie>
-            <TNM>
+            <TNM ID="75685">
               <Datum>2021-03-17</Datum>
               <Version>8</Version>
               <c_p_u_Praefix_T>p</c_p_u_Praefix_T>
@@ -148,7 +148,7 @@
               </Morphologie_ICD_O>
               <Grading>U</Grading>
             </Histologie>
-            <TNM>
+            <TNM ID="75686">
               <Datum>2022-03-17</Datum>
               <Version>8</Version>
               <c_p_u_Praefix_T>p</c_p_u_Praefix_T>
