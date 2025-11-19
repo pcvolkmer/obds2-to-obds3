@@ -1,0 +1,120 @@
+name: CI
+
+on:
+    pull_request:
+        branches: [master]
+    push:
+        branches: [master]
+    release:
+        types: [created]
+
+permissions:
+    contents: read
+
+jobs:
+    build:
+        name: Build and Test
+        runs-on: ubuntu-24.04
+        permissions:
+            contents: read
+            # to upload release assets
+            packages: write
+        outputs:
+          hashes: ${{ steps.hash.outputs.hashes }}
+        steps:
+            - name: Harden Runner
+              uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+              with:
+                  egress-policy: audit # change to 'egress-policy: block' after couple of runs
+            - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+              with:
+                  persist-credentials: false
+
+            - name: Set up JDK
+              uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
+              with:
+                  java-version: "17"
+                  distribution: "temurin"
+                  cache: "gradle"
+
+            - uses: gradle/actions/wrapper-validation@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
+
+            - name: Setup Gradle
+              uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
+
+            - name: Build with Gradle
+              run: |
+                  ./gradlew build
+
+            - name: Run Tests
+              run: ./gradlew test
+
+            - name: Run Test Coverage
+              run: ./gradlew jacocoTestReport
+
+            - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+              with:
+                  name: package
+                  path: |
+                      app/build/libs/
+                      lib/build/libs/
+                      os-abgleich/build/libs/
+
+            - name: Publish to central
+              if: ${{ github.event_name == 'release' && github.event.action == 'created' }}
+              run: |
+                  ./gradlew publish
+                  ./gradlew publishToMavenCentralPortal
+              env:
+                  OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+                  OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+                  SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+                  SIGNING_KEY_PASSPHRASE: ${{ secrets.SIGNING_KEY_PASSPHRASE }}
+
+            - name: Generate SLSA subject for release assets
+              id: hash
+              run: |
+                  # air-gapped-installer.tgz air-gapped-prerequisites-installer.tgz
+                  sha256sum app/build/libs/*.jar lib/build/libs/*.jar os-abgleich/build/libs/*.jar > checksums.sha256
+                  echo "hashes=$(base64 -w0 < checksums.sha256)" >> "$GITHUB_OUTPUT"
+
+            - name: upload assets to release
+              if: ${{ github.event_name == 'release' && github.event.action == 'created' }}
+              uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
+              with:
+                  files: |
+                      app/build/libs/*.jar
+                      lib/build/libs/*.jar
+                      os-abgleich/build/libs/*.jar
+                      checksums.sha256
+    provenance:
+      name: Generate SLSA Provenance
+      if: ${{ github.event_name == 'release' && github.event.action == 'created' }}
+      needs:
+        - build
+      permissions:
+        actions: read
+        id-token: write
+        contents: write
+      # can't be referenced by digest. See <https://github.com/slsa-framework/slsa-github-generator#verification-of-provenance>
+      uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
+      with:
+        base64-subjects: "${{ needs.build.outputs.hashes }}"
+        upload-assets: true
+
+    lint:
+        uses: miracum/.github/.github/workflows/standard-lint.yaml@ca714dd2f958a70aa44fd62a7711321bf88b0236 # v1.16.19
+        permissions:
+            contents: read
+            pull-requests: write
+            issues: write
+            security-events: write
+            actions: read
+        with:
+            enable-validate-gradle-wrapper: true
+            codeql-languages: '["java"]'
+            java-version: "17"
+            enable-codeql: true
+            enable-verify-base-image-signature: false
+        secrets:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
