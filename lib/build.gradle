@@ -6,7 +6,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'jacoco'
-    id 'com.diffplug.spotless' version '8.0.0'
+    id 'com.diffplug.spotless' version '8.1.0'
     id 'io.gitee.pkmer.sonatype-central-publisher' version '1.1.0'
 }
 
@@ -43,21 +43,21 @@ sourceSets {
 }
 
 dependencies {
-    api platform('com.fasterxml.jackson:jackson-bom:2.18.2')
+    api platform('com.fasterxml.jackson:jackson-bom:2.20.1')
     api 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     api 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
     api 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations'
-    api 'jakarta.validation:jakarta.validation-api:3.1.0'
-    api 'commons-codec:commons-codec:1.18.0'
+    api 'jakarta.validation:jakarta.validation-api:3.1.1'
+    api 'commons-codec:commons-codec:1.20.0'
     api 'org.slf4j:slf4j-api:2.0.17'
 
     // JAXB code generation
-    xsd2java 'com.sun.xml.bind:jaxb-xjc:4.0.5'
-    xsd2java 'com.sun.xml.bind:jaxb-impl:4.0.5'
+    xsd2java 'com.sun.xml.bind:jaxb-xjc:4.0.6'
+    xsd2java 'com.sun.xml.bind:jaxb-impl:4.0.6'
 
-    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation platform('org.junit:junit-bom:5.14.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.assertj:assertj-core:3.27.3'
+    testImplementation 'org.assertj:assertj-core:3.27.6'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
