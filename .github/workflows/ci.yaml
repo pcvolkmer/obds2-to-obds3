@@ -59,7 +59,6 @@ jobs:
           path: |
             app/build/libs/
             lib/build/libs/
-            os-abgleich/build/libs/
 
       - name: Publish to central
         if: ${{ github.event_name == 'release' && github.event.action == 'created' }}
@@ -75,7 +74,7 @@ jobs:
       - name: Generate SLSA subject for release assets
         id: hash
         run: |
-          sha256sum app/build/libs/*.jar lib/build/libs/*.jar os-abgleich/build/libs/*.jar > checksums.sha256
+          sha256sum app/build/libs/*.jar lib/build/libs/*.jar > checksums.sha256
           echo "hashes=$(base64 -w0 < checksums.sha256)" >> "$GITHUB_OUTPUT"
 
       - name: upload assets to release
@@ -85,8 +84,8 @@ jobs:
           files: |
             app/build/libs/*.jar
             lib/build/libs/*.jar
-            os-abgleich/build/libs/*.jar
             checksums.sha256
+
   provenance:
     name: Generate SLSA Provenance
     if: ${{ github.event_name == 'release' && github.event.action == 'created' }}

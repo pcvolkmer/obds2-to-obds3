@@ -1,6 +1,3 @@
 rootProject.name = 'obds2-to-obds3'
 
 include('app', 'lib')
-
-// Web application Abgleich mit Onkostar
-include('os-abgleich')

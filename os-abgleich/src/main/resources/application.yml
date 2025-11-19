@@ -1,8 +1,0 @@
-spring:
-  application:
-    name: os-abgleich
-
-  datasource:
-    url: jdbc:mariadb://localhost/onkostar
-    username: root
-    password: devpass
