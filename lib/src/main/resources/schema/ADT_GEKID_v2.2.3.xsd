@@ -59,7 +59,7 @@
 													<xs:element name="Patienten_Geschlecht" minOccurs="0">
 														<xs:annotation>
 															<xs:documentation>
-															Differenzierung einer Person nach ihrem Geschlechtsmerkmal. 
+															Differenzierung einer Person nach ihrem Geschlechtsmerkmal.
 															M = Männlich
 															W = Weiblich
 															S = Sonstiges/intersexuell
@@ -126,7 +126,7 @@
 																<xs:element name="Meldedatum" type="Datum_Typ" minOccurs="0"/>
 																<xs:element name="Meldebegruendung" minOccurs="0">
 																	<xs:annotation>
-																		<xs:documentation>Widerspruch/Einwilligung des Patienten 
+																		<xs:documentation>Widerspruch/Einwilligung des Patienten
 																			I = Patientin/Patient wurde informiert und hat nicht widersprochen
 																			A = Ausnahme: Patientenunterrichtung entfallen wegen möglicher gesundheitlicher Nachteile
 																			D = Meldung von Ärzten ohne unmittelbaren Patientenkontakt
@@ -245,12 +245,12 @@
 																				<xs:annotation>
 																					<xs:documentation>
 																					Höchste erreichte Diagnosesicherheit zum Diagnosedatum (siehe BfArM, ICD-O-3.2: Ergänzende Informationen, Abschnitt 4.5. "Sicherheit der Diagnose").
-																					1 = Klinisch ohne tumorspezifische Diagnostik (nur körperliche Untersuchung) 
-																					2 = Klinisch: Klinische Diagnose vor dem Sterbedatum durchgeführt; schließt diagnostische Techniken, inklusive Röntgen, Endoskopie, weitere bildgebende Verfahren, Ultraschall, exploratorische Chirurgie (Laparatomie, etc.) und Autopsie, ohne mikroskopische Gewebediagnose, ein.  
+																					1 = Klinisch ohne tumorspezifische Diagnostik (nur körperliche Untersuchung)
+																					2 = Klinisch: Klinische Diagnose vor dem Sterbedatum durchgeführt; schließt diagnostische Techniken, inklusive Röntgen, Endoskopie, weitere bildgebende Verfahren, Ultraschall, exploratorische Chirurgie (Laparatomie, etc.) und Autopsie, ohne mikroskopische Gewebediagnose, ein.
 																					4 = Spezifische Tumormarker
 																					5 = Zytologisch: Untersuchung von Zellen aus primären Lokalisationen inklusive Flüssigkeitsaspirationen mittels Endoskopien oder Nadeln. Schließt mikroskopische Untersuchungen von peripheren Blutausstrichen und Ausstrichen von Beckenkammaspirationen ein.
 																					6 = Histologie einer Metastase.
-																					7 = Histologisch: Histologie des Primärtumors: Histologische Untersuchung von Gewebe des Primärtumors einschließlich aller Schnitttechniken und Knochenmarksbiopsien. Dies schließt Proben des Primärtumors aus Autopsien ein. Histologische Untersuchung des Gewebes aus einer Metastase, einschließlich bei Autopsie. 
+																					7 = Histologisch: Histologie des Primärtumors: Histologische Untersuchung von Gewebe des Primärtumors einschließlich aller Schnitttechniken und Knochenmarksbiopsien. Dies schließt Proben des Primärtumors aus Autopsien ein. Histologische Untersuchung des Gewebes aus einer Metastase, einschließlich bei Autopsie.
 																					9 = Unbekannt
 																					</xs:documentation>
 																				</xs:annotation>
@@ -367,11 +367,11 @@
 																						<xs:element name="OP_Intention" minOccurs="0">
 																							<xs:annotation>
 																								<xs:documentation>
-																									Gibt an, mit welchem Ziel die Operation durchgeführt wird. 
+																									Gibt an, mit welchem Ziel die Operation durchgeführt wird.
 																									K = Kurativ
 																									P = Palliativ
 																									D = Diagnostisch
-																									R = Revision/Komplikation 
+																									R = Revision/Komplikation
 																									S = Sonstiges
 																									X = Fehlende Angabe
 																								</xs:documentation>
@@ -440,12 +440,12 @@
 																									<xs:element name="OP_Komplikation" maxOccurs="unbounded">
 																										<xs:annotation>
 																											<xs:documentation>
-																											Gibt an, ob eine oder keine Komplikation aufgetreten ist, bzw. wenn eine aufgetreten ist, welche. 
+																											Gibt an, ob eine oder keine Komplikation aufgetreten ist, bzw. wenn eine aufgetreten ist, welche.
 
 																											N = Nein
 																											U = Unbekannt
 
-																											Wenn ja, dann Liste der aufgetretenen Komplikationen nach 
+																											Wenn ja, dann Liste der aufgetretenen Komplikationen nach
 																											Komplikationsschlüssel
 																											ABD  Abszeß in einem Drainagekanal
 																											ABS  Abszeß, intraabdominaler oder intrathorakaler
@@ -957,10 +957,10 @@
 																						<xs:element name="ST_Intention" minOccurs="0">
 																							<xs:annotation>
 																								<xs:documentation>
-																								Gibt an, mit welcher Intention die Strahlentherapie durchgeführt wird. 
+																								Gibt an, mit welcher Intention die Strahlentherapie durchgeführt wird.
 																								K = Kurativ
 																								P = Palliativ
-																								S = Sonstiges 
+																								S = Sonstiges
 																								X = Keine Angabe
 																								</xs:documentation>
 																							</xs:annotation>
@@ -993,7 +993,7 @@
 																						<xs:element name="ST_Stellung_OP" minOccurs="0">
 																							<xs:annotation>
 																								<xs:documentation>
-																									Gibt an, in welchem Bezug zu einer operativen Therapie die Bestrahlung steht.  
+																									Gibt an, in welchem Bezug zu einer operativen Therapie die Bestrahlung steht.
 																									O = Ohne Bezug zu einer operativen Therapie
 																									A = Adjuvant
 																									N = Neoadjuvant
@@ -1797,7 +1797,7 @@
 																												<xs:element name="ST_Seite_Zielgebiet" minOccurs="0">
 																													<xs:annotation>
 																														<xs:documentation>
-																															Gibt Seitenlokalisation des Zielgebietes an 
+																															Gibt Seitenlokalisation des Zielgebietes an
 																															L = Links
 																															R = Rechts
 																															B = Beidseits
@@ -1841,7 +1841,7 @@
 																												<xs:element name="ST_Applikationsart" minOccurs="0">
 																													<xs:annotation>
 																														<xs:documentation>
-																															Gibt an, mit welcher Technik die Strahlentherapie durchgeführt wird. 
+																															Gibt an, mit welcher Technik die Strahlentherapie durchgeführt wird.
 																															P = Perkutan (Teletherapie)
 																															K = Endokavitäre Kontakttherapie (Brachytherapie)
 																															I = Interstitielle Kontakttherapie (Brachytherapie)
@@ -1852,7 +1852,7 @@
 																															HDR = High dose rate therapy
 																															PDR = Pulsed dose rate therapy
 																															LDR = Low dose rate therapy
-																															wenn M 
+																															wenn M
 																															SIRT = Selektive Interne Radio-Therapie
 																															PRRT = Peptid-Radio-Rezeptor-Therapie
 																															S = Sonstiges
@@ -1955,7 +1955,7 @@
 																						<xs:element name="ST_Ende_Grund" minOccurs="0">
 																							<xs:annotation>
 																								<xs:documentation>
-																									Gibt den Grund an, warum die Strahlentherapie beendet wurde. 
+																									Gibt den Grund an, warum die Strahlentherapie beendet wurde.
 																									A = Abbruch wegen Nebenwirkungen
 																									E = Reguläres Ende
 																									V = Patient verweigert weitere Therapie
@@ -2026,7 +2026,7 @@
 																						<xs:element name="SYST_Intention" minOccurs="0">
 																							<xs:annotation>
 																								<xs:documentation>
-																									Gibt an, mit welcher Intention die Systemische Therapie durchgeführt wird.  
+																									Gibt an, mit welcher Intention die Systemische Therapie durchgeführt wird.
 																									K = Kurativ
 																									P = Palliativ
 																									S = Sonstiges
@@ -2062,7 +2062,7 @@
 																						<xs:element name="SYST_Stellung_OP" minOccurs="0">
 																							<xs:annotation>
 																								<xs:documentation>
-																									Gibt an, in welchem Bezug zu einer operativen Therapie die systemische Therapie steht 
+																									Gibt an, in welchem Bezug zu einer operativen Therapie die systemische Therapie steht
 																									O = Ohne Bezug zu einer operativen Therapie
 																									A = Adjuvant
 																									N = Neoadjuvant
@@ -2107,9 +2107,9 @@
 																									<xs:element name="SYST_Therapieart" maxOccurs="unbounded">
 																										<xs:annotation>
 																											<xs:documentation>
-																												Gibt an, welche Art der Therapie bzw. abwartende Strategie durchgeführt wurde  
+																												Gibt an, welche Art der Therapie bzw. abwartende Strategie durchgeführt wurde
 																												(Mehrfachangaben möglich)
-																												CH = Chemotherapie 
+																												CH = Chemotherapie
 																												HO = Hormontherapie
 																												IM = Immun- und Antikörpertherapie
 																												KM = Knochenmarktransplantation
@@ -2181,7 +2181,7 @@
 																						<xs:element name="SYST_Ende_Grund" minOccurs="0">
 																							<xs:annotation>
 																								<xs:documentation>
-																									Gibt den Grund an, warum die Systemtherapie beendet wurde. 
+																									Gibt den Grund an, warum die Systemtherapie beendet wurde.
 																									A = Abbruch wegen Nebenwirkungen
 																									E = Reguläres Ende
 																									V = Patient verweigert weitere Therapie
@@ -2267,7 +2267,7 @@
 																						<xs:element name="Gesamtbeurteilung_Tumorstatus" minOccurs="0">
 																							<xs:annotation>
 																								<xs:documentation>
-																									Gesamtbeurteilung der Erkrankung unter Berücksichtigung aller Manifestationen.  
+																									Gesamtbeurteilung der Erkrankung unter Berücksichtigung aller Manifestationen.
 																									V = Vollremission (complete remission, CR)
 																									T = Teilremission / mindestens 50% Rückgang des Tumors (partial remission, PR)
 																									K = Keine Änderung (no change, NC) = stable disease
@@ -2333,7 +2333,7 @@
 																						<xs:element name="Verlauf_Lokaler_Tumorstatus" minOccurs="0">
 																							<xs:annotation>
 																								<xs:documentation>
-																									Beurteilung der Situation im Primärtumorbereich  
+																									Beurteilung der Situation im Primärtumorbereich
 																									K = Kein Tumor nachweisbar
 																									T = Tumorreste (Residualtumor)
 																									P = Tumorreste Residualtumor Progress
@@ -2393,7 +2393,7 @@
 																						<xs:element name="Verlauf_Tumorstatus_Lymphknoten" minOccurs="0">
 																							<xs:annotation>
 																								<xs:documentation>
-																									Beurteilung der Situation im Bereich der regionären Lymphknoten  
+																									Beurteilung der Situation im Bereich der regionären Lymphknoten
 																									K = Kein Lymphknotenbefall nachweisbar
 																									R = Neu aufgetretenes Lymphknotenrezidiv
 																									T = Bekannter Lymphknotenbefall Residuen
@@ -2453,7 +2453,7 @@
 																						<xs:element name="Verlauf_Tumorstatus_Fernmetastasen" minOccurs="0">
 																							<xs:annotation>
 																								<xs:documentation>
-																									Beurteilung der Situation im Bereich der Fernmetastasen  
+																									Beurteilung der Situation im Bereich der Fernmetastasen
 																									K = Keine Fernmetastasen nachweisbar
 																									M = Verbliebene Fernmetastase(n)
 																									R = Neu aufgetretene Fernmetastase(n) bzw. Metastasenrezidiv
@@ -2528,7 +2528,7 @@
 																									<xs:element name="Tod_tumorbedingt" minOccurs="0">
 																										<xs:annotation>
 																											<xs:documentation>
-																												Krebs-Tod-Relation 
+																												Krebs-Tod-Relation
 																												J = Ja
 																												N = Nein
 																												U = Unbekannt
@@ -2573,7 +2573,7 @@
 																						<xs:element name="Tumorkonferenz_Typ" minOccurs="0">
 																							<xs:annotation>
 																								<xs:documentation>
-																									Typ der Tumorkonferenz  
+																									Typ der Tumorkonferenz
 																									praeth = prätherapeutisch (Festlegung der Gesamttherapiestrategie, z.B. neoadjuvant oder direkte Operation)
 																									postop = postoperativ (Planung der postoperativen Therapie, z.B. zur Frage adjuvante Therapie)
 																									postth = posttherapeutisch (manche Tumoren werden nicht operiert)
@@ -2946,7 +2946,7 @@
 						<xs:element name="FM_Lokalisation" minOccurs="0">
 							<xs:annotation>
 								<xs:documentation>
-									Lokalisation der Fernmetastase 
+									Lokalisation der Fernmetastase
 									PUL = Lunge
 									OSS = Knochen
 									HEP = Leber
@@ -3037,7 +3037,7 @@
 			<xs:element name="Nebenwirkung_Grad" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>
-						Gibt an, zu welchem Schweregrad von Nebenwirkungen es bei der Bestrahlung gekommen ist (sogenannte akute Nebenwirkungen bis zum 90 Tag nach Bestrahlungsbeginn) 
+						Gibt an, zu welchem Schweregrad von Nebenwirkungen es bei der Bestrahlung gekommen ist (sogenannte akute Nebenwirkungen bis zum 90 Tag nach Bestrahlungsbeginn)
 						Art der Nebenwirkung nach CTC + Schweregrad
 						K = Keine oder höchstens Grad 2
 						3 = Stark/ausgeprägt
@@ -3111,7 +3111,7 @@
 			<xs:element name="Lokale_Beurteilung_Residualstatus" type="R_Typ" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>
-						Lokale Beurteilung der Residualklassifikation nach Resektion, bezieht sich auf das, was reseziert wurde, meist Primärtumor, aber z.B. auch Lebermetastasen  
+						Lokale Beurteilung der Residualklassifikation nach Resektion, bezieht sich auf das, was reseziert wurde, meist Primärtumor, aber z.B. auch Lebermetastasen
 						R0 = Kein Residualtumor
 						R1 = Mikroskopischer Residualtumor
 						R2 = Makroskopischer Residualtumor
@@ -3276,7 +3276,7 @@
 				<xs:annotation>
 					<xs:documentation>
 					Rezeptorstatus Positiv/Negativ (gemäß immunreaktiven Scores nach Leitlinie)
-					P = Positiv, d. h. 
+					P = Positiv, d. h.
 						IHC +++ oder
 						IHC ++ und ISH (FISH, CISH o. Ä.) positiv
 					N = Negativ
@@ -3836,11 +3836,11 @@
 					Ausprägungen:
 					-1 = nicht zu beurteilen
 					0 = kein Abstand
-					n = Abstand in mm (natürliche Zahl) 
+					n = Abstand in mm (natürliche Zahl)
                     Hinweis:
-                    Es ist der endgültige kumulative Sicherheitsabstand, d. h. nach definitiver operativer Versorgung zu verwenden. 
-                    Es soll die sichere Untergrenze angegeben werden. 
-                    Ein Abstand von 0 entspricht lokal R1 oder R2, bzw. randständig. 
+                    Es ist der endgültige kumulative Sicherheitsabstand, d. h. nach definitiver operativer Versorgung zu verwenden.
+                    Es soll die sichere Untergrenze angegeben werden.
+                    Ein Abstand von 0 entspricht lokal R1 oder R2, bzw. randständig.
                     ]]>
 					</xs:documentation>
 				</xs:annotation>
@@ -3894,11 +3894,11 @@
 					<![CDATA[
 					Pathologisches Kriterium der Ulzeration erfüllt.
 					Ausprägungen:
-					J  = Ja 
-					N = Nein 
+					J  = Ja
+					N = Nein
 					U = Unbekannt
 					Hinweis:
-					Dieses Feld soll nur im TNM-Stadium pT1b angegeben werden, 
+					Dieses Feld soll nur im TNM-Stadium pT1b angegeben werden,
 					da dieses Stadium mit und ohne Ulzerationen definiert ist.
 					(Quelle: TNM-Klassifikation, 8. Auflage 2020, S. 188).
                     ]]>
@@ -3934,11 +3934,11 @@
 		<xs:annotation>
 			<xs:documentation>
 			Organspezifische Angabe der betroffenen Seite
-			L = Links  
-			R = Rechts 
-			B = Beidseitig (sollte bei bestimmten Tumoren 2 Meldungen ergeben) 
-			M = Mittellinie/Mittig 
-			U = Unbekannt   
+			L = Links
+			R = Rechts
+			B = Beidseitig (sollte bei bestimmten Tumoren 2 Meldungen ergeben)
+			M = Mittellinie/Mittig
+			U = Unbekannt
 			T = Trifft nicht zu (Seitenangabe nicht sinnvoll, einschließlich Systemerkrankungen)
 			</xs:documentation>
 		</xs:annotation>
@@ -3979,13 +3979,13 @@
 		<xs:annotation>
 			<xs:documentation>
 			ECOG oder Karnofsky
-			Begründung: Eindeutige zeitliche Einordnung, insbesondere hinsichtlich Beurteilung der eingeschlagenen Therapiestrategien 
+			Begründung: Eindeutige zeitliche Einordnung, insbesondere hinsichtlich Beurteilung der eingeschlagenen Therapiestrategien
 			0 = (90% - 100% nach Karnofsky): Normale, uneingeschränkte Aktivität wie vor der Erkrankung
-			1 = (70% - 80%  nach Karnofsky): Einschränkung bei körperlicher Anstrengung, aber gehfähig; leichte körperliche Arbeit bzw. Arbeit im Sitzen (z.B. leichte Hausarbeit oder Büroarbeit) möglich   
-			2 = (50% - 60%  nach Karnofsky): Gehfähig, Selbstversorgung möglich, aber nicht arbeitsfähig; kann mehr als 50% der Wachzeit aufstehen  
-			3 = (30% - 40%  nach Karnofsky): Nur begrenzte Selbstversorgung möglich; ist 50% oder mehr der Wachzeit an Bett oder Stuhl gebunden 
-			4 = (10% - 20%  nach Karnofsky): Völlig pflegebedürftig, keinerlei Selbstversorgung möglich; völlig an Bett oder Stuhl gebunden  
-			Alternativ bei Karnofsky Angabe in % 
+			1 = (70% - 80%  nach Karnofsky): Einschränkung bei körperlicher Anstrengung, aber gehfähig; leichte körperliche Arbeit bzw. Arbeit im Sitzen (z.B. leichte Hausarbeit oder Büroarbeit) möglich
+			2 = (50% - 60%  nach Karnofsky): Gehfähig, Selbstversorgung möglich, aber nicht arbeitsfähig; kann mehr als 50% der Wachzeit aufstehen
+			3 = (30% - 40%  nach Karnofsky): Nur begrenzte Selbstversorgung möglich; ist 50% oder mehr der Wachzeit an Bett oder Stuhl gebunden
+			4 = (10% - 20%  nach Karnofsky): Völlig pflegebedürftig, keinerlei Selbstversorgung möglich; völlig an Bett oder Stuhl gebunden
+			Alternativ bei Karnofsky Angabe in %
 			U = Unbekannt
 			</xs:documentation>
 		</xs:annotation>
@@ -4086,7 +4086,7 @@
 				<xs:annotation>
 					<xs:documentation>
 						Gibt an, ob die Klassifikation während oder nach initialer multimodaler Therapie erfolgt.
-						y = Klassifikation erfolgte während oder nach initialer multimodaler Therapie 
+						y = Klassifikation erfolgte während oder nach initialer multimodaler Therapie
 						(leer) = "native" Klassifikation
 					</xs:documentation>
 				</xs:annotation>
@@ -4104,8 +4104,8 @@
 			<xs:element name="TNM_r_Symbol" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>
-						Gibt an, ob die Klassifikation ein Rezidiv beurteilt 
-						r = Klassifikation erfolgte zur Beurteilung eines Rezidivs 
+						Gibt an, ob die Klassifikation ein Rezidiv beurteilt
+						r = Klassifikation erfolgte zur Beurteilung eines Rezidivs
 						(leer) = "native" Klassifikation vor Eintreten eines Rezidivs
 					</xs:documentation>
 				</xs:annotation>
@@ -4125,7 +4125,7 @@
 					<xs:documentation>
 						Ausbreitung der Erkrankung
 						Gibt an, ob die Klassifikation aus Anlass einer Autopsie erfolgte
-						a = Klassifikation erfolgte durch Autopsie 
+						a = Klassifikation erfolgte durch Autopsie
 						(leer) = Klassifikation erfolgte nicht durch Autopsie
 					</xs:documentation>
 				</xs:annotation>
@@ -4139,9 +4139,9 @@
 			<xs:element name="TNM_c_p_u_Praefix_T" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>
-						Gibt an, ob die Klassifikation klinisch oder pathologisch erfolgte 
-						c oder (leer) = Kategorie wurde durch klinische Angaben festgestellt, bzw. erfüllt die Kriterien für p nicht 
-						p = Feststellung der Kategorie erfolgte durch eine pathohistologische Untersuchung, mit der auch der höchste Grad der jeweiligen Kategorie hätte festgestellt werden können 
+						Gibt an, ob die Klassifikation klinisch oder pathologisch erfolgte
+						c oder (leer) = Kategorie wurde durch klinische Angaben festgestellt, bzw. erfüllt die Kriterien für p nicht
+						p = Feststellung der Kategorie erfolgte durch eine pathohistologische Untersuchung, mit der auch der höchste Grad der jeweiligen Kategorie hätte festgestellt werden können
 						u = Feststellung mit Ultraschall (Unterkategorie von c mit besonderer diagnostischer Relevanz, z.B. beim Rektumkarzinom)
 					</xs:documentation>
 				</xs:annotation>
@@ -4171,9 +4171,9 @@
 			<xs:element name="TNM_c_p_u_Praefix_N" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>
-						Gibt an, ob die Klassifikation klinisch oder pathologisch erfolgte 
-						c oder (leer) = Kategorie wurde durch klinische Angaben festgestellt, bzw. erfüllt die Kriterien für p nicht 
-						p = Feststellung der Kategorie erfolgte durch eine pathohistologische Untersuchung, mit der auch der höchste Grad der jeweiligen Kategorie hätte festgestellt werden können 
+						Gibt an, ob die Klassifikation klinisch oder pathologisch erfolgte
+						c oder (leer) = Kategorie wurde durch klinische Angaben festgestellt, bzw. erfüllt die Kriterien für p nicht
+						p = Feststellung der Kategorie erfolgte durch eine pathohistologische Untersuchung, mit der auch der höchste Grad der jeweiligen Kategorie hätte festgestellt werden können
 						u = Feststellung mit Ultraschall (Unterkategorie von c mit besonderer diagnostischer Relevanz, z.B. beim Rektumkarzinom)
 					</xs:documentation>
 				</xs:annotation>
@@ -4182,13 +4182,13 @@
 						<xs:maxLength value="1"/>
 						<xs:enumeration value="c">
 							<xs:annotation>
-								<xs:documentation>c oder (leer) = Kategorie wurde durch klinische Angaben festgestellt, bzw. erfüllt die Kriterien für p nicht 
+								<xs:documentation>c oder (leer) = Kategorie wurde durch klinische Angaben festgestellt, bzw. erfüllt die Kriterien für p nicht
 											</xs:documentation>
 							</xs:annotation>
 						</xs:enumeration>
 						<xs:enumeration value="p">
 							<xs:annotation>
-								<xs:documentation> Feststellung der Kategorie erfolgte durch eine pathohistologische Untersuchung, mit der auch der höchste Grad der jeweiligen Kategorie hätte festgestellt werden können 
+								<xs:documentation> Feststellung der Kategorie erfolgte durch eine pathohistologische Untersuchung, mit der auch der höchste Grad der jeweiligen Kategorie hätte festgestellt werden können
 											</xs:documentation>
 							</xs:annotation>
 						</xs:enumeration>
@@ -4208,9 +4208,9 @@
 			<xs:element name="TNM_c_p_u_Praefix_M" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>
-						Gibt an, ob die Klassifikation klinisch oder pathologisch erfolgte 
-						c oder (leer) = Kategorie wurde durch klinische Angaben festgestellt, bzw. erfüllt die Kriterien für p nicht 
-						p = Feststellung der Kategorie erfolgte durch eine pathohistologische Untersuchung, mit der auch der höchste Grad der jeweiligen Kategorie hätte festgestellt werden können 
+						Gibt an, ob die Klassifikation klinisch oder pathologisch erfolgte
+						c oder (leer) = Kategorie wurde durch klinische Angaben festgestellt, bzw. erfüllt die Kriterien für p nicht
+						p = Feststellung der Kategorie erfolgte durch eine pathohistologische Untersuchung, mit der auch der höchste Grad der jeweiligen Kategorie hätte festgestellt werden können
 						u = Feststellung mit Ultraschall (Unterkategorie von c mit besonderer diagnostischer Relevanz, z.B. beim Rektumkarzinom)
 					</xs:documentation>
 				</xs:annotation>
@@ -4243,9 +4243,9 @@
 			<xs:element name="TNM_L" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>
-						Lymphgefäßinvasion 
-						LX = Lymphgefäßinvasion kann nicht beurteilt werden 
-						L0 = Keine Lymphgefäßinvasion 
+						Lymphgefäßinvasion
+						LX = Lymphgefäßinvasion kann nicht beurteilt werden
+						L0 = Keine Lymphgefäßinvasion
 						L1 = Lymphgefäßinvasion
 					</xs:documentation>
 				</xs:annotation>
@@ -4273,10 +4273,10 @@
 			<xs:element name="TNM_V" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>
-						Veneninvasion 
-						VX = Veneninvasion kann nicht beurteilt werden 
-						V0 = Keine Veneninvasion 
-						V1 = Mikroskopische Veneninvasion 
+						Veneninvasion
+						VX = Veneninvasion kann nicht beurteilt werden
+						V0 = Keine Veneninvasion
+						V1 = Mikroskopische Veneninvasion
 						V2 = Makroskopische Veneninvasion
 					</xs:documentation>
 				</xs:annotation>
@@ -4309,9 +4309,9 @@
 			<xs:element name="TNM_Pn" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>
-						Perineuralinvasion 
-						PnX = Perineurale Invasion kann nicht beurteilt werden 
-						Pn0 = Keine perineurale Invasion 
+						Perineuralinvasion
+						PnX = Perineurale Invasion kann nicht beurteilt werden
+						Pn0 = Keine perineurale Invasion
 						Pn1 = Perineurale Invasion
 					</xs:documentation>
 				</xs:annotation>
@@ -4340,15 +4340,15 @@
 				<xs:annotation>
 					<xs:documentation>
 					<![CDATA[
-						Serumtumormarker 
-						SX = Werte der Serumtumormarker nicht verfügbar oder entsprechende Untersuchungen nicht vorgenommen 
-						S0 = Serumtumormarker innerhalb der normalen Grenzen 
-						S1–S3 = Wenigstens einer der Serumtumormarker erhöht 
-									LDH					HCG					AFP 
-						S1			< 1,5N		und		< 5000		und		< 1000 
-						S2			1,5-10N		oder	5000-50000  oder	1000-10000 
+						Serumtumormarker
+						SX = Werte der Serumtumormarker nicht verfügbar oder entsprechende Untersuchungen nicht vorgenommen
+						S0 = Serumtumormarker innerhalb der normalen Grenzen
+						S1–S3 = Wenigstens einer der Serumtumormarker erhöht
+									LDH					HCG					AFP
+						S1			< 1,5N		und		< 5000		und		< 1000
+						S2			1,5-10N		oder	5000-50000  oder	1000-10000
 						S3			> 10 N		oder	> 50000		oder	> 10000
-						N = obere Grenze des Normalwertes 
+						N = obere Grenze des Normalwertes
 						(Quelle: TNM-Klassifikation, 8. Auflage 2020, S.252)
 					]]>
 					</xs:documentation>
