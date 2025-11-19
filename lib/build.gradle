@@ -1,12 +1,17 @@
+// groovylint-disable NestedBlockDepth
+
 plugins {
     id 'java'
     id 'java-library'
-
     id 'maven-publish'
+    id 'signing'
+    id 'jacoco'
+    id 'com.diffplug.spotless' version '8.0.0'
+    id 'io.gitee.pkmer.sonatype-central-publisher' version '1.1.0'
 }
 
-group = 'dev.pcvolkmer.onco'
-version = '0.1.0'
+group = 'io.github.bzkf'
+version = '0.1.0' // x-release-please-version
 archivesBaseName = 'obds2-to-obds3'
 
 configurations {
@@ -17,6 +22,11 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+    // currently fails with
+    // /lib/src/generated/java/de/basisdatensatz/obds/v3/TNMTyp.java:689: error: malformed HTML
+    // due to '<' in comments.
+    // withJavadocJar()
+    withSourcesJar()
 }
 
 repositories {
@@ -24,7 +34,7 @@ repositories {
 }
 
 ext {
-    jaxbTargetDir = file("src/generated/java")
+    jaxbTargetDir = file('src/generated/java')
 }
 
 sourceSets {
@@ -45,8 +55,8 @@ dependencies {
     api 'org.slf4j:slf4j-api:2.0.17'
 
     // JAXB code generation
-    xsd2java "com.sun.xml.bind:jaxb-xjc:4.0.5"
-    xsd2java "com.sun.xml.bind:jaxb-impl:4.0.5"
+    xsd2java 'com.sun.xml.bind:jaxb-xjc:4.0.5'
+    xsd2java 'com.sun.xml.bind:jaxb-impl:4.0.5'
 
     testImplementation platform('org.junit:junit-bom:5.11.4')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -67,13 +77,13 @@ tasks.register('xsd2java') {
 
 
         ant.xjc(
-                destdir: '${jaxbTargetDir}',
+                destdir: "${jaxbTargetDir}",
                 package: 'de.basisdatensatz.obds.v2',
                 schema: 'src/main/resources/schema/ADT_GEKID_v2.2.3.xsd'
         )
 
         ant.xjc(
-                destdir: '${jaxbTargetDir}',
+                destdir: "${jaxbTargetDir}",
                 package: 'de.basisdatensatz.obds.v3',
                 schema: 'src/main/resources/schema/oBDS_v3.0.4.xsd',
                 binding: 'src/main/resources/schema/oBDS_v3.0.4.bindings.xjb'
@@ -84,29 +94,88 @@ tasks.register('xsd2java') {
 compileJava.dependsOn xsd2java
 
 publishing {
-    repositories {
-        maven {
-            name = "GitDnpmDev"
-
-            def releasesRepoUrl = uri('https://git.dnpm.dev/api/packages/public/maven')
-            def snapshotsRepoUrl = uri('https://git.dnpm.dev/api/packages/public-snapshots/maven')
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-
-            credentials(HttpHeaderCredentials) {
-                name = "Authorization"
-                value = "token ${dnpm_dev_token}"
+    publications {
+        bootJava(MavenPublication) {
+            artifactId = 'obds2-to-obds3'
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
             }
-
-            authentication {
-                header(HttpHeaderAuthentication)
+            pom {
+                name = 'oBDS v2 to oBDS v3'
+                description = 'Library to map oBDS v2 into oBDS v3 messages'
+                url = 'https://github.com/bzkf/obds2-to-obds3'
+                licenses {
+                    license {
+                        name = 'MIT'
+                        url = 'https://opensource.org/license/mit'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'BZKF'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/bzkf/obds2-to-obds3.git'
+                    developerConnection = 'scm:git:ssh://github.com:bzkf/obds2-to-obds3.git'
+                    url = 'https://github.com/bzkf/obds2-to-obds3'
+                }
             }
         }
     }
-
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifactId = archivesBaseName
+    repositories {
+        maven {
+            name = 'Local'
+            url = layout.buildDirectory.dir('repos/bundles')
         }
+    }
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
+signing {
+    def signingKey = System.getenv('SIGNING_KEY')
+    def signingPassword = System.getenv('SIGNING_KEY_PASSPHRASE')
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign publishing.publications.bootJava
+}
+
+pkmerBoot {
+    sonatypeMavenCentral {
+        // the same with publishing.repositories.maven.url in the configuration.
+        stagingRepository = layout.buildDirectory.dir('repos/bundles')
+        /**
+         * get username and password from
+         * <a href='https://central.sonatype.com/account'> central sonatype account</a>
+         */
+        username = System.getenv('OSSRH_USERNAME')
+        password = System.getenv('OSSRH_PASSWORD')
+    }
+}
+
+// via <https://stackoverflow.com/questions/24936781/gradle-plugin-project-version-number>
+task printVersion {
+    doLast {
+        println project.version
+    }
+}
+
+spotless {
+    java {
+        target('**/*.java')
+        targetExclude('src/generated/java/**/*.*')
+        importOrder()
+        removeUnusedImports()
+        googleJavaFormat()
     }
 }

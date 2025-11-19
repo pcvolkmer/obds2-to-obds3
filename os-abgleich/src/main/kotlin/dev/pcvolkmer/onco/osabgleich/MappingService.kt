@@ -3,7 +3,7 @@ package dev.pcvolkmer.onco.osabgleich
 import de.basisdatensatz.obds.v2.ADTGEKID
 import de.basisdatensatz.obds.v2.ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.Diagnose
 import de.basisdatensatz.obds.v2.SeitenlokalisationTyp
-import dev.pcvolkmer.onko.obds2to3.ObdsMapper
+import io.github.bzkf.obds2toobds3.ObdsMapper
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
 import java.time.Instant

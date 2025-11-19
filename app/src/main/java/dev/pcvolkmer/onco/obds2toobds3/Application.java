@@ -1,11 +1,11 @@
-package dev.pcvolkmer.onco.obds2toobds3;
+package io.github.bzkf.obds2toobds3;
 
 import org.apache.commons.cli.*;
 import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.io.IOUtils;
 
 import de.basisdatensatz.obds.v2.ADTGEKID;
-import dev.pcvolkmer.onko.obds2to3.ObdsMapper;
+import io.github.bzkf.obds2toobds3.ObdsMapper;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
