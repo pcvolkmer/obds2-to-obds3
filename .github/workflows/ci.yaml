@@ -101,7 +101,7 @@ jobs:
       upload-assets: true
 
   lint:
-    uses: miracum/.github/.github/workflows/standard-lint.yaml@254a4584e8b941410909f6c911055891ae053563 # v1.18.2
+    uses: miracum/.github/.github/workflows/standard-lint.yaml@003a712f7458695cf6d6b32216d3c07e84f77d53 # v1.18.3
     permissions:
       contents: read
       pull-requests: write
