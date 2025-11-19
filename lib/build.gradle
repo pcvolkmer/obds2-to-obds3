@@ -20,12 +20,9 @@ configurations {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(25)
     }
-    // currently fails with
-    // /lib/src/generated/java/de/basisdatensatz/obds/v3/TNMTyp.java:689: error: malformed HTML
-    // due to '<' in comments.
-    // withJavadocJar()
+    withJavadocJar()
     withSourcesJar()
 }
 
@@ -61,6 +58,7 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.11.4')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.assertj:assertj-core:3.27.3'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {
@@ -95,7 +93,7 @@ compileJava.dependsOn xsd2java
 
 publishing {
     publications {
-        bootJava(MavenPublication) {
+        mavenJava(MavenPublication) {
             artifactId = 'obds2-to-obds3'
             from components.java
             versionMapping {
@@ -113,7 +111,7 @@ publishing {
                 licenses {
                     license {
                         name = 'MIT'
-                        url = 'https://opensource.org/license/mit'
+                        url = 'https://opensource.org/licenses/MIT'
                     }
                 }
                 developers {
@@ -147,7 +145,7 @@ signing {
     def signingKey = System.getenv('SIGNING_KEY')
     def signingPassword = System.getenv('SIGNING_KEY_PASSPHRASE')
     useInMemoryPgpKeys(signingKey, signingPassword)
-    sign publishing.publications.bootJava
+    sign publishing.publications.mavenJava
 }
 
 pkmerBoot {

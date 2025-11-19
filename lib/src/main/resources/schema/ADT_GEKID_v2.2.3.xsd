@@ -3267,7 +3267,7 @@
 						Rezeptorstatus Positiv/Negativ (gemäß: Immunreaktiver Score (IRS) Remmele W et al. 1987).
 						P = Positiv (IRS >= 1)
 						N = Negativ
-						U = Unbekannt</xs:documentation>
+						U = Unbekannt
 					]]>
 					</xs:documentation>
 				</xs:annotation>
@@ -4345,9 +4345,9 @@
 						S0 = Serumtumormarker innerhalb der normalen Grenzen
 						S1–S3 = Wenigstens einer der Serumtumormarker erhöht
 									LDH					HCG					AFP
-						S1			< 1,5N		und		< 5000		und		< 1000
+						S1			&lt; 1,5N		und		&lt; 5000		und		&lt; 1000
 						S2			1,5-10N		oder	5000-50000  oder	1000-10000
-						S3			> 10 N		oder	> 50000		oder	> 10000
+						S3			&gt; 10 N		oder	&gt; 50000		oder	&gt; 10000
 						N = obere Grenze des Normalwertes
 						(Quelle: TNM-Klassifikation, 8. Auflage 2020, S.252)
 					]]>

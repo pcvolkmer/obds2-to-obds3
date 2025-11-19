@@ -2200,6 +2200,7 @@ Dafür ist statt einer Ausprägung das Freitextfeld Sonstige_Auspraegung vorgese
 			<xs:element name="S" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>
+					<![CDATA[
 						Serumtumormarker
 						SX = Werte der Serumtumormarker nicht verfügbar oder entsprechende Untersuchungen nicht vorgenommen
 						S0 = Serumtumormarker innerhalb der normalen Grenzen
@@ -2210,6 +2211,7 @@ Dafür ist statt einer Ausprägung das Freitextfeld Sonstige_Auspraegung vorgese
 						S3			&gt; 10 N		oder	&gt; 50000		oder	&gt; 10000
 						N = obere Grenze des Normalwertes
 						(Quelle: TNM-Klassifikation, 8. Auflage 2020, S.252)
+					]]>
 					</xs:documentation>
 				</xs:annotation>
 				<xs:simpleType>
