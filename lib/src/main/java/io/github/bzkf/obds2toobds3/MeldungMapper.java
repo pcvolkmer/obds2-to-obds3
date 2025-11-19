@@ -750,7 +750,12 @@ class MeldungMapper {
     mappedMeldung.setMelderID(source.getMelderID());
     mappedMeldung.setAnmerkung(source.getAnmerkung());
 
-    mappedMeldung.setMeldebegruendung(MeldebegruendungTyp.fromValue(source.getMeldebegruendung()));
+    if (source.getMeldebegruendung() != null) {
+      mappedMeldung.setMeldebegruendung(
+          MeldebegruendungTyp.fromValue(source.getMeldebegruendung()));
+    } else {
+      LOG.warn("Meldebegruendung is unset but required in v3. Ignoring.");
+    }
 
     // Nicht in oBDS v2: Eigene Leistung J/N
     // For now: Wenn Melder-ID keine "9999" enthält => "J" -> Onkostar-Konvention
