@@ -60,9 +60,6 @@ public class SchemaValidator {
       // Prevent XXE: Disable DTDs and external entities
       factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
       factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-      factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-      factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-      factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
       var schemaFile =
           new StreamSource(
               SchemaValidator.class
