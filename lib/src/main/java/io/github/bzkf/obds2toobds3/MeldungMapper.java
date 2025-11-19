@@ -553,12 +553,14 @@ class MeldungMapper {
     mappedDiagnose.setPrimaertumorDiagnosetext(diagnose.getPrimaertumorDiagnosetext());
 
     // ICDO Topographie
-    var icdo = new TopographieICDOTyp();
-    icdo.setCode(diagnose.getPrimaertumorTopographieICDO());
-    icdo.setVersion(diagnose.getPrimaertumorTopographieICDOVersion());
-    mappedDiagnose.setPrimaertumorTopographieFreitext(
-        diagnose.getPrimaertumorTopographieICDOFreitext());
-    mappedDiagnose.setPrimaertumorTopographieICDO(icdo);
+    if (diagnose.getPrimaertumorTopographieICDO() != null) {
+      var icdo = new TopographieICDOTyp();
+      icdo.setCode(diagnose.getPrimaertumorTopographieICDO());
+      icdo.setVersion(diagnose.getPrimaertumorTopographieICDOVersion());
+      mappedDiagnose.setPrimaertumorTopographieFreitext(
+          diagnose.getPrimaertumorTopographieICDOFreitext());
+      mappedDiagnose.setPrimaertumorTopographieICDO(icdo);
+    }
 
     // oBDS v3 kennt auch 7.1, 7.2 ... als Untertyp von 7 für Diagnosesicherung
     if (diagnose.getDiagnosesicherung() != null && !diagnose.getDiagnosesicherung().isBlank()) {
