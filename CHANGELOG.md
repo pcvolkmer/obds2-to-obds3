@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.5...v0.1.6) (2025-11-19)
+
+
+### Bug Fixes
+
+* handle unset Meldebegruendung ([#85](https://github.com/bzkf/obds2-to-obds3/issues/85)) ([1be6585](https://github.com/bzkf/obds2-to-obds3/commit/1be658597d0ad14d41d7dae71b9d9b7a85c82348))
+
 ## [0.1.5](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.4...v0.1.5) (2025-11-19)
 
 
