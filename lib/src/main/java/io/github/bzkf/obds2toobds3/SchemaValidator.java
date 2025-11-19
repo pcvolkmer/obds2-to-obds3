@@ -57,6 +57,12 @@ public class SchemaValidator {
   public static boolean isValid(String xmlString, SchemaVersion schemaVersion) {
     try {
       var factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+      // Prevent XXE: Disable DTDs and external entities
+      factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+      factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+      factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
       var schemaFile =
           new StreamSource(
               SchemaValidator.class

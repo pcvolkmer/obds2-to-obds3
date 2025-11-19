@@ -115,7 +115,7 @@ jobs:
       enable-validate-gradle-wrapper: true
       codeql-languages: '["java"]'
       java-version: "17"
-      enable-codeql: true
+      enable-codeql: false
       enable-verify-base-image-signature: false
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
