@@ -1,7 +1,7 @@
 /*
  * This file is part of obds2-to-obds3
  *
- * Copyright (c) 2024 the original author or authors.
+ * Copyright (c) 2025 the original author or authors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-package dev.pcvolkmer.onko.obds2to3;
+package io.github.bzkf.obds2toobds3;
 
-public class SchemaValidatorException extends RuntimeException {
-  public SchemaValidatorException(String message) {
+public class UnmappableItemException extends RuntimeException {
+  public UnmappableItemException(String message) {
     super(message);
   }
 
-  public SchemaValidatorException(String message, Throwable cause) {
+  public UnmappableItemException(String message, Throwable cause) {
     super(message, cause);
   }
 }

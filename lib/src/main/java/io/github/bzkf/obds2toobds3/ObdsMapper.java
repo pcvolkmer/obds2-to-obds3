@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package dev.pcvolkmer.onko.obds2to3;
+package io.github.bzkf.obds2toobds3;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -1,4 +1,4 @@
-package dev.pcvolkmer.onko.obds2to3;
+package io.github.bzkf.obds2toobds3;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

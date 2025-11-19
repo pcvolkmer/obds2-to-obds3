@@ -1,4 +1,4 @@
-package dev.pcvolkmer.onko.obds2to3;
+package io.github.bzkf.obds2toobds3;
 
 import de.basisdatensatz.obds.v2.ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeOP.OP;
 import de.basisdatensatz.obds.v3.OPTyp;

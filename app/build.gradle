@@ -2,8 +2,8 @@ plugins {
     id 'java'
 }
 
-group = 'dev.pcvolkmer.onco'
-version = '0.1.0'
+group = 'io.github.bzkf'
+version = '0.1.0' // x-release-please-version
 archivesBaseName = 'obds2-to-obds3-app'
 
 java {
@@ -29,7 +29,7 @@ test {
 jar {
     manifest {
         attributes(
-            'Main-Class': 'dev.pcvolkmer.onco.obds2toobds3.Application'
+            'Main-Class': 'io.github.bzkf.obds2toobds3.Application'
         )
     }
     from {
