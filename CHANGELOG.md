@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.3...v0.1.4) (2025-11-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.junit:junit-bom to v6 ([#79](https://github.com/bzkf/obds2-to-obds3/issues/79)) ([6e8af50](https://github.com/bzkf/obds2-to-obds3/commit/6e8af50e7a70d7c6e2de60e122bcfcd7eb7488a1))
+
 ## [0.1.3](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.2...v0.1.3) (2025-11-19)
 
 
