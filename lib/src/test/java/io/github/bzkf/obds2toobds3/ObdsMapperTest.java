@@ -172,7 +172,8 @@ class ObdsMapperTest {
     @ParameterizedTest
     @CsvSource({
       "testdaten/obdsv2_invalid-schema.xml,testdaten/obdsv3_invalid-schema.xml",
-      "testdaten/obdsv2_invalid-kv.xml,testdaten/obdsv3_invalid-kv.xml"
+      "testdaten/obdsv2_invalid-kv.xml,testdaten/obdsv3_invalid-kv.xml",
+      "testdaten/obdsv2_st_strahlenart.xml,testdaten/obdsv3_st_strahlenart.xml",
     })
     void shouldMapObdsFileWithoutSchemaValidation(String obdsV2File, String obdsV3File)
         throws Exception {

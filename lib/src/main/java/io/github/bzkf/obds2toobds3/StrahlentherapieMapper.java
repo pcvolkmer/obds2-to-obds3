@@ -125,9 +125,6 @@ public class StrahlentherapieMapper {
   private static Applikationsart mapApplikationsart(Bestrahlung bestrahlung) {
     var result = new Applikationsart();
 
-    var zielgebiet = new ZielgebietTyp();
-    zielgebiet.setCodeVersion2014(bestrahlung.getSTZielgebiet());
-
     SeiteZielgebietTyp seiteZielgebiet = null;
 
     if (bestrahlung.getSTSeiteZielgebiet() != null) {
@@ -154,9 +151,17 @@ public class StrahlentherapieMapper {
       applikationsart = "S";
     }
 
+    var zielgebiet = new ZielgebietTyp();
+    zielgebiet.setCodeVersion2014(bestrahlung.getSTZielgebiet());
+
     if (applikationsart.startsWith("P")) {
       var perkutan = new Applikationsart.Perkutan();
-      perkutan.setZielgebiet(zielgebiet);
+
+      if (bestrahlung.getSTZielgebiet() != null) {
+        perkutan.setZielgebiet(zielgebiet);
+      } else {
+        LOG.warn("Zielgebiet is unset in v2 but required in v3 for Perkutan.");
+      }
 
       if (seiteZielgebiet != null) {
         perkutan.setSeiteZielgebiet(seiteZielgebiet);
@@ -181,7 +186,7 @@ public class StrahlentherapieMapper {
           result.setPerkutan(perkutan);
           break;
         default:
-          LOG.warn("Unknown radiation type: {}", applikationsart);
+          LOG.warn("Unknown Perkutan radiation type: {}", applikationsart);
       }
 
       result.setPerkutan(perkutan);
@@ -192,6 +197,12 @@ public class StrahlentherapieMapper {
       var kontakt = new Applikationsart.Kontakt();
       kontakt.setZielgebiet(zielgebiet);
 
+      if (bestrahlung.getSTZielgebiet() != null) {
+        kontakt.setZielgebiet(zielgebiet);
+      } else {
+        LOG.warn("Zielgebiet is unset in v2 but required in v3.");
+      }
+
       if (seiteZielgebiet != null) {
         kontakt.setSeiteZielgebiet(seiteZielgebiet);
       } else {
@@ -202,27 +213,28 @@ public class StrahlentherapieMapper {
 
       kontakt.setEinzeldosis(einzeldosis);
       kontakt.setGesamtdosis(gesamtdosis);
+      kontakt.setInterstitiellEndokavitaer("K");
       switch (applikationsart) {
         case "K":
           result.setKontakt(kontakt);
+          LOG.warn(
+              "Missing required information on Rate_Type in v3 for applikationsart {}",
+              applikationsart);
           break;
         case "KHDR":
-          kontakt.setInterstitiellEndokavitaer("K");
           kontakt.setRateType("HDR");
           result.setKontakt(kontakt);
           break;
         case "KPDR":
-          kontakt.setInterstitiellEndokavitaer("K");
           kontakt.setRateType("PDR");
           result.setKontakt(kontakt);
           break;
         case "KLDR":
-          kontakt.setInterstitiellEndokavitaer("K");
           kontakt.setRateType("LDR");
           result.setKontakt(kontakt);
           break;
         default:
-          LOG.warn("Unknown radiation type: {}", applikationsart);
+          LOG.warn("Unknown Kontakt radiation type: {}", applikationsart);
       }
 
       result.setKontakt(kontakt);
@@ -231,7 +243,12 @@ public class StrahlentherapieMapper {
 
     if (applikationsart.startsWith("I")) {
       var kontakt = new Applikationsart.Kontakt();
-      kontakt.setZielgebiet(zielgebiet);
+
+      if (bestrahlung.getSTZielgebiet() != null) {
+        kontakt.setZielgebiet(zielgebiet);
+      } else {
+        LOG.warn("Zielgebiet is unset in v2 but required in v3.");
+      }
 
       if (seiteZielgebiet != null) {
         kontakt.setSeiteZielgebiet(seiteZielgebiet);
@@ -243,27 +260,28 @@ public class StrahlentherapieMapper {
 
       kontakt.setEinzeldosis(einzeldosis);
       kontakt.setGesamtdosis(gesamtdosis);
+      kontakt.setInterstitiellEndokavitaer("I");
       switch (applikationsart) {
         case "I":
           result.setKontakt(kontakt);
+          LOG.warn(
+              "Missing required information on Rate_Type in v3 for applikationsart {}",
+              applikationsart);
           break;
         case "IHDR":
-          kontakt.setInterstitiellEndokavitaer("I");
           kontakt.setRateType("HDR");
           result.setKontakt(kontakt);
           break;
         case "IPDR":
-          kontakt.setInterstitiellEndokavitaer("I");
           kontakt.setRateType("PDR");
           result.setKontakt(kontakt);
           break;
         case "ILDR":
-          kontakt.setInterstitiellEndokavitaer("I");
           kontakt.setRateType("LDR");
           result.setKontakt(kontakt);
           break;
         default:
-          LOG.warn("Unknown radiation type: {}", applikationsart);
+          LOG.warn("Unknown Interstitiell radiation type: {}", applikationsart);
       }
 
       result.setKontakt(kontakt);
@@ -272,15 +290,19 @@ public class StrahlentherapieMapper {
 
     if (applikationsart.startsWith("M")) {
       var metabolisch = new Applikationsart.Metabolisch();
-      metabolisch.setZielgebiet(zielgebiet);
 
-      // For 'M' and 'S' it's fine if Seite_Zielgebiet is unset
+      // For 'M' and 'S' it's fine if Seite_Zielgebiet and Zielgebiet are unset
+      if (bestrahlung.getSTZielgebiet() != null) {
+        metabolisch.setZielgebiet(zielgebiet);
+      }
+
       if (seiteZielgebiet != null) {
         metabolisch.setSeiteZielgebiet(seiteZielgebiet);
       }
 
       switch (applikationsart) {
         case "M":
+          metabolisch.setMetabolischTyp("M");
           result.setMetabolisch(metabolisch);
           break;
         case "MSIRT":
@@ -292,7 +314,7 @@ public class StrahlentherapieMapper {
           result.setMetabolisch(metabolisch);
           break;
         default:
-          LOG.warn("Unknown radiation type: {}", applikationsart);
+          LOG.warn("Unknown Metabolisch radiation type: {}", applikationsart);
       }
 
       result.setMetabolisch(metabolisch);
@@ -302,6 +324,10 @@ public class StrahlentherapieMapper {
     if (applikationsart.equals("S")) {
       var sonstige = new Applikationsart.Sonstige();
       sonstige.setZielgebiet(zielgebiet);
+
+      if (bestrahlung.getSTZielgebiet() != null) {
+        sonstige.setZielgebiet(zielgebiet);
+      }
 
       if (seiteZielgebiet != null) {
         sonstige.setSeiteZielgebiet(seiteZielgebiet);
