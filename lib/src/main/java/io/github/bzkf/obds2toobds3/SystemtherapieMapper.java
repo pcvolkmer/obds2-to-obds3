@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 public class SystemtherapieMapper {
   private static final Logger LOG = LoggerFactory.getLogger(SystemtherapieMapper.class);
@@ -24,6 +25,7 @@ public class SystemtherapieMapper {
       String meldeanlass) {
     var result = new ArrayList<SYSTTyp>();
     for (var source : mengeSyst.getSYST()) {
+      MDC.put("SYSTID", source.getSYSTID());
       var systTyp = new SYSTTyp();
 
       systTyp.setSYSTID(source.getSYSTID());
@@ -63,6 +65,7 @@ public class SystemtherapieMapper {
       }
 
       result.add(systTyp);
+      MDC.remove("SYSTID");
     }
 
     return result;
