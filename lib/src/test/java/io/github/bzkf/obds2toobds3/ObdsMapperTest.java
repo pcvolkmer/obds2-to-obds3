@@ -63,7 +63,7 @@ class ObdsMapperTest {
       "testdaten/obdsv2_op_1.xml,testdaten/obdsv3_op_1.xml",
       "testdaten/obdsv2_st_1.xml,testdaten/obdsv3_st_1.xml",
       "testdaten/obdsv2_syst_1.xml,testdaten/obdsv3_syst_1.xml",
-      "testdaten/obdsv2_verlauf_histologie.xml,testdaten/obdsv3_verlauf_histologie.xml"
+      "testdaten/obdsv2_verlauf_histologie.xml,testdaten/obdsv3_verlauf_histologie.xml",
     })
     void shouldMapObdsFile(String obdsV2File, String obdsV3File) throws Exception {
       var obdsV2String =
@@ -179,6 +179,7 @@ class ObdsMapperTest {
       "testdaten/obdsv2_invalid-kv.xml,testdaten/obdsv3_invalid-kv.xml",
       "testdaten/obdsv2_st_strahlenart.xml,testdaten/obdsv3_st_strahlenart.xml",
       "testdaten/obdsv2_tod.xml,testdaten/obdsv3_tod.xml",
+      "testdaten/obdsv2_missing_meldungen.xml,testdaten/obdsv3_missing_meldungen.xml",
     })
     void shouldMapObdsFileWithoutSchemaValidation(String obdsV2File, String obdsV3File)
         throws Exception {

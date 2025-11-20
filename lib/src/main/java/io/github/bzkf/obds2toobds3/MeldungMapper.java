@@ -152,7 +152,16 @@ class MeldungMapper {
           }
         });
 
-    // Nicht direkt Mappbar: Meldeanlass -> Untertypen
+    if (result.isEmpty()) {
+      LOG.warn("Couldn't map any Meldung for source. Adding empty Meldung with Tumorzuordnung.");
+      var meldung = getMeldungsRumpf(source);
+      meldung.setMeldungID(source.getMeldungID());
+      meldung.setMelderID(source.getMelderID());
+      getMappedTumorzuordung(source).ifPresent(meldung::setTumorzuordnung);
+      result.add(meldung);
+    }
+
+    MDC.remove("meldungId");
 
     return result.stream()
         .filter(

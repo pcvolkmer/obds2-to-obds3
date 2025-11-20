@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 public class StrahlentherapieMapper {
   private static final Logger LOG = LoggerFactory.getLogger(StrahlentherapieMapper.class);
@@ -26,6 +27,7 @@ public class StrahlentherapieMapper {
       String meldeanlass) {
     var result = new ArrayList<STTyp>();
     for (var source : mengeST.getST()) {
+      MDC.put("STID", source.getSTID());
       var stTyp = new STTyp();
       stTyp.setSTID(source.getSTID());
 
@@ -67,6 +69,7 @@ public class StrahlentherapieMapper {
       }
 
       result.add(stTyp);
+      MDC.remove("STID");
     }
 
     return result;

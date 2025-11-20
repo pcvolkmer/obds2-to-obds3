@@ -147,7 +147,7 @@ class PatientMapper {
         if (null == stammdaten.getKrankenversichertenNr()
             || !stammdaten.getKrankenversichertenNr().matches("[A-Z]\\d{9}")
             || !stammdaten.getKrankenkassenNr().matches("10\\d{7}")) {
-          LOG.warn(
+          LOG.debug(
               "KrankenversichertenNr or KrankenkassenNr doesn't match the expected format. Defaulting to GKV element.");
         }
 

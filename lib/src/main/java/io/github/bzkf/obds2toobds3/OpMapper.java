@@ -9,6 +9,7 @@ import de.basisdatensatz.obds.v3.RTyp;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 public class OpMapper {
   private static final Logger LOG = LoggerFactory.getLogger(OpMapper.class);
@@ -22,6 +23,7 @@ public class OpMapper {
   }
 
   private static OPTyp mapToOPType(OP source) {
+    MDC.put("OPID", source.getOPID());
     var opTyp = new OPTyp();
     opTyp.setOPID(source.getOPID());
     opTyp.setIntention(source.getOPIntention());
@@ -58,9 +60,7 @@ public class OpMapper {
         residualstatus.setGesamtbeurteilungResidualstatus(
             RTyp.fromValue(gesamtbeurteilung.value()));
       } else {
-        LOG.debug(
-            "OP {} has no GesamtbeurteilungResidualstatus set in v2 residualstatus",
-            source.getOPID());
+        LOG.debug("OP has no GesamtbeurteilungResidualstatus set in v2 residualstatus");
       }
 
       var lokaleBeurteilung = source.getResidualstatus().getLokaleBeurteilungResidualstatus();
@@ -68,9 +68,7 @@ public class OpMapper {
         residualstatus.setLokaleBeurteilungResidualstatus(
             RTyp.fromValue(lokaleBeurteilung.value()));
       } else {
-        LOG.debug(
-            "OP {} has no LokaleBeurteilungResidualstatus set in v2 residualstatus",
-            source.getOPID());
+        LOG.debug("OP has no LokaleBeurteilungResidualstatus set in v2 residualstatus");
       }
 
       opTyp.setResidualstatus(residualstatus);
@@ -79,6 +77,8 @@ public class OpMapper {
     if (source.getModulProstata() != null) {
       opTyp.setModulProstata(ModulMapper.map(source.getModulProstata()));
     }
+
+    MDC.remove("OPID");
 
     return opTyp;
   }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ADT_GEKID xmlns="http://www.gekid.de/namespace" Schema_Version="2.2.1">
+    <Absender Absender_ID="UO" Software_ID="ONKOSTAR" Installations_ID="1">
+        <Absender_Bezeichnung>UO</Absender_Bezeichnung>
+        <Absender_Ansprechpartner />
+        <Absender_Anschrift>UO</Absender_Anschrift>
+    </Absender>
+    <Menge_Patient>
+        <Patient>
+            <Patienten_Stammdaten Patient_ID="1">
+                <KrankenversichertenNr>N011101111</KrankenversichertenNr>
+                <KrankenkassenNr>101111111</KrankenkassenNr>
+                <Patienten_Nachname>A</Patienten_Nachname>
+                <Patienten_Vornamen>B</Patienten_Vornamen>
+                <Patienten_Geburtsname>C</Patienten_Geburtsname>
+                <Patienten_Geschlecht>W</Patienten_Geschlecht>
+                <Patienten_Geburtsdatum>01.01.1900</Patienten_Geburtsdatum>
+                <Menge_Adresse>
+                    <Adresse>
+                        <Patienten_Strasse>A 26</Patienten_Strasse>
+                        <Patienten_Land>DE</Patienten_Land>
+                        <Patienten_PLZ>11111</Patienten_PLZ>
+                        <Patienten_Ort>Test</Patienten_Ort>
+                    </Adresse>
+                </Menge_Adresse>
+            </Patienten_Stammdaten>
+            <Menge_Meldung>
+                <Meldung Meldung_ID="A1" Melder_ID="A">
+                    <Meldedatum>01.01.2000</Meldedatum>
+                    <Meldebegruendung>I</Meldebegruendung>
+                    <Meldeanlass>behandlungsbeginn</Meldeanlass>
+                    <Tumorzuordnung Tumor_ID="1">
+                        <Primaertumor_ICD_Code>C50.8</Primaertumor_ICD_Code>
+                        <Primaertumor_ICD_Version>10 2000 GM</Primaertumor_ICD_Version>
+                        <Diagnosedatum>01.01.2000</Diagnosedatum>
+                        <Seitenlokalisation>R</Seitenlokalisation>
+                    </Tumorzuordnung>
+                </Meldung>
+            </Menge_Meldung>
+        </Patient>
+    </Menge_Patient>
+    <Menge_Melder>
+        <Melder Melder_ID="A">
+            <Meldende_Stelle>A</Meldende_Stelle>
+        </Melder>
+    </Menge_Melder>
+</ADT_GEKID>
