@@ -22,10 +22,28 @@ class SystemtherapieMapperTest {
     "CH;ZS,CZ",
     "CH;IM;ZS,CIZ",
     "IM;ZS,IZ",
-    // Not direct mappings
     "KM,SZ",
     "CH;IM;SO,CI",
-    "CH;SO,CH"
+    "CH;SO,CH",
+    "CH;HO,CH",
+    "CH;HO;IM,CI",
+    "CH;HO;IM;SO,CI",
+    "CH;HO;IM;SO;ZS,CIZ",
+    "CH;HO;IM;ZS,CIZ",
+    "CH;HO;SO,CH",
+    "CH;HO;SO;ZS,CZ",
+    "CH;HO;ZS,CZ",
+    "CH;IM;SO;ZS,CIZ",
+    "CH;SO;ZS,CZ",
+    "HO;IM,IM",
+    "HO;IM;ZS,IZ",
+    "HO;SO,HO",
+    "HO;SO;ZS,HO",
+    "HO;ZS,HO",
+    "IM;SO,IM",
+    "IM;SO;ZS,IZ",
+    "SO;ZS,ZS",
+    "ZS;SO;IM;CH,CIZ",
   })
   void shouldMapTherapieart(String in, String out) {
     var menge = new ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeSYST();

@@ -10,7 +10,6 @@ import de.basisdatensatz.obds.v3.SYSTTyp.Therapieart;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,21 +81,36 @@ public class SystemtherapieMapper {
       return Therapieart.fromValue(code);
     }
 
-    var sortedCodes = new ArrayList<String>(therapieartV2);
-    Collections.sort(sortedCodes);
-    var code = String.join("", sortedCodes);
-
-    var extraMappings =
-        Map.of(
-            "CHIMSO", Therapieart.CI,
-            "CHSO", Therapieart.CH);
-
-    if (extraMappings.containsKey(code)) {
+    var distinctCodes = new ArrayList<>(therapieartV2.stream().distinct().toList());
+    if (distinctCodes.size() < therapieartV2.size()) {
       LOG.warn(
-          "Therapieart '{}' not directly mappable. Falling back to '{}'",
-          code,
-          extraMappings.get(code));
-      return extraMappings.get(code);
+          "Duplicate Therapieart codes found: {}. Using distinct codes: {}",
+          therapieartV2,
+          distinctCodes);
+    }
+
+    Collections.sort(distinctCodes);
+    var code = String.join("", distinctCodes);
+
+    // gibt es eine eine Kombination mit SO-Sonstige, so fällt das Sonstige einfach raus
+    // und es wird die übrig gebliebene Therapieart, bzw. Therapieartkombination gemeldet.
+    if (distinctCodes.contains("SO")) {
+      distinctCodes.remove("SO");
+      return mapTherapieart(distinctCodes);
+    }
+
+    // Ausnahme: wenn nur zwischen HO und ZS entschieden werden muss,
+    // dann „gewinnt“ HO  - ein bisschen unlogisch, aber auf irgendwas
+    //  musste man sich wohl einigen und so macht es Onkostar.
+    if (code.equalsIgnoreCase("HOZS")) {
+      distinctCodes.remove("ZS");
+      return mapTherapieart(distinctCodes);
+    }
+
+    // Gleiches gilt für die HO-Hormontherapie -> diese fällt innerhalb einer Kombi raus
+    if (distinctCodes.contains("HO")) {
+      distinctCodes.remove("HO");
+      return mapTherapieart(distinctCodes);
     }
 
     return switch (code) {
