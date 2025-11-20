@@ -46,7 +46,7 @@ class AbsenderMapper {
 
     // Fixed Values
     absender.setSoftwareID("obds2-to-obds3");
-    absender.setSoftwareVersion("0.1.0");
+    absender.setSoftwareVersion("0.1.9"); // x-release-please-version
 
     return absender;
   }

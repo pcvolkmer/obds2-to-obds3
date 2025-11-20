@@ -18,6 +18,10 @@
         {
           "type": "generic",
           "path": "app/build.gradle"
+        },
+        {
+          "type": "generic",
+          "path": "lib/src/main/java/io/github/bzkf/obds2toobds3/AbsenderMapper.java"
         }
       ]
     }
