@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.7](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.6...v0.1.7) (2025-11-20)
+
+
+### Bug Fixes
+
+* complete syst therapieart mapping ([#87](https://github.com/bzkf/obds2-to-obds3/issues/87)) ([c85b709](https://github.com/bzkf/obds2-to-obds3/commit/c85b70912721f423a03bed502c0fffbb5ffadaa6))
+
 ## [0.1.6](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.5...v0.1.6) (2025-11-19)
 
 
