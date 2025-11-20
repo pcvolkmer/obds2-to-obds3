@@ -340,7 +340,19 @@ class MeldungMapper {
     meldung.setMeldungID(String.format("%s__D", source.getMeldungID()));
 
     var mengeVerlauf = source.getMengeVerlauf();
+    // it's also possible for the Verlauf to be empty but the meldeanlass to be
+    // "tod"
     if (null == mengeVerlauf || mengeVerlauf.getVerlauf().isEmpty()) {
+      if (source.getMeldeanlass().equalsIgnoreCase("tod")) {
+        LOG.info(
+            "The verlauf for this Meldung with Meldeanlass=tod is unset. "
+                + "Assuming a death report with no further information.");
+        var tod = new TodTyp();
+        tod.setTodTumorbedingt(JNU.U);
+        meldung.setTod(tod);
+        return Optional.of(meldung);
+      }
+
       return Optional.empty();
     }
 
@@ -473,15 +485,13 @@ class MeldungMapper {
               }
 
               // AllgemeinerLeistungszustand ist nicht verpflicchtend oBDS v2. In v3 schon.
-              // der "else"-Pfad erzeugt also invalide Meldungen. obds-to-fhir kommt damit
-              // aber zurecht.
+              // Default: "U" verwenden
               if (verlauf.getAllgemeinerLeistungszustand() != null) {
                 mappedVerlauf.setAllgemeinerLeistungszustand(
                     AllgemeinerLeistungszustand.fromValue(
                         verlauf.getAllgemeinerLeistungszustand()));
               } else {
-                LOG.warn(
-                    "AllgemeinerLeistungszustand is null for Verlauf={}", verlauf.getVerlaufID());
+                mappedVerlauf.setAllgemeinerLeistungszustand(AllgemeinerLeistungszustand.U);
               }
 
               mappedVerlauf.setVerlaufLokalerTumorstatus(verlauf.getVerlaufLokalerTumorstatus());
@@ -636,7 +646,6 @@ class MeldungMapper {
       mappedDiagnose.setAllgemeinerLeistungszustand(
           AllgemeinerLeistungszustand.fromValue(diagnose.getAllgemeinerLeistungszustand()));
     } else {
-      LOG.warn("Allgemeiner Leistungszustand not set on the Diagnose element. Defaulting to 'U'.");
       mappedDiagnose.setAllgemeinerLeistungszustand(AllgemeinerLeistungszustand.U);
     }
 

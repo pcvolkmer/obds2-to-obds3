@@ -25,6 +25,35 @@
                 </Menge_Adresse>
             </Patienten_Stammdaten>
             <Menge_Meldung>
+                <Meldung Meldung_ID="09-3" Melder_ID="ST">
+                    <Meldedatum>06.09.2022</Meldedatum>
+                    <Meldebegruendung>I</Meldebegruendung>
+                    <Meldeanlass>behandlungsbeginn</Meldeanlass>
+                    <Tumorzuordnung Tumor_ID="1">
+                        <Primaertumor_ICD_Code>C54.1</Primaertumor_ICD_Code>
+                        <Primaertumor_ICD_Version>10 2021 GM</Primaertumor_ICD_Version>
+                        <Diagnosedatum>12.01.2021</Diagnosedatum>
+                        <Seitenlokalisation>T</Seitenlokalisation>
+                    </Tumorzuordnung>
+                    <Menge_ST>
+                        <ST ST_ID="14930">
+                            <ST_Intention>K</ST_Intention>
+                            <ST_Stellung_OP>A</ST_Stellung_OP>
+                            <Menge_Bestrahlung>
+                                <Bestrahlung>
+                                    <ST_Zielgebiet>5.7.</ST_Zielgebiet>
+                                    <ST_Seite_Zielgebiet>U</ST_Seite_Zielgebiet>
+                                    <ST_Beginn_Datum>17.03.2021</ST_Beginn_Datum>
+                                    <ST_Applikationsart>K</ST_Applikationsart>
+                                    <ST_Einzeldosis>
+                                        <Dosis>4.0</Dosis>
+                                        <Einheit>Gy</Einheit>
+                                    </ST_Einzeldosis>
+                                </Bestrahlung>
+                            </Menge_Bestrahlung>
+                        </ST>
+                    </Menge_ST>
+                </Meldung>
                 <Meldung Meldung_ID="ST0001238" Melder_ID="ST">
                     <Meldedatum>10.11.2021</Meldedatum>
                     <Meldebegruendung>I</Meldebegruendung>

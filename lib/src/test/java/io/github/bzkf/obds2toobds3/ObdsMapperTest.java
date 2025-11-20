@@ -178,6 +178,7 @@ class ObdsMapperTest {
       "testdaten/obdsv2_invalid-schema.xml,testdaten/obdsv3_invalid-schema.xml",
       "testdaten/obdsv2_invalid-kv.xml,testdaten/obdsv3_invalid-kv.xml",
       "testdaten/obdsv2_st_strahlenart.xml,testdaten/obdsv3_st_strahlenart.xml",
+      "testdaten/obdsv2_tod.xml,testdaten/obdsv3_tod.xml",
     })
     void shouldMapObdsFileWithoutSchemaValidation(String obdsV2File, String obdsV3File)
         throws Exception {
@@ -191,7 +192,9 @@ class ObdsMapperTest {
       var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
       assertThat(obdsv2).isNotNull();
 
-      assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
+      var mappedObdsv3String = mapper.writeMappedXmlString(obdsv2);
+
+      assertThat(mappedObdsv3String).isEqualTo(obdsV3String);
     }
   }
 }

@@ -4,7 +4,7 @@
     <Bezeichnung>TEST</Bezeichnung>
     <Anschrift>Test 2, 00000 Teststadt</Anschrift>
   </Absender>
-  <Meldedatum>2021-11-10</Meldedatum>
+  <Meldedatum>2022-09-06</Meldedatum>
   <Menge_Patient>
     <Patient Patient_ID="1055555999">
       <Patienten_Stammdaten>
@@ -24,6 +24,41 @@
         </Adresse>
       </Patienten_Stammdaten>
       <Menge_Meldung>
+        <Meldung Meldung_ID="09-3_14930" Melder_ID="ST">
+          <Meldebegruendung>I</Meldebegruendung>
+          <Eigene_Leistung>J</Eigene_Leistung>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD>
+              <Code>C54.1</Code>
+              <Version>10 2021 GM</Version>
+            </Primaertumor_ICD>
+            <Diagnosedatum Datumsgenauigkeit="E">2021-01-12</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <ST ST_ID="14930">
+            <Meldeanlass>behandlungsbeginn</Meldeanlass>
+            <Intention>K</Intention>
+            <Stellung_OP>A</Stellung_OP>
+            <Menge_Bestrahlung>
+              <Bestrahlung>
+                <Beginn>2021-03-17</Beginn>
+                <Applikationsart>
+                  <Kontakt>
+                    <Interstitiell_endokavitaer>K</Interstitiell_endokavitaer>
+                    <Zielgebiet>
+                      <CodeVersion2014>5.7.</CodeVersion2014>
+                    </Zielgebiet>
+                    <Seite_Zielgebiet>U</Seite_Zielgebiet>
+                    <Einzeldosis>
+                      <Dosis>4.0</Dosis>
+                      <Einheit>Gy</Einheit>
+                    </Einzeldosis>
+                  </Kontakt>
+                </Applikationsart>
+              </Bestrahlung>
+            </Menge_Bestrahlung>
+          </ST>
+        </Meldung>
         <Meldung Meldung_ID="ST0001238_45900" Melder_ID="ST">
           <Meldebegruendung>I</Meldebegruendung>
           <Eigene_Leistung>J</Eigene_Leistung>
