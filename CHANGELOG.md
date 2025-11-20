@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.8](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.7...v0.1.8) (2025-11-20)
+
+
+### Bug Fixes
+
+* handle meldeanlass=tod without Verlauf data ([#89](https://github.com/bzkf/obds2-to-obds3/issues/89)) ([3ce2fc8](https://github.com/bzkf/obds2-to-obds3/commit/3ce2fc8bc65b3537ffb8fa1f0abcdd72166de1d1))
+
 ## [0.1.7](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.6...v0.1.7) (2025-11-20)
 
 
