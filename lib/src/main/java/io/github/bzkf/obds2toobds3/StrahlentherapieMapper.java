@@ -175,15 +175,12 @@ public class StrahlentherapieMapper {
       perkutan.setGesamtdosis(gesamtdosis);
       switch (applikationsart) {
         case "P":
-          result.setPerkutan(perkutan);
           break;
         case "PRCJ":
           perkutan.setRadiochemo("RCJ");
-          result.setPerkutan(perkutan);
           break;
         case "PRCN":
           perkutan.setRadiochemo("RCN");
-          result.setPerkutan(perkutan);
           break;
         default:
           LOG.warn("Unknown Perkutan radiation type: {}", applikationsart);
@@ -214,24 +211,21 @@ public class StrahlentherapieMapper {
       kontakt.setEinzeldosis(einzeldosis);
       kontakt.setGesamtdosis(gesamtdosis);
       kontakt.setInterstitiellEndokavitaer("K");
+
       switch (applikationsart) {
         case "K":
-          result.setKontakt(kontakt);
           LOG.warn(
               "Missing required information on Rate_Type in v3 for applikationsart {}",
               applikationsart);
           break;
         case "KHDR":
           kontakt.setRateType("HDR");
-          result.setKontakt(kontakt);
           break;
         case "KPDR":
           kontakt.setRateType("PDR");
-          result.setKontakt(kontakt);
           break;
         case "KLDR":
           kontakt.setRateType("LDR");
-          result.setKontakt(kontakt);
           break;
         default:
           LOG.warn("Unknown Kontakt radiation type: {}", applikationsart);
@@ -263,22 +257,18 @@ public class StrahlentherapieMapper {
       kontakt.setInterstitiellEndokavitaer("I");
       switch (applikationsart) {
         case "I":
-          result.setKontakt(kontakt);
           LOG.warn(
               "Missing required information on Rate_Type in v3 for applikationsart {}",
               applikationsart);
           break;
         case "IHDR":
           kontakt.setRateType("HDR");
-          result.setKontakt(kontakt);
           break;
         case "IPDR":
           kontakt.setRateType("PDR");
-          result.setKontakt(kontakt);
           break;
         case "ILDR":
           kontakt.setRateType("LDR");
-          result.setKontakt(kontakt);
           break;
         default:
           LOG.warn("Unknown Interstitiell radiation type: {}", applikationsart);
@@ -303,15 +293,12 @@ public class StrahlentherapieMapper {
       switch (applikationsart) {
         case "M":
           metabolisch.setMetabolischTyp("M");
-          result.setMetabolisch(metabolisch);
           break;
         case "MSIRT":
           metabolisch.setMetabolischTyp("SIRT");
-          result.setMetabolisch(metabolisch);
           break;
         case "MPRRT":
           metabolisch.setMetabolischTyp("PRRT");
-          result.setMetabolisch(metabolisch);
           break;
         default:
           LOG.warn("Unknown Metabolisch radiation type: {}", applikationsart);
