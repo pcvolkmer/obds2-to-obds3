@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.9](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.8...v0.1.9) (2025-11-20)
+
+
+### Bug Fixes
+
+* support completely unset meldungen ([#91](https://github.com/bzkf/obds2-to-obds3/issues/91)) ([74f4567](https://github.com/bzkf/obds2-to-obds3/commit/74f45677b2f8b2099bde4d6a3c2056825d55cd80))
+
 ## [0.1.8](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.7...v0.1.8) (2025-11-20)
 
 
