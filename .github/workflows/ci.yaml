@@ -26,7 +26,7 @@ jobs:
       hashes: ${{ steps.hash.outputs.hashes }}
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
+        uses: step-security/harden-runner@df199fb7be9f65074067a9eb93f12bb4c5547cf2 # v2.13.3
         with:
           egress-policy: audit # change to 'egress-policy: block' after couple of runs
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
@@ -82,7 +82,7 @@ jobs:
 
       - name: upload assets to release
         if: ${{ github.event_name == 'release' && github.event.action == 'created' }}
-        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           files: |
             app/build/libs/*.jar
@@ -105,7 +105,7 @@ jobs:
       upload-assets: true
 
   lint:
-    uses: miracum/.github/.github/workflows/standard-lint.yaml@003a712f7458695cf6d6b32216d3c07e84f77d53 # v1.18.3
+    uses: miracum/.github/.github/workflows/standard-lint.yaml@25644e0d4ff70af6ee319e6cb4bd6d2f451882f8 # v1.18.4
     permissions:
       contents: read
       pull-requests: write
