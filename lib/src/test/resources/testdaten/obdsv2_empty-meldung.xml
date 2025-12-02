@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ADT_GEKID xmlns="http://www.gekid.de/namespace" Schema_Version="2.2.1">
+    <Absender Absender_ID="A" Software_ID="ONKOSTAR" Installations_ID="2.9.8">
+        <Absender_Bezeichnung>A</Absender_Bezeichnung>
+        <Absender_Ansprechpartner />
+        <Absender_Anschrift>A</Absender_Anschrift>
+    </Absender>
+    <Menge_Patient>
+        <Patient>
+            <Patienten_Stammdaten Patient_ID="1">
+                <KrankenversichertenNr>G123</KrankenversichertenNr>
+                <KrankenkassenNr>123</KrankenkassenNr>
+                <Patienten_Geschlecht>W</Patienten_Geschlecht>
+                <Patienten_Geburtsdatum>01.01.2000</Patienten_Geburtsdatum>
+                <Menge_Adresse>
+                    <Adresse>
+                        <Patienten_Strasse>A 1</Patienten_Strasse>
+                        <Patienten_Land>DE</Patienten_Land>
+                        <Patienten_PLZ>00000</Patienten_PLZ>
+                        <Patienten_Ort>A</Patienten_Ort>
+                    </Adresse>
+                </Menge_Adresse>
+            </Patienten_Stammdaten>
+            <Menge_Meldung>
+                <Meldung Meldung_ID="F2" Melder_ID="F">
+                    <Meldedatum>01.02.2000</Meldedatum>
+                    <Meldebegruendung>I</Meldebegruendung>
+                    <Meldeanlass>behandlungsbeginn</Meldeanlass>
+                    <Tumorzuordnung Tumor_ID="1">
+                        <Primaertumor_ICD_Code>C50.8</Primaertumor_ICD_Code>
+                        <Primaertumor_ICD_Version>10 2021 GM</Primaertumor_ICD_Version>
+                        <Diagnosedatum>01.01.2000</Diagnosedatum>
+                        <Seitenlokalisation>R</Seitenlokalisation>
+                    </Tumorzuordnung>
+                </Meldung>
+            </Menge_Meldung>
+        </Patient>
+    </Menge_Patient>
+    <Menge_Melder>
+        <Melder Melder_ID="F">
+            <Meldende_Stelle>F</Meldende_Stelle>
+        </Melder>
+    </Menge_Melder>
+</ADT_GEKID>
