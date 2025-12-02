@@ -772,7 +772,8 @@ class MeldungMapper {
       mappedMeldung.setMeldebegruendung(
           MeldebegruendungTyp.fromValue(source.getMeldebegruendung()));
     } else {
-      LOG.warn("Meldebegruendung is unset but required in v3. Ignoring.");
+      LOG.debug("Meldebegruendung is unset but required in v3. Defaulting to 'I'.");
+      mappedMeldung.setMeldebegruendung(MeldebegruendungTyp.I);
     }
 
     // Nicht in oBDS v2: Eigene Leistung J/N
