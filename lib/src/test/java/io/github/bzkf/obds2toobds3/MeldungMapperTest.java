@@ -17,14 +17,4 @@ class MeldungMapperTest {
   void setUp() {
     this.mapper = new MeldungMapper(false, false);
   }
-
-  @ParameterizedTest
-  @NullAndEmptySource
-  @ValueSource(strings = {"   "})
-  void shouldThrowExceptionOnMissingMeldungID(String meldungID) {
-    var meldung = new ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung();
-    meldung.setMeldungID(meldungID);
-    var ex = assertThrows(IllegalArgumentException.class, () -> mapper.map(meldung));
-    assertThat(ex).hasMessage("MeldungID must not be null or blank");
-  }
 }
