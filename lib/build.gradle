@@ -84,7 +84,7 @@ tasks.register('xsd2java') {
                 destdir: "${jaxbTargetDir}",
                 package: 'de.basisdatensatz.obds.v3',
                 schema: 'src/main/resources/schema/oBDS_v3.0.4.xsd',
-                binding: 'src/main/resources/schema/oBDS_v3.0.4.bindings.xjb'
+                binding: 'src/main/resources/schema/oBDS_v3.0.4.bindings.xjb',
         )
 
     }

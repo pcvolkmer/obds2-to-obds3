@@ -38,7 +38,16 @@ import java.util.Optional;
 
 public class ObdsMapper {
 
-  private final XmlMapper mapper;
+  public static final XmlMapper XML_MAPPER =
+      XmlMapper.builder()
+          .defaultUseWrapper(false)
+          .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd"))
+          .addModule(new JakartaXmlBindAnnotationModule())
+          .addModule(new Jdk8Module())
+          .enable(SerializationFeature.INDENT_OUTPUT)
+          .serializationInclusion(JsonInclude.Include.NON_EMPTY)
+          .build();
+
   private final PatientMapper patientMapper;
 
   private final boolean ignoreUnmappable;
@@ -46,15 +55,6 @@ public class ObdsMapper {
 
   private ObdsMapper(
       boolean ignoreUnmappable, boolean fixMissingId, boolean disableSchemaValidation) {
-    mapper =
-        XmlMapper.builder()
-            .defaultUseWrapper(false)
-            .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd"))
-            .addModule(new JakartaXmlBindAnnotationModule())
-            .addModule(new Jdk8Module())
-            .enable(SerializationFeature.INDENT_OUTPUT)
-            .serializationInclusion(JsonInclude.Include.NON_EMPTY)
-            .build();
     this.ignoreUnmappable = ignoreUnmappable;
     this.disableSchemaValidation = disableSchemaValidation;
     patientMapper = new PatientMapper(ignoreUnmappable, fixMissingId);
@@ -145,7 +145,7 @@ public class ObdsMapper {
     }
 
     if (clazz == ADTGEKID.class || clazz == OBDS.class) {
-      return this.mapper.readValue(str, clazz);
+      return XML_MAPPER.readValue(str, clazz);
     }
     throw new IllegalArgumentException("Allowed classes are ADTGEKID and OBDS");
   }
@@ -155,7 +155,7 @@ public class ObdsMapper {
   }
 
   public String writeXmlString(OBDS obj) throws JsonProcessingException {
-    var xmlString = mapper.writeValueAsString(obj);
+    var xmlString = XML_MAPPER.writeValueAsString(obj);
     var result =
         String.format(
             "<?xml version=\"1.0\" encoding=\"utf-8\" ?>%s%s",

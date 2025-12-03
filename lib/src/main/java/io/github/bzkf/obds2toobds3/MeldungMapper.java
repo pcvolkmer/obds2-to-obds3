@@ -24,6 +24,7 @@
 
 package io.github.bzkf.obds2toobds3;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.basisdatensatz.obds.v2.ADTGEKID;
 import de.basisdatensatz.obds.v3.*;
 import de.basisdatensatz.obds.v3.DiagnoseTyp.MengeFruehereTumorerkrankung.FruehereTumorerkrankung;
@@ -68,7 +69,15 @@ class MeldungMapper {
     }
 
     if (null == source.getMeldungID() || source.getMeldungID().isBlank()) {
-      throw new IllegalArgumentException("MeldungID must not be null or blank");
+      LOG.warn("Meldung ID is unset or blank. Replacing with hash value of the content.");
+      try {
+        var meldungXml = ObdsMapper.XML_MAPPER.writeValueAsString(source);
+        // Meldung_ID can be 50 chars max
+        var digest = DigestUtils.sha256Hex(meldungXml).substring(0, 49);
+        source.setMeldungID(digest);
+      } catch (JsonProcessingException e) {
+        throw new IllegalArgumentException(e);
+      }
     }
 
     MDC.put("meldungId", source.getMeldungID());
