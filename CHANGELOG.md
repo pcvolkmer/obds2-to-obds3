@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.11](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.10...v0.1.11) (2025-12-03)
+
+
+### Bug Fixes
+
+* generate meldung id if missing ([#99](https://github.com/bzkf/obds2-to-obds3/issues/99)) ([35bce7b](https://github.com/bzkf/obds2-to-obds3/commit/35bce7be4045ce4c3556fbde1c3888b4d2e1ff74))
+
 ## [0.1.10](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.9...v0.1.10) (2025-12-02)
 
 
