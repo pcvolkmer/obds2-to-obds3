@@ -38,14 +38,15 @@ import java.util.Optional;
 
 public class ObdsMapper {
 
-  public static final XmlMapper XML_MAPPER = XmlMapper.builder()
-            .defaultUseWrapper(false)
-            .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd"))
-            .addModule(new JakartaXmlBindAnnotationModule())
-            .addModule(new Jdk8Module())
-            .enable(SerializationFeature.INDENT_OUTPUT)
-            .serializationInclusion(JsonInclude.Include.NON_EMPTY)
-            .build();
+  public static final XmlMapper XML_MAPPER =
+      XmlMapper.builder()
+          .defaultUseWrapper(false)
+          .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd"))
+          .addModule(new JakartaXmlBindAnnotationModule())
+          .addModule(new Jdk8Module())
+          .enable(SerializationFeature.INDENT_OUTPUT)
+          .serializationInclusion(JsonInclude.Include.NON_EMPTY)
+          .build();
 
   private final PatientMapper patientMapper;
 
