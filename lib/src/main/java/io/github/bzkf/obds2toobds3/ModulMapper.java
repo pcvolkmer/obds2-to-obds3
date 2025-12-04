@@ -24,16 +24,14 @@
 
 package io.github.bzkf.obds2toobds3;
 
+import de.basisdatensatz.obds.v3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.basisdatensatz.obds.v3.*;
 
 class ModulMapper {
   private static final Logger LOG = LoggerFactory.getLogger(ModulMapper.class);
 
-  private ModulMapper() {
-  }
+  private ModulMapper() {}
 
   public static ModulProstataTyp map(de.basisdatensatz.obds.v2.ModulProstataTyp source) {
     if (null == source) {
