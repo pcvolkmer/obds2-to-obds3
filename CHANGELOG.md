@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.12](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.11...v0.1.12) (2025-12-04)
+
+
+### Bug Fixes
+
+* support floating point prozentzahl ([#101](https://github.com/bzkf/obds2-to-obds3/issues/101)) ([3c301d8](https://github.com/bzkf/obds2-to-obds3/commit/3c301d85cf5eeb390d9c3f0200be53f0d0969c0f))
+
 ## [0.1.11](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.10...v0.1.11) (2025-12-03)
 
 
