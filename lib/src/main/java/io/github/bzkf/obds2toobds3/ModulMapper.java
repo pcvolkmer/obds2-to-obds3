@@ -58,13 +58,15 @@ class ModulMapper {
     result.setPSA(source.getPSA());
     if (source.getCaBefallStanze() != null) {
       var caBefallStanze = new CaBefallStanzeTyp();
-      var prozentZahl = source.getCaBefallStanze().getProzentzahl();
 
-      if (prozentZahl % 1 != 0) {
-        LOG.warn("Prozentzahl has decimal places. Ignored when mapping to v3.");
+      if (source.getCaBefallStanze().getProzentzahl() != null) {
+        var prozentzahl = source.getCaBefallStanze().getProzentzahl();
+        if (prozentzahl % 1 != 0) {
+          LOG.warn("Prozentzahl has decimal places. Ignored when mapping to v3.");
+        }
+        caBefallStanze.setProzentzahl(source.getCaBefallStanze().getProzentzahl().intValue());
       }
 
-      caBefallStanze.setProzentzahl(source.getCaBefallStanze().getProzentzahl().intValue());
       caBefallStanze.setU(source.getCaBefallStanze().getU());
       result.setCaBefallStanze(caBefallStanze);
     }
