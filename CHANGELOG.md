@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.13](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.12...v0.1.13) (2025-12-04)
+
+
+### Bug Fixes
+
+* prozentzahl NPE ([#103](https://github.com/bzkf/obds2-to-obds3/issues/103)) ([0f3397b](https://github.com/bzkf/obds2-to-obds3/commit/0f3397b440980fb8130b255fe780324a8b4483ef))
+
 ## [0.1.12](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.11...v0.1.12) (2025-12-04)
 
 
