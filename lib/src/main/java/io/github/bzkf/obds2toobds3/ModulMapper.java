@@ -24,11 +24,16 @@
 
 package io.github.bzkf.obds2toobds3;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.basisdatensatz.obds.v3.*;
 
 class ModulMapper {
+  private static final Logger LOG = LoggerFactory.getLogger(ModulMapper.class);
 
-  private ModulMapper() {}
+  private ModulMapper() {
+  }
 
   public static ModulProstataTyp map(de.basisdatensatz.obds.v2.ModulProstataTyp source) {
     if (null == source) {
@@ -55,7 +60,13 @@ class ModulMapper {
     result.setPSA(source.getPSA());
     if (source.getCaBefallStanze() != null) {
       var caBefallStanze = new CaBefallStanzeTyp();
-      caBefallStanze.setProzentzahl(source.getCaBefallStanze().getProzentzahl());
+      var prozentZahl = source.getCaBefallStanze().getProzentzahl();
+
+      if (prozentZahl % 1 != 0) {
+        LOG.warn("Prozentzahl has decimal places. Ignored when mapping to v3.");
+      }
+
+      caBefallStanze.setProzentzahl(source.getCaBefallStanze().getProzentzahl().intValue());
       caBefallStanze.setU(source.getCaBefallStanze().getU());
       result.setCaBefallStanze(caBefallStanze);
     }

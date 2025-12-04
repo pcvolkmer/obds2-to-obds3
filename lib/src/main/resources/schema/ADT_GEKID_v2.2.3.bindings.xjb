@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jaxb:bindings jaxb:version="3.0" xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <jaxb:bindings schemaLocation="ADT_GEKID_v2.2.3.xsd">
+        <jaxb:bindings
+            node="//xs:complexType[@name='Modul_Prostata_Typ']//
+                  xs:element[@name='CaBefallStanze']//
+                  xs:element[@name='Prozentzahl']/xs:simpleType">
+            <jaxb:javaType
+                name="java.lang.Float"
+                parseMethod="java.lang.Float.valueOf"
+                printMethod="java.lang.String.valueOf" />
+        </jaxb:bindings>
+    </jaxb:bindings>
+</jaxb:bindings>

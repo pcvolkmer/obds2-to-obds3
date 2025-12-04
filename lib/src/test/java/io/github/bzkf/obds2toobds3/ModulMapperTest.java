@@ -62,7 +62,7 @@ class ModulMapperTest {
     source.setKomplPostOPClavienDindo(JNUTyp.J);
 
     var caBefallStanze = new ModulProstataTyp.CaBefallStanze();
-    caBefallStanze.setProzentzahl(50);
+    caBefallStanze.setProzentzahl(50.123f);
     source.setCaBefallStanze(caBefallStanze);
 
     var actual = ModulMapper.map(source);
