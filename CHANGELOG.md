@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.14](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.13...v0.1.14) (2025-12-05)
+
+
+### Bug Fixes
+
+* support RU -&gt; U ([#105](https://github.com/bzkf/obds2-to-obds3/issues/105)) ([00caf86](https://github.com/bzkf/obds2-to-obds3/commit/00caf86c8f9004e5b2b52dfa3a50897dad09f3eb))
+
 ## [0.1.13](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.12...v0.1.13) (2025-12-04)
 
 
