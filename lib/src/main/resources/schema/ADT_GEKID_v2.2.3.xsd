@@ -3181,6 +3181,12 @@
 					<xs:documentation>Vorhandensein von Residualtumor kann nicht beurteilt werden</xs:documentation>
 				</xs:annotation>
 			</xs:enumeration>
+			<!-- Custom change to the XSD to support wrong values in some exports -->
+			<xs:enumeration value="RU">
+				<xs:annotation>
+					<xs:documentation>(! nicht Teil des offiziellen Schemas) Residualtumorstatus ist nicht bekannt</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:complexType name="Modul_Allgemein_Typ">
