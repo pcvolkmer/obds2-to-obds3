@@ -71,7 +71,8 @@
                             </TNM>
                             <Residualstatus>
                                 <Lokale_Beurteilung_Residualstatus>R0</Lokale_Beurteilung_Residualstatus>
-                                <Gesamtbeurteilung_Residualstatus>R0</Gesamtbeurteilung_Residualstatus>
+                                <!-- Test incorrect value -->
+                                <Gesamtbeurteilung_Residualstatus>RU</Gesamtbeurteilung_Residualstatus>
                             </Residualstatus>
                             <Menge_Komplikation>
                                 <OP_Komplikation>N</OP_Komplikation>

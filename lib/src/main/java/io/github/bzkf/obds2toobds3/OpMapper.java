@@ -50,23 +50,31 @@ public class OpMapper {
       opTyp.setKomplikationen(mapToKomplikationen(source));
     }
 
-    // v2: R0, R1, R1(is), R1(cy+), R2, RX
+    // v2: R0, R1, R1(is), R1(cy+), R2, RX, RU
     // v3: R0, R1, R1(is), R1(cy+), R2, RX, U
     if (source.getResidualstatus() != null) {
       var residualstatus = new de.basisdatensatz.obds.v3.ResidualstatusTyp();
 
       var gesamtbeurteilung = source.getResidualstatus().getGesamtbeurteilungResidualstatus();
       if (gesamtbeurteilung != null) {
-        residualstatus.setGesamtbeurteilungResidualstatus(
-            RTyp.fromValue(gesamtbeurteilung.value()));
+        if (gesamtbeurteilung == de.basisdatensatz.obds.v2.RTyp.RU) {
+          residualstatus.setGesamtbeurteilungResidualstatus(RTyp.U);
+        } else {
+          residualstatus.setGesamtbeurteilungResidualstatus(
+              RTyp.fromValue(gesamtbeurteilung.value()));
+        }
       } else {
         LOG.debug("OP has no GesamtbeurteilungResidualstatus set in v2 residualstatus");
       }
 
       var lokaleBeurteilung = source.getResidualstatus().getLokaleBeurteilungResidualstatus();
       if (lokaleBeurteilung != null) {
-        residualstatus.setLokaleBeurteilungResidualstatus(
-            RTyp.fromValue(lokaleBeurteilung.value()));
+        if (lokaleBeurteilung == de.basisdatensatz.obds.v2.RTyp.RU) {
+          residualstatus.setLokaleBeurteilungResidualstatus(RTyp.U);
+        } else {
+          residualstatus.setLokaleBeurteilungResidualstatus(
+              RTyp.fromValue(lokaleBeurteilung.value()));
+        }
       } else {
         LOG.debug("OP has no LokaleBeurteilungResidualstatus set in v2 residualstatus");
       }

@@ -96,7 +96,7 @@
             </TNM>
             <Residualstatus>
               <Lokale_Beurteilung_Residualstatus>R0</Lokale_Beurteilung_Residualstatus>
-              <Gesamtbeurteilung_Residualstatus>R0</Gesamtbeurteilung_Residualstatus>
+              <Gesamtbeurteilung_Residualstatus>U</Gesamtbeurteilung_Residualstatus>
             </Residualstatus>
             <Komplikationen>
               <Komplikation_nein_oder_unbekannt>N</Komplikation_nein_oder_unbekannt>
